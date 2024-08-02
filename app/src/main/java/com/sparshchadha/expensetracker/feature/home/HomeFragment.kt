@@ -2,7 +2,6 @@ package com.sparshchadha.expensetracker.feature.home
 
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
@@ -11,7 +10,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment: Fragment(R.layout.home_fragment) {
     private lateinit var homeComposeView: ComposeView
 
@@ -33,13 +34,14 @@ class HomeFragment: Fragment(R.layout.home_fragment) {
 
 
     private fun navigateToNotificationsFragment() {
-        activity?.supportFragmentManager?.beginTransaction()
-            ?.setCustomAnimations(
+        requireActivity().supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
                 R.anim.slide_in, R.anim.fade_out,
                 R.anim.fade_in, R.anim.slide_out
             )
-            ?.replace(R.id.app_container, NotificationsFragment())
-            ?.addToBackStack(null)
-            ?.commit()
+            .replace(R.id.app_container, NotificationsFragment())
+            .addToBackStack(null)
+            .commit()
+
     }
 }

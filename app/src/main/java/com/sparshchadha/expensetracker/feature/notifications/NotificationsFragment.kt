@@ -7,7 +7,9 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import com.sparshchadha.expensetracker.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NotificationsFragment : Fragment(R.layout.notifications_fragment) {
     private lateinit var notificationsComposeView: ComposeView
 

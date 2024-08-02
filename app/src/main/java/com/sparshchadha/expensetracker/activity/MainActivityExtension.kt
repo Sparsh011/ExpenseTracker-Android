@@ -1,18 +1,33 @@
 package com.sparshchadha.expensetracker.activity
 
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.FragmentContainerView
+import androidx.navigation.createGraph
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.fragment
+import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarScreen
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.navigation.NavGraph
+import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragment
+import com.sparshchadha.expensetracker.feature.onboarding.OnboardingFragment
+import com.sparshchadha.expensetracker.feature.profile.ProfileFragment
+import com.sparshchadha.expensetracker.navigation.ExpenseTrackerNavGraph
 
-internal fun MainActivity.setNavGraph() {
+internal fun MainActivity.setGlobalNavGraph() {
     val navHostFragment =
-        supportFragmentManager.findFragmentById(R.id.fl_main_fragment_container) as NavHostFragment
-    navController = navHostFragment.navController
-    navController.graph = NavGraph.createNavGraph(navController = navController)
+        supportFragmentManager.findFragmentById(R.id.parent_fragment_container) as NavHostFragment
+    parentNavController = navHostFragment.navController
+
+    parentNavController.graph = parentNavController.createGraph(
+        startDestination = ExpenseTrackerNavGraph.MainRoutes.ONBOARDING_SCREEN
+    ) {
+        fragment<OnboardingFragment>(ExpenseTrackerNavGraph.MainRoutes.ONBOARDING_SCREEN)
+
+        fragment<MainBottomNavigationBarScreen>(ExpenseTrackerNavGraph.MainRoutes.MAIN_BOTTOM_NAVIGATION_SCREEN)
+
+        fragment<NotificationsFragment>(ExpenseTrackerNavGraph.MainRoutes.NOTIFICATIONS_SCREEN)
+
+        fragment<ProfileFragment>(ExpenseTrackerNavGraph.MainRoutes.PROFILE_SCREEN)
+    }
 }
 
 
@@ -25,73 +40,12 @@ internal fun MainActivity.setWindowAttributes() {
 }
 
 
-internal fun MainActivity.navigateToProfileFragment() {
-    if (!isNavControllerInitialized()) return
-
-    navController.navigate(NavGraph.nav_routes.profile) {
-        popUpTo(navController.graph.startDestinationId) { saveState = true }
-        launchSingleTop = true
-        restoreState = true
-    }
-}
-
-
-internal fun MainActivity.navigateToTransactionsFragment() {
-    if (!isNavControllerInitialized()) return
-
-    navController.navigate(NavGraph.nav_routes.transactions) {
-        popUpTo(navController.graph.startDestinationId) { saveState = true }
-        launchSingleTop = true
-        restoreState = true
-    }
-}
-
-
-internal fun MainActivity.navigateToHomeFragment() {
-    if (!isNavControllerInitialized()) return
-
-    navController.navigate(NavGraph.nav_routes.home) {
-        popUpTo(navController.graph.startDestinationId) { saveState = true }
-        launchSingleTop = true
-        restoreState = true
-    }
-}
-
-
-internal fun MainActivity.navigateToStatisticsFragment() {
-    if (!isNavControllerInitialized()) return
-
-    navController.navigate(NavGraph.nav_routes.statistics) {
-        popUpTo(navController.graph.startDestinationId) { saveState = true }
-        launchSingleTop = true
-        restoreState = true
-    }
-}
-
-
-internal fun MainActivity.initializeViews() {
-    tvHomeFragment = findViewById(R.id.tv_home)
-    tvTransactionsFragment = findViewById(R.id.tv_transactions_history)
-    tvStatisticsFragment = findViewById(R.id.tv_statistics)
-    tvProfileFragment = findViewById(R.id.tv_profile)
-}
-
-
-internal fun MainActivity.setOnClickListeners() {
-    tvHomeFragment.setOnClickListener {
-        navigateToHomeFragment()
-    }
-
-    tvTransactionsFragment.setOnClickListener {
-        navigateToTransactionsFragment()
-    }
-
-    tvStatisticsFragment.setOnClickListener {
-        navigateToStatisticsFragment()
-    }
-
-    tvProfileFragment.setOnClickListener {
-        navigateToProfileFragment()
-    }
-
-}
+//internal fun MainActivity.navigateToStatisticsFragment() {
+//    if (!isNavControllerInitialized()) return
+//
+//    childNavController.navigate(NavGraph.MainRoutes.statistics) {
+//        popUpTo(childNavController.graph.startDestinationId) { saveState = true }
+//        launchSingleTop = true
+//        restoreState = true
+//    }
+//}

@@ -4,9 +4,9 @@ coilCompose = "2.5.0"
 datastorePreferences = "1.1.1"
 datetime = "0.9.0"
 firebasePerfKtx = "21.0.1"
-hiltAndroid = "2.44"
-hiltCompiler = "1.0.0"
-kotlin = "1.9.0"
+hiltAndroid = "2.51.1"
+hiltCompiler = "1.2.0"
+kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -24,30 +24,75 @@ nav_version = "2.7.7"
 material3Android = "1.2.1"
 
 [libraries]
+# region android core ktx
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+# endregion
+
+# region datastore
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+# endregion
+
+# region hilt
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
-androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
-datetime = { module = "io.github.vanpra.compose-material-dialogs:datetime", version.ref = "datetime" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+# endregion
+
+# region compose
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+androidx-compose-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+# endregion
+
+# region coil compose
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+# endregion
+
+# region date time dialogs
+datetime = { module = "io.github.vanpra.compose-material-dialogs:datetime", version.ref = "datetime" }
+# endregion
+
+# region ssp and sdp
+sdp-android = { module = "com.intuit.sdp:sdp-android", version.ref = "sdpAndroid" }
+ssp-android = { module = "com.intuit.ssp:ssp-android", version.ref = "sspAndroid" }
+# endregion
+
+# region junit
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+# endregion
+
+# region appcompat
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+# endregion
+
+# region chucker
 chucker-library = { module = "com.github.chuckerteam.chucker:library", version.ref = "library" }
 chucker-library-no-op = { module = "com.github.chuckerteam.chucker:library-no-op", version.ref = "library" }
+# endregion
+
+# region lottie
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
+# endregion
+
+# region material
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+# endregion
+
+# region activity
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+# endregion
+
+# region constraintlayout
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-sdp-android = { module = "com.intuit.sdp:sdp-android", version.ref = "sdpAndroid" }
-ssp-android = { module = "com.intuit.ssp:ssp-android", version.ref = "sspAndroid" }
+# endregion
+
+# region navigation
 fragment-navigation = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "nav_version" }
-androidx-compose-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+# endregion
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

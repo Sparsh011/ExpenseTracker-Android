@@ -8,7 +8,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import com.sparshchadha.expensetracker.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TransactionsFragment : Fragment(R.layout.transactions_fragment) {
     private lateinit var transactionsComposeView: ComposeView
 

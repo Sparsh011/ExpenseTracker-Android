@@ -7,7 +7,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import com.sparshchadha.expensetracker.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class StatisticsFragment : Fragment(R.layout.statistics_fragment) {
     private lateinit var statisticsComposeView: ComposeView
 

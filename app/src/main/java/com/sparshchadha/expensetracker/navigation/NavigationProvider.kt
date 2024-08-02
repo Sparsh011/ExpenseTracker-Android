@@ -2,7 +2,14 @@ package com.sparshchadha.expensetracker.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import androidx.navigation.createGraph
+import androidx.navigation.fragment.fragment
 import com.sparshchadha.expensetracker.R
+import com.sparshchadha.expensetracker.feature.home.HomeFragment
+import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragment
+import com.sparshchadha.expensetracker.feature.profile.ProfileFragment
+import com.sparshchadha.expensetracker.feature.statistics.StatisticsFragment
+import com.sparshchadha.expensetracker.feature.transactions.TransactionsFragment
 
 object NavigationProvider {
     fun navigateToNotificationsScreen(

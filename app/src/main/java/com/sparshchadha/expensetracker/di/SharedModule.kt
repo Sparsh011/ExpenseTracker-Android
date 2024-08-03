@@ -25,7 +25,7 @@ object SharedModule {
     @Singleton
     @Provides
     fun provideAuthRepository(
-        dataStorePreference: ExpenseTrackerDataStorePreference
+        dataStorePreference: ExpenseTrackerDataStorePreference,
     ): AuthRepository {
         return AuthRepositoryImpl(dataStorePreference = dataStorePreference)
     }

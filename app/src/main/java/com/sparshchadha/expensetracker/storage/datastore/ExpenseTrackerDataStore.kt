@@ -12,7 +12,7 @@ import javax.inject.Inject
 private val Context.dataStore by preferencesDataStore(name = "expense_tracker_preference")
 
 class ExpenseTrackerDataStorePreference @Inject constructor(
-    @ApplicationContext context: Context
+    @ApplicationContext context: Context,
 ) {
     private val dataStorePreference = context.dataStore
 

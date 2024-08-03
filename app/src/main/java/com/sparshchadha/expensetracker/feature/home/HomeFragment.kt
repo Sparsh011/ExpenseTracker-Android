@@ -13,7 +13,7 @@ import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment: Fragment(R.layout.home_fragment) {
+class HomeFragment : Fragment(R.layout.home_fragment) {
     private lateinit var homeComposeView: ComposeView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

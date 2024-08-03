@@ -19,18 +19,6 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-//        lifecycleScope.launch {
-//            authViewModel.accessToken
-//                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED) // Works the same as repeatOnLifecycle(STARTED)
-//                .collect { accessToken ->
-//                    if (accessToken.isBlank()) {
-//                        showOnboardingScreen()
-//                    } else {
-//                        setNavGraph()
-//                    }
-//                }
-//        }
-
         setGlobalNavGraph()
         setWindowAttributes()
     }

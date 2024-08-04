@@ -6,7 +6,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.feature.auth.ui.LoginFragment
+import com.sparshchadha.expensetracker.feature.auth.ui.fragments.LoginFragment
 import com.sparshchadha.expensetracker.feature.onboarding.compose_screens.OnboardingScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers

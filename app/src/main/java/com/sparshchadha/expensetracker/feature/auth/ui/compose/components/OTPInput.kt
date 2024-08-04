@@ -1,22 +1,12 @@
-package com.sparshchadha.expensetracker.feature.auth.ui.compose
+package com.sparshchadha.expensetracker.feature.auth.ui.compose.components
 
-import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
@@ -28,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -37,47 +26,18 @@ import com.sparshchadha.expensetracker.utils.AppColors
 import com.sparshchadha.expensetracker.utils.Dimensions
 import com.sparshchadha.expensetracker.utils.FontSizes
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VerifyOtpScreen(
-    providedPhoneNumber: String,
-    onDismiss: () -> Unit,
+fun OTPInput(
+    otpLength: Int = 6,
+    onOTPComplete: (String) -> Unit,
 ) {
-    val bottomSheetState = rememberModalBottomSheetState()
-    val context = LocalContext.current
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        containerColor = Color.White,
-        sheetState = bottomSheetState
-    ) {
-        Column {
-            ChangeNumberView(providedPhoneNumber = providedPhoneNumber, onChange = onDismiss)
-
-            Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
-
-            OTPInput(
-                otpLength = 6,
-                onOTPComplete = {
-                    Toast.makeText(context, "OTP $it", Toast.LENGTH_SHORT).show()
-                }
-            )
-
-            Spacer(modifier = Modifier.height(Dimensions.extraLargePadding()))
+    val otp = remember {
+        mutableStateListOf("").apply {
+            for (i in 0 until otpLength) {
+                this.add("")
+            }
         }
     }
-}
-
-@Composable
-private fun OTPInput(
-    otpLength: Int = 6,
-    onOTPComplete: (String) -> Unit
-) {
-    val otp = remember { mutableStateListOf("").apply {
-        for (i in 0 until otpLength) {
-            this.add("")
-        }
-    } }
     val focusRequesters = List(otpLength) { FocusRequester() }
 
     Row(
@@ -105,7 +65,10 @@ private fun OTPInput(
                     }
                 },
                 singleLine = true,
-                textStyle = TextStyle.Default.copy(textAlign = TextAlign.Center, fontSize = FontSizes.extraSmallFontSize().value.sp),
+                textStyle = TextStyle.Default.copy(
+                    textAlign = TextAlign.Center,
+                    fontSize = FontSizes.extraSmallFontSize().value.sp
+                ),
                 modifier = Modifier
                     .focusRequester(focusRequesters[i])
                     .weight(1f)
@@ -124,29 +87,9 @@ private fun OTPInput(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
                     disabledTextColor = Color.Black,
+                    focusedBorderColor = AppColors.primaryPurple
                 )
             )
         }
-    }
-}
-
-
-@Composable
-private fun ChangeNumberView(providedPhoneNumber: String, onChange: () -> Unit) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Not $providedPhoneNumber?"
-        )
-
-        Spacer(modifier = Modifier.width(Dimensions.mediumPadding()))
-
-        Text(
-            text = "Change Number",
-            modifier = Modifier.clickable { onChange() },
-            color = AppColors.primaryPurple
-        )
     }
 }

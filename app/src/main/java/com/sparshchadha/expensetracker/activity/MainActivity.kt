@@ -19,8 +19,11 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        setGlobalNavGraph()
-        setWindowAttributes()
+        if (savedInstanceState == null) {
+            // Used to fix the issue of onCreate being called again when configuration changes
+            setGlobalNavGraph()
+            setWindowAttributes()
+        }
     }
 
 }

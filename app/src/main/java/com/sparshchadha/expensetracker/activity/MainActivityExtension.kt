@@ -6,7 +6,7 @@ import androidx.navigation.createGraph
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.fragment
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.feature.auth.ui.LoginFragment
+import com.sparshchadha.expensetracker.feature.auth.ui.fragments.LoginFragment
 import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarScreen
 import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragment
 import com.sparshchadha.expensetracker.feature.onboarding.OnboardingFragment

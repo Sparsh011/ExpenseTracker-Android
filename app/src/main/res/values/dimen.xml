@@ -21,6 +21,7 @@
 <!-- Region Font sizes-->
     <dimen name="large_text_size">@dimen/_20ssp</dimen>
     <dimen name="extra_large_text_size">@dimen/_30ssp</dimen>
+    <dimen name="medium_text_size">@dimen/_16ssp</dimen>
     <dimen name="small_text_size">@dimen/_12ssp</dimen>
 <!-- Endregion font sizes  -->
 </resources>

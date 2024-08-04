@@ -10,6 +10,7 @@
     <dimen name="third_icon_onboarding_padding">@dimen/_100sdp</dimen>
     <dimen name="status_bar_padding">@dimen/_20sdp</dimen>
     <dimen name="home_screen_top_bar_icon_size">@dimen/_27sdp</dimen>
+    <dimen name="bottom_bar_height">@dimen/_40sdp</dimen>
         <!-- Endregion    -->
 
         <!-- Region icons sizes   -->

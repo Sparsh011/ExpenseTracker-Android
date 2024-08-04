@@ -201,7 +201,7 @@ private fun FiltersDropDownMenu(
                 text = {
                     Text(
                         text = "Top 5 Biggest Spends",
-                        color = Color.DarkGray,
+                        color = Color.Black,
                         fontSize = FontSizes.mediumNonScaledFontSize()
                     )
                 },

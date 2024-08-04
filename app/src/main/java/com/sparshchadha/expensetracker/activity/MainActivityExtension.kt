@@ -3,6 +3,7 @@ package com.sparshchadha.expensetracker.activity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.navigation.createGraph
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.fragment
@@ -38,7 +39,7 @@ internal fun MainActivity.setGlobalNavGraph() {
 internal fun MainActivity.setWindowAttributes() {
     ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.app_container)) { v, insets ->
         val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-        v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+        v.updatePadding(bottom = systemBars.bottom)
         insets
     }
 

@@ -5,9 +5,9 @@ import com.sparshchadha.expensetracker.storage.datastore.ExpenseTrackerDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class AuthRepositoryImpl (
-    private val dataStorePreference: ExpenseTrackerDataStorePreference
-): AuthRepository {
+class AuthRepositoryImpl(
+    private val dataStorePreference: ExpenseTrackerDataStorePreference,
+) : AuthRepository {
 
     override fun getAccessToken(): Flow<String> = flow {
         dataStorePreference.readAccessToken

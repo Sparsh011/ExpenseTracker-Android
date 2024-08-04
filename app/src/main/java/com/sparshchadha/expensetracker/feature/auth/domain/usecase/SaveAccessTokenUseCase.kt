@@ -4,7 +4,7 @@ import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthReposi
 import javax.inject.Inject
 
 class SaveAccessTokenUseCase @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) {
     suspend operator fun invoke(token: String) {
         authRepository.saveAccessToken(token)

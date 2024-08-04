@@ -6,6 +6,7 @@ object ExpenseTrackerNavGraph {
         const val ONBOARDING_SCREEN = "onboarding_screen"
         const val MAIN_BOTTOM_NAVIGATION_SCREEN = "main_bottom_navigation_screen"
         const val PROFILE_SCREEN = "profile_screen"
+        const val LOGIN_SCREEN = "login_screen"
     }
 
     object BottomBarScreenRoutes {

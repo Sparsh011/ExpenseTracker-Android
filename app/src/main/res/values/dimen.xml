@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!-- Region sdp-->
+        <!-- Region Paddings -->
+    <dimen name="large_padding">@dimen/_20sdp</dimen>
+    <dimen name="medium_padding">@dimen/_15sdp</dimen>
+    <dimen name="extra_large_padding">@dimen/_40sdp</dimen>
+    <dimen name="small_padding">@dimen/_10sdp</dimen>
+    <dimen name="extra_small_padding">@dimen/_5sdp</dimen>
+    <dimen name="third_icon_onboarding_padding">@dimen/_100sdp</dimen>
+    <dimen name="status_bar_padding">@dimen/_20sdp</dimen>
+        <!-- Endregion    -->
+
+        <!-- Region icons sizes   -->
+    <dimen name="onboarding_screen_icon_size">@dimen/_50sdp</dimen>
+    <dimen name="slider_icon_size">@dimen/_35sdp</dimen>
+    <dimen name="slider_container_size">@dimen/_40sdp</dimen>
+        <!-- Endregion    -->
+<!-- Endregion sdp -->
+
+<!-- Region Font sizes-->
+    <dimen name="large_text_size">@dimen/_20ssp</dimen>
+    <dimen name="extra_large_text_size">@dimen/_30ssp</dimen>
+    <dimen name="medium_text_size">@dimen/_16ssp</dimen>
+    <dimen name="small_text_size">@dimen/_12ssp</dimen>
+<!-- Endregion font sizes  -->
+</resources>

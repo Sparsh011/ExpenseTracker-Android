@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.R
 
@@ -58,6 +59,11 @@ object Dimensions {
     fun sliderContainerSize(): Dp {
         return dimensionResource(id = R.dimen.slider_container_size)
     }
+
+    @Composable
+    fun homeScreenTopBarIconSize(): Dp {
+        return dimensionResource(id = R.dimen.home_screen_top_bar_icon_size)
+    }
 }
 
 object FontSizes {
@@ -86,4 +92,26 @@ object FontSizes {
     val Int.nonScaledSp
         @Composable
         get() = (this / LocalDensity.current.fontScale).sp
+
+    @Composable
+    fun smallNonScaledFontSize(): TextUnit {
+        return 12.nonScaledSp
+    }
+
+    @Composable
+    fun mediumNonScaledFontSize(): TextUnit {
+        return 16.nonScaledSp
+    }
+
+
+    @Composable
+    fun largeNonScaledFontSize(): TextUnit {
+        return 20.nonScaledSp
+    }
+
+
+    @Composable
+    fun extraLargeNonScaledFontSize(): TextUnit {
+        return 24.nonScaledSp
+    }
 }

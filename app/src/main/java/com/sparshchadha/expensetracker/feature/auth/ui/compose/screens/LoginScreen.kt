@@ -36,6 +36,7 @@ import com.sparshchadha.expensetracker.utils.FontSizes
 @Composable
 fun LoginScreen(
     navigateToVerifyOtpScreen: (Pair<String, String>) -> Unit,
+    navigateToHomeScreen: () -> Unit,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     var phoneNumber by rememberSaveable {
@@ -85,7 +86,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
 
         Button(onClick = {
-
+            navigateToHomeScreen()
         }) {
             Text(text = "Placeholder button for login with google button")
         }

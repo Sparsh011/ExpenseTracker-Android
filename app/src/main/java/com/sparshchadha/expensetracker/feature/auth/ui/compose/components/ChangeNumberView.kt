@@ -25,7 +25,7 @@ import com.sparshchadha.expensetracker.utils.FontSizes.nonScaledSp
 fun ChangeNumberAndCancelView(
     providedPhoneNumber: String,
     onChangeNumber: () -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()

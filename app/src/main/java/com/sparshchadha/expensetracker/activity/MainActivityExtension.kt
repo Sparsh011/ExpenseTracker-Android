@@ -1,6 +1,7 @@
 package com.sparshchadha.expensetracker.activity
 
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.createGraph
 import androidx.navigation.fragment.NavHostFragment
@@ -19,7 +20,7 @@ internal fun MainActivity.setGlobalNavGraph() {
     parentNavController = navHostFragment.navController
 
     parentNavController.graph = parentNavController.createGraph(
-        startDestination = ExpenseTrackerNavGraph.MainRoutes.ONBOARDING_SCREEN
+        startDestination = ExpenseTrackerNavGraph.MainRoutes.MAIN_BOTTOM_NAVIGATION_SCREEN
     ) {
         fragment<OnboardingFragment>(ExpenseTrackerNavGraph.MainRoutes.ONBOARDING_SCREEN)
 
@@ -40,4 +41,9 @@ internal fun MainActivity.setWindowAttributes() {
         v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
         insets
     }
+
+    WindowCompat.getInsetsController(
+        window,
+        findViewById(R.id.app_container)
+    ).isAppearanceLightStatusBars = true
 }

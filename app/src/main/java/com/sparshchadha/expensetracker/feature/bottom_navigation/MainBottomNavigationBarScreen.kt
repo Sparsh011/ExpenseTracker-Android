@@ -9,7 +9,7 @@ import androidx.navigation.createGraph
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.fragment
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.feature.home.HomeFragment
+import com.sparshchadha.expensetracker.feature.home.fragment.HomeFragment
 import com.sparshchadha.expensetracker.feature.statistics.StatisticsFragment
 import com.sparshchadha.expensetracker.feature.transactions.TransactionsFragment
 import com.sparshchadha.expensetracker.navigation.ExpenseTrackerNavGraph.BottomBarScreenRoutes

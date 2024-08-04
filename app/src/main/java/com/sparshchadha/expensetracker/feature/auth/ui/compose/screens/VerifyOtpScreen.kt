@@ -20,12 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.components.ChangeNumberAndCancelView
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.components.OTPInput
 import com.sparshchadha.expensetracker.utils.AppColors
 import com.sparshchadha.expensetracker.utils.Dimensions
-import com.sparshchadha.expensetracker.utils.FontSizes
 import com.sparshchadha.expensetracker.utils.FontSizes.nonScaledSp
 import kotlinx.coroutines.delay
 

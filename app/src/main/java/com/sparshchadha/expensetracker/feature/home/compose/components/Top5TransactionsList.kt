@@ -4,20 +4,12 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -28,15 +20,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.R
@@ -55,80 +44,7 @@ fun Top5TransactionsList() {
     )
 
     for (i in 0 until 5) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .padding(
-                    horizontal = Dimensions.mediumPadding(),
-                    vertical = Dimensions.extraSmallPadding()
-                ),
-            colors = CardDefaults.cardColors(
-                containerColor = AppColors.primaryWhite
-            )
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(end = Dimensions.largePadding()),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = Dimensions.smallPadding())
-                        .clip(CircleShape)
-                        .size(Dimensions.extraLargePadding())
-                        .background(AppColors.secondaryWhite)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Build,
-                        contentDescription = null,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-
-                Column(
-                    modifier = Modifier.weight(0.65f)
-                ) {
-                    Text(
-                        text = "Top 5 Big Spends",
-                        color = Color.DarkGray,
-                        modifier = Modifier.padding(
-                            start = Dimensions.largePadding(),
-                            end = Dimensions.mediumPadding(),
-                            bottom = Dimensions.extraSmallPadding()
-                        ),
-                        fontSize = FontSizes.mediumNonScaledFontSize(),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Text(
-                        text = "21 Sept 2024",
-                        color = Color.Gray,
-                        modifier = Modifier.padding(
-                            start = Dimensions.largePadding(),
-                            end = Dimensions.mediumPadding()
-                        ),
-                        fontSize = FontSizes.smallNonScaledFontSize(),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-
-                Text(
-                    text = "- ₹45",
-                    color = Color.Black,
-                    fontSize = FontSizes.mediumNonScaledFontSize(),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(0.15f)
-                )
-
-            }
-        }
+        ExpenseCard()
     }
 }
 
@@ -141,20 +57,26 @@ private fun HeaderAndFilterIcon() {
     val context = LocalContext.current
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
-    Row {
+    Row(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Text(
-            text = "Top 5 Big Spends",
+            text = "This Month's Top 5 Big Spends",
             color = Color.DarkGray,
-            modifier = Modifier.padding(
-                start = Dimensions.largePadding(),
-                end = Dimensions.mediumPadding()
-            ),
+            modifier = Modifier
+                .padding(
+                    start = Dimensions.largePadding(),
+                    end = Dimensions.mediumPadding()
+                )
+                .weight(4f),
             fontSize = FontSizes.mediumFontSize().value.sp
         )
 
-        Box {
+        Box(
+            modifier = Modifier.weight(1f)
+        ) {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_filter_list_24),
+                imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
                 contentDescription = null,
                 tint = Color.Black,
                 modifier = Modifier.clickable {

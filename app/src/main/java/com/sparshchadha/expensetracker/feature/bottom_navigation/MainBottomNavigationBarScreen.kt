@@ -2,7 +2,15 @@ package com.sparshchadha.expensetracker.feature.bottom_navigation
 
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.createGraph
@@ -13,21 +21,24 @@ import com.sparshchadha.expensetracker.feature.home.fragment.HomeFragment
 import com.sparshchadha.expensetracker.feature.statistics.StatisticsFragment
 import com.sparshchadha.expensetracker.feature.transactions.TransactionsFragment
 import com.sparshchadha.expensetracker.navigation.ExpenseTrackerNavGraph.BottomBarScreenRoutes
+import com.sparshchadha.expensetracker.utils.AppColors
+import com.sparshchadha.expensetracker.utils.Dimensions
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainBottomNavigationBarScreen : Fragment(R.layout.main_bottom_navigation_bar_fragment) {
     private lateinit var navController: NavController
-    private lateinit var tvHome: TextView
-    private lateinit var tvTransactions: TextView
-    private lateinit var tvStatistics: TextView
+    private lateinit var cvHomeIcon: ComposeView
+    private lateinit var cvTransactionsIcon: ComposeView
+    private lateinit var cvStatisticsIcon: ComposeView
+    private var selectedIcon = mutableStateOf(BottomBarScreenNames.HOME)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initializeNavController()
         initializeViewsUsing(view = view)
-        setOnClickListeners()
+        setIconsContent()
     }
 
 
@@ -53,35 +64,88 @@ class MainBottomNavigationBarScreen : Fragment(R.layout.main_bottom_navigation_b
     }
 
     private fun initializeViewsUsing(view: View) {
-        tvHome = view.findViewById(R.id.tv_home)
-        tvTransactions = view.findViewById(R.id.tv_transactions_history)
-        tvStatistics = view.findViewById(R.id.tv_statistics)
+        cvHomeIcon = view.findViewById(R.id.cv_home_icon)
+        cvTransactionsIcon = view.findViewById(R.id.cv_transactions_history_icon)
+        cvStatisticsIcon = view.findViewById(R.id.cv_statistics_icon)
     }
 
-
-    private fun setOnClickListeners() {
-        tvHome.setOnClickListener {
-            navController.navigate(BottomBarScreenRoutes.HOME_SCREEN) {
-                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
-            }
-        }
-
-        tvStatistics.setOnClickListener {
-            navController.navigate(BottomBarScreenRoutes.STATISTICS_SCREEN) {
-                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
-            }
-        }
-
-        tvTransactions.setOnClickListener {
-            navController.navigate(BottomBarScreenRoutes.TRANSACTIONS_SCREEN) {
-                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
-            }
+    private fun navigateToHomeScreen() {
+        navController.navigate(BottomBarScreenRoutes.HOME_SCREEN) {
+            popUpTo(navController.graph.startDestinationId) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
         }
     }
+
+    private fun navigateToTransactionsScreen() {
+        navController.navigate(BottomBarScreenRoutes.TRANSACTIONS_SCREEN) {
+            popUpTo(navController.graph.startDestinationId) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    private fun navigateToStatisticsScreen() {
+        navController.navigate(BottomBarScreenRoutes.STATISTICS_SCREEN) {
+            popUpTo(navController.graph.startDestinationId) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    private fun setIconsContent() {
+        cvHomeIcon.setContent {
+            Icon(
+                painter = painterResource(id = R.drawable.home_icon),
+                contentDescription = null,
+                tint = if (selectedIcon.value == BottomBarScreenNames.HOME) AppColors.primaryColor else Color.LightGray,
+                modifier = Modifier
+                    .clickable {
+                        if (selectedIcon.value != BottomBarScreenNames.HOME) {
+                            selectedIcon.value = BottomBarScreenNames.HOME
+                            navigateToHomeScreen()
+                        }
+                    }
+                    .padding(Dimensions.smallPadding() - Dimensions.extraSmallPadding() - 1.dp)
+            )
+        }
+
+        cvTransactionsIcon.setContent {
+            Icon(
+                painter = painterResource(id = R.drawable.transactions_icon),
+                contentDescription = null,
+                tint = if (selectedIcon.value == BottomBarScreenNames.TRANSACTIONS) AppColors.primaryColor else Color.LightGray,
+                modifier = Modifier
+                    .clickable {
+                        if (selectedIcon.value != BottomBarScreenNames.TRANSACTIONS) {
+                            selectedIcon.value = BottomBarScreenNames.TRANSACTIONS
+                            navigateToStatisticsScreen()
+                        }
+                    }
+                    .padding(Dimensions.extraSmallPadding())
+            )
+        }
+
+        cvStatisticsIcon.setContent {
+            Icon(
+                painter = painterResource(id = R.drawable.statistics_icon),
+                contentDescription = null,
+                tint = if (selectedIcon.value == BottomBarScreenNames.STATISTICS) AppColors.primaryColor else Color.LightGray,
+                modifier = Modifier
+                    .clickable {
+                        if (selectedIcon.value != BottomBarScreenNames.STATISTICS) {
+                            selectedIcon.value = BottomBarScreenNames.STATISTICS
+                            navigateToStatisticsScreen()
+                        }
+                    }
+                    .padding(Dimensions.extraSmallPadding())
+            )
+        }
+    }
+}
+
+private enum class BottomBarScreenNames {
+    HOME,
+    TRANSACTIONS,
+    STATISTICS
 }

@@ -25,6 +25,8 @@ import com.sparshchadha.expensetracker.utils.AppColors
 import com.sparshchadha.expensetracker.utils.Dimensions
 import com.sparshchadha.expensetracker.utils.FontSizes
 
+
+private const val TAG = "HomeScreen"
 @Composable
 fun HomeScreen(
     navigateToNotificationsFragment: () -> Unit,

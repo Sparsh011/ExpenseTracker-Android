@@ -119,7 +119,7 @@ class MainBottomNavigationBarScreen : Fragment(R.layout.main_bottom_navigation_b
                     .clickable {
                         if (selectedIcon.value != BottomBarScreenNames.TRANSACTIONS) {
                             selectedIcon.value = BottomBarScreenNames.TRANSACTIONS
-                            navigateToStatisticsScreen()
+                            navigateToTransactionsScreen()
                         }
                     }
                     .padding(Dimensions.extraSmallPadding())

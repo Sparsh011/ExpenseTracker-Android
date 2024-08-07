@@ -1,16 +1,22 @@
 package com.sparshchadha.expensetracker.feature.home.compose.screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -27,43 +33,81 @@ import com.sparshchadha.expensetracker.utils.FontSizes
 
 
 private const val TAG = "HomeScreen"
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     navigateToNotificationsFragment: () -> Unit,
     navigateToProfileFragment: () -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
+    val listState = rememberLazyListState()
+    var headerColor by remember {
+        mutableStateOf(Color.Transparent)
+    }
+    val firstVisibleIndex = remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex >= 2
+        }
+    }
 
-    Column(
+    headerColor = if (firstVisibleIndex.value) {
+        AppColors.secondaryWhite
+    } else {
+        Color.Transparent
+    }
+
+    LazyColumn(
         modifier = Modifier
             .background(AppColors.secondaryWhite)
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(top = Dimensions.statusBarPadding())
+            .padding(top = Dimensions.statusBarPadding()),
+        state = listState
     ) {
-        GreetingAndTopBarIcons(
-            navigateToNotificationsScreen = navigateToNotificationsFragment,
-            navigateToProfileScreen = navigateToProfileFragment
-        )
+        item {
+            GreetingAndTopBarIcons(
+                navigateToNotificationsScreen = navigateToNotificationsFragment,
+                navigateToProfileScreen = navigateToProfileFragment
+            )
+        }
 
-        BalanceAndBudgetCard(
-            cardHeight = 0.3 * screenHeight,
-            onClick = {
+        item {
+            BalanceAndBudgetCard(
+                cardHeight = 0.3 * screenHeight,
+                onClick = {
 
+                }
+            )
+        }
+
+        stickyHeader {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = headerColor
+            ) {
+                ExpensesHeader()
             }
-        )
+        }
 
-        ExpensesHeader()
+        item {
+            CurrentDayExpenses()
+        }
 
-        CurrentDayExpenses()
+        item {
+            Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
+        }
 
-        Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
+        item {
+            Top5TransactionsList()
+        }
 
-        Top5TransactionsList()
+        item {
+            Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
+        }
 
-        Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
-
-        Footer()
+        item {
+            Footer()
+        }
     }
 }
 

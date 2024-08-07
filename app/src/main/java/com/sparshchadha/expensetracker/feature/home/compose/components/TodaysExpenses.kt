@@ -45,9 +45,9 @@ fun CurrentDayExpenses() {
     )
 
     NoTransactionAnimation()
-//    for (i in 0..3) {
-//        ExpenseCard()
-//    }
+    for (i in 0..3) {
+        ExpenseCard()
+    }
 }
 
 @Composable

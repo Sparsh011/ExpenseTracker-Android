@@ -12,4 +12,10 @@ object AppColors {
 
     @Stable
     val primaryPurple: Color = Color(0xFF8C52FF)
+
+    @Stable
+    val primaryWhite: Color = Color(255, 255, 255, 255)
+
+    @Stable
+    val secondaryWhite: Color = Color(248, 248, 248, 255)
 }

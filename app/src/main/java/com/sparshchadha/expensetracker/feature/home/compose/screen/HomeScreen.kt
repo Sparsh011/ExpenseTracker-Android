@@ -39,6 +39,7 @@ private const val TAG = "HomeScreen"
 fun HomeScreen(
     navigateToNotificationsFragment: () -> Unit,
     navigateToProfileFragment: () -> Unit,
+    isNoTransactionsAnimShown: Boolean,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val listState = rememberLazyListState()
@@ -90,7 +91,9 @@ fun HomeScreen(
         }
 
         item {
-            CurrentDayExpenses()
+            CurrentDayExpenses(
+                isEmptyListAnimationShown = isNoTransactionsAnimShown,
+            )
         }
 
         item {

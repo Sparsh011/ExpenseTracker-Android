@@ -64,6 +64,11 @@ object Dimensions {
     fun homeScreenTopBarIconSize(): Dp {
         return dimensionResource(id = R.dimen.home_screen_top_bar_icon_size)
     }
+
+    @Composable
+    fun largeIconSize(): Dp {
+        return dimensionResource(id = R.dimen.large_icon_size)
+    }
 }
 
 object FontSizes {
@@ -82,6 +87,11 @@ object FontSizes {
     @Composable
     fun mediumFontSize(): Dp {
         return dimensionResource(id = R.dimen.medium_text_size)
+    }
+
+    @Composable
+    fun largeFontSize(): Dp {
+        return dimensionResource(id = R.dimen.large_text_size)
     }
 
     @Composable

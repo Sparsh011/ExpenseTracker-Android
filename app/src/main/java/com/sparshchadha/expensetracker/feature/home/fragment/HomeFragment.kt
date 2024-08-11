@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.home_fragment) {
     private lateinit var homeComposeView: ComposeView
+    private var isNoTransactionsAnimShown = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -24,7 +25,8 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
                 },
                 navigateToProfileFragment = {
                     navigateToProfileFragment()
-                }
+                },
+                isNoTransactionsAnimShown = isNoTransactionsAnimShown
             )
         }
     }
@@ -55,5 +57,12 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
             .replace(R.id.app_container, NotificationsFragment())
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Set isNoTransactionsAnimShown to true here so that whenever we come back to this fragment,
+        // animation is not shown again and again
+        isNoTransactionsAnimShown = true
     }
 }

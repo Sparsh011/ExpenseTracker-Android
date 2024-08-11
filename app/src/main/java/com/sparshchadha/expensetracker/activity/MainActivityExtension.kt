@@ -21,7 +21,7 @@ internal fun MainActivity.setGlobalNavGraph() {
     parentNavController = navHostFragment.navController
 
     parentNavController.graph = parentNavController.createGraph(
-        startDestination = ExpenseTrackerNavGraph.MainRoutes.MAIN_BOTTOM_NAVIGATION_SCREEN
+        startDestination = ExpenseTrackerNavGraph.MainRoutes.ONBOARDING_SCREEN
     ) {
         fragment<OnboardingFragment>(ExpenseTrackerNavGraph.MainRoutes.ONBOARDING_SCREEN)
 

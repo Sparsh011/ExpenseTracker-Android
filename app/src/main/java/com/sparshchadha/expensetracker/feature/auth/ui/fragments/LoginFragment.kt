@@ -6,10 +6,13 @@ import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.LoginScreen
 import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarScreen
 import com.sparshchadha.expensetracker.utils.BundleKeys
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment(R.layout.login_fragment) {
     private lateinit var loginComposeView: ComposeView
@@ -61,6 +64,11 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
         fragment.show(requireActivity().supportFragmentManager, "VerifyOtpScreenTag")
 
         isVerifyOtpBottomSheetShowing = true
+
+        lifecycleScope.launch {
+            delay(1000L)
+            isVerifyOtpBottomSheetShowing = false
+        }
     }
 
     private fun isPhoneNumberValid(countryCode: String, phoneNumber: String): Boolean {

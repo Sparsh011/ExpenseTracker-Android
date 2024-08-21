@@ -13,6 +13,7 @@ import com.sparshchadha.expensetracker.utils.BundleKeys
 
 class LoginFragment : Fragment(R.layout.login_fragment) {
     private lateinit var loginComposeView: ComposeView
+    private var isVerifyOtpBottomSheetShowing = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,12 +52,15 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
     }
 
     private fun navigateToVerifyOtpScreen(phoneNumber: String, countryCode: String) {
+        if (isVerifyOtpBottomSheetShowing) return
         val fragment = VerifyOtpFragment()
         val bundle = Bundle()
         bundle.putString(BundleKeys.PHONE_NUMBER_KEY, phoneNumber)
         bundle.putString(BundleKeys.COUNTRY_CODE_KEY, countryCode)
         fragment.arguments = bundle
         fragment.show(requireActivity().supportFragmentManager, "VerifyOtpScreenTag")
+
+        isVerifyOtpBottomSheetShowing = true
     }
 
     private fun isPhoneNumberValid(countryCode: String, phoneNumber: String): Boolean {

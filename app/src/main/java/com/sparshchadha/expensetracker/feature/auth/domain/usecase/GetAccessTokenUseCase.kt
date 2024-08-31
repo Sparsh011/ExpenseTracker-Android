@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetAccessTokenUseCase @Inject constructor(
     private val authRepository: AuthRepository,
 ) {
-    operator fun invoke(): Flow<String> {
+    operator fun invoke(): String {
         return authRepository.getAccessToken()
     }
 }

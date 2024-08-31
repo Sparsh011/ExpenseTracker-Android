@@ -21,16 +21,10 @@ class AuthViewModel @Inject constructor(
     val accessToken = _accessToken.asStateFlow()
 
     fun saveAccessToken(token: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            saveAccessTokenUseCase(token = token)
-        }
+        saveAccessTokenUseCase(token = token)
     }
 
     fun readAccessToken() {
-        viewModelScope.launch(Dispatchers.IO) {
-            getAccessTokenUseCase().collect { accessToken ->
-                _accessToken.value = accessToken
-            }
-        }
+        _accessToken.value = getAccessTokenUseCase()
     }
 }

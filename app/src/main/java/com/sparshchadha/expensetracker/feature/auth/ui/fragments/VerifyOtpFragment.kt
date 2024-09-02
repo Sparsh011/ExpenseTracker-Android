@@ -2,28 +2,29 @@ package com.sparshchadha.expensetracker.feature.auth.ui.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
-import androidx.navigation.fragment.findNavController
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.RetryPhoneAuthRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.User
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.VerifyOtpScreen
 import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
 import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarScreen
+import com.sparshchadha.expensetracker.utils.BundleKeys
 import com.sparshchadha.expensetracker.utils.NetworkHandler
+import com.sparshchadha.expensetracker.utils.vibrateDevice
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
-    private val authViewModel by activityViewModels<AuthViewModel>()
+    private val authViewModel by viewModels<AuthViewModel>()
 
     private lateinit var verifyOtpComposeView: ComposeView
     private var phoneNumberWithCountryCode = ""
     private var orderId = ""
-    private val errorDuringLogin = mutableStateOf<Pair<Boolean, String>?>(null)
     private val showLoader = mutableStateOf(false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,6 +34,17 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
 
         setObservers()
 
+        if (authViewModel.getOtpServiceOrderId().isBlank()
+            || authViewModel.getUserPhoneNumber().isBlank()
+        ) {
+            authViewModel.setOtpServiceOrderId(
+                arguments?.getString(BundleKeys.OTP_SERVICE_ORDER_ID, "") ?: ""
+            )
+            authViewModel.setUserPhoneNumber(
+                arguments?.getString(BundleKeys.PHONE_NUMBER_KEY, "") ?: ""
+            )
+        }
+
         phoneNumberWithCountryCode = authViewModel.getUserPhoneNumber()
         orderId = authViewModel.getOtpServiceOrderId()
 
@@ -41,23 +53,15 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
                 providedPhoneNumber = phoneNumberWithCountryCode,
                 onVerify = { otp ->
                     authViewModel.verifyOtp(
-                        VerifyOtpRequest(
-                            phoneNumber = phoneNumberWithCountryCode,
-                            otp = otp,
-                            orderId = orderId
-                        )
+                        phoneNumber = phoneNumberWithCountryCode, otp = otp, orderId = orderId
                     )
                 },
                 onResend = {
-                    authViewModel.retryPhoneAuth(RetryPhoneAuthRequest(orderId = orderId))
-                },
-                onChangeNumber = {
-                    findNavController().popBackStack()
+                    authViewModel.retryPhoneAuth(orderId = orderId)
                 },
                 onCancel = {
-                    findNavController().popBackStack()
+                    requireActivity().supportFragmentManager.popBackStack()
                 },
-                loginError = errorDuringLogin,
                 showLoader = showLoader.value
             )
         }
@@ -80,11 +84,12 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
 
                         is NetworkHandler.Error -> {
                             showLoader.value = false
-                            errorDuringLogin.value =
-                                Pair(
-                                    true,
-                                    it.error?.message ?: "Unable to login, please try again!"
-                                )
+                            Toast.makeText(
+                                context,
+                                it.error?.message ?: "Unable to login, please try again!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            requireContext().vibrateDevice()
                         }
 
                         is NetworkHandler.Loading -> {
@@ -106,11 +111,12 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
 
                     is NetworkHandler.Error -> {
                         showLoader.value = false
-                        errorDuringLogin.value =
-                            Pair(
-                                true,
-                                it.error?.message ?: "Unable to login, please try again!"
-                            )
+                        Toast.makeText(
+                            requireContext(),
+                            "Unable to login, please try again!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        requireContext().vibrateDevice()
                     }
 
                     is NetworkHandler.Loading -> {
@@ -125,9 +131,17 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
         verifyOtpComposeView = view.findViewById(R.id.verify_otp_compose_view)
     }
 
-
     private fun navigateToHomeScreen(withUser: User?) {
-        withUser?.let {
+
+        withUser?.let { user ->
+            if (!user.isOTPVerified) {
+                Toast.makeText(requireContext(), user.message, Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            authViewModel.saveAccessToken(user.access)
+            authViewModel.saveRefreshToken(user.refresh)
+
             requireActivity().supportFragmentManager
                 .beginTransaction()
                 .setCustomAnimations(
@@ -139,7 +153,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
                 )
                 .commit()
         } ?: run {
-            errorDuringLogin.value = Pair(true, "Internal server error, please try again!")
+            Toast.makeText(requireContext(), "Error aagaya", Toast.LENGTH_SHORT).show()
         }
     }
 }

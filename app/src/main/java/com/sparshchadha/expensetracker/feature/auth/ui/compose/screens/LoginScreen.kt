@@ -36,7 +36,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.PhoneAuthRequest
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.components.PhoneNumberTextField
 import com.sparshchadha.expensetracker.utils.AppColors
 import com.sparshchadha.expensetracker.utils.Dimensions
@@ -44,18 +43,18 @@ import com.sparshchadha.expensetracker.utils.FontSizes
 
 @Composable
 fun LoginScreen(
-    continueWithPhoneAuth: (PhoneAuthRequest) -> Unit,
+    continueWithPhoneAuth: (String) -> Unit,
     showLoader: Boolean,
     startGoogleSignIn: () -> Unit,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
-
     Box(modifier = Modifier.fillMaxSize()) {
         ScreenContent(
             screenWidth = screenWidth,
             continueWithPhoneAuth = continueWithPhoneAuth,
-            startGoogleSignIn = startGoogleSignIn
+            startGoogleSignIn = startGoogleSignIn,
+            isLoaderShowing = showLoader
         )
 
         if (showLoader) {
@@ -69,7 +68,7 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.width(Dimensions.onboardingScreenIconSize()),
+                    modifier = Modifier.width(Dimensions.sliderContainerSize()),
                     color = AppColors.primaryPurple,
                     trackColor = MaterialTheme.colorScheme.surfaceVariant,
                 )
@@ -81,8 +80,9 @@ fun LoginScreen(
 @Composable
 private fun ScreenContent(
     screenWidth: Int,
-    continueWithPhoneAuth: (PhoneAuthRequest) -> Unit,
+    continueWithPhoneAuth: (String) -> Unit,
     startGoogleSignIn: () -> Unit,
+    isLoaderShowing: Boolean,
 ) {
     var phoneNumber by rememberSaveable {
         mutableStateOf("")
@@ -115,18 +115,14 @@ private fun ScreenContent(
                 .padding(Dimensions.largePadding()),
             phoneNumber = phoneNumber,
             onPhoneNumberChange = {
+                if (isLoaderShowing) return@PhoneNumberTextField
                 phoneNumber = it
             }
         )
 
         SendOTPButton {
-            continueWithPhoneAuth(
-                PhoneAuthRequest(
-                    phoneNumber = "+91$phoneNumber",
-                    otpLength = 6,
-                    expiry = (120)
-                )
-            )
+            if (isLoaderShowing) return@SendOTPButton
+            continueWithPhoneAuth("+91$phoneNumber")
         }
 
         Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
@@ -136,7 +132,10 @@ private fun ScreenContent(
         Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
 
         Button(
-            onClick = startGoogleSignIn,
+            onClick = {
+                if (isLoaderShowing) return@Button
+                startGoogleSignIn()
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = AppColors.secondaryWhite
             ),
@@ -152,7 +151,11 @@ private fun ScreenContent(
                     modifier = Modifier.size(Dimensions.mediumPadding())
                 )
                 Spacer(modifier = Modifier.width(Dimensions.mediumPadding()))
-                Text(text = "Login With Google", color = Color.Black, fontSize = FontSizes.mediumNonScaledFontSize())
+                Text(
+                    text = "Login With Google",
+                    color = Color.Black,
+                    fontSize = FontSizes.mediumNonScaledFontSize()
+                )
             }
         }
     }
@@ -171,6 +174,10 @@ private fun SendOTPButton(
             containerColor = AppColors.primaryColor
         )
     ) {
-        Text(text = "Continue With Phone", color = Color.White, fontSize = FontSizes.mediumNonScaledFontSize())
+        Text(
+            text = "Continue With Phone",
+            color = Color.White,
+            fontSize = FontSizes.mediumNonScaledFontSize()
+        )
     }
 }

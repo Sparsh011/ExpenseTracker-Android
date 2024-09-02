@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
@@ -38,7 +37,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.components.OTPInput
 import com.sparshchadha.expensetracker.utils.AppColors
@@ -52,13 +50,11 @@ fun VerifyOtpScreen(
     providedPhoneNumber: String,
     onVerify: (String) -> Unit,
     onResend: () -> Unit,
-    onChangeNumber: () -> Unit,
     onCancel: () -> Unit,
-    loginError: MutableState<Pair<Boolean, String>?>?,
     showLoader: Boolean,
 ) {
     var timer by rememberSaveable {
-        mutableIntStateOf(30)
+        mutableIntStateOf(60)
     }
 
     var resendCount by rememberSaveable {
@@ -85,7 +81,7 @@ fun VerifyOtpScreen(
             onUpdateResendCount = { newResendCount ->
                 timer += 30 * newResendCount
                 resendCount = newResendCount
-            }
+            },
         )
 
         if (showLoader) {
@@ -170,7 +166,7 @@ private fun ScreenContent(
             onOTPComplete = {
                 otp = it
                 onVerify(otp)
-            }
+            },
         )
 
         Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))

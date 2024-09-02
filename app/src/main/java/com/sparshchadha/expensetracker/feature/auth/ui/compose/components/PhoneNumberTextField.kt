@@ -66,7 +66,7 @@ fun PhoneNumberTextField(
             focusedBorderColor = AppColors.primaryPurple
         ),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-        textStyle = TextStyle.Default.copy(fontSize = FontSizes.largeNonScaledFontSize())
+        textStyle = TextStyle.Default.copy(fontSize = FontSizes.mediumNonScaledFontSize())
     )
 }
 
@@ -80,7 +80,7 @@ private fun LeadingIcon(
             .clickable(onClick = onClick)
             .padding(Dimensions.extraSmallPadding())
     ) {
-        Text(text = "+91", fontSize = FontSizes.largeNonScaledFontSize())
+        Text(text = "+91", fontSize = FontSizes.mediumNonScaledFontSize())
         Spacer(modifier = Modifier.width(Dimensions.smallPadding()))
         VerticalDivider(modifier = Modifier.height(Dimensions.largePadding()))
     }

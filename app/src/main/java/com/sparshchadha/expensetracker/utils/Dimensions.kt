@@ -1,6 +1,7 @@
 package com.sparshchadha.expensetracker.utils
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.Dp
@@ -68,6 +69,11 @@ object Dimensions {
     @Composable
     fun largeIconSize(): Dp {
         return dimensionResource(id = R.dimen.large_icon_size)
+    }
+
+    @Composable
+    fun otpBoxWidth(): Dp {
+        return dimensionResource(id = R.dimen.otp_box_width)
     }
 }
 

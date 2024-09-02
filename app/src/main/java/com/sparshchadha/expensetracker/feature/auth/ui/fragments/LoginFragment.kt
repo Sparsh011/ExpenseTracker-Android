@@ -5,20 +5,19 @@ import android.view.View
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
-import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.lifecycleScope
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.LoginScreen
 import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
+import com.sparshchadha.expensetracker.utils.BundleKeys
 import com.sparshchadha.expensetracker.utils.NetworkHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.login_fragment) {
-    private val authViewModel by activityViewModels<AuthViewModel>()
+    private val authViewModel by viewModels<AuthViewModel>()
 
     private lateinit var loginComposeView: ComposeView
     private val errorDuringLogin = mutableStateOf<Pair<Boolean, String>?>(null)
@@ -33,12 +32,8 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
 
         loginComposeView.setContent {
             LoginScreen(
-                continueWithPhoneAuth = { request ->
-                    if (!isPhoneNumberValid(request.phoneNumber)) {
-                        showToast(message = "Enter a valid phone number!")
-                        return@LoginScreen
-                    }
-                    authViewModel.continueWithPhone(request = request)
+                continueWithPhoneAuth = { phoneNumber ->
+                    continuePhoneAuthUsing(phoneNumber)
                 },
                 showLoader = showLoader.value,
                 startGoogleSignIn = {
@@ -46,6 +41,16 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                 }
             )
         }
+    }
+
+    private fun continuePhoneAuthUsing(phoneNumber: String) {
+        if (!isPhoneNumberValid(phoneNumber)) {
+            showToast(message = "Enter a valid phone number!")
+            return
+        }
+
+        authViewModel.continueWithPhone(phoneNumber = phoneNumber)
+        authViewModel.setUserPhoneNumber(number = phoneNumber)
     }
 
     private fun initializeViewsUsing(view: View) {
@@ -58,6 +63,14 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
             return
         }
 
+        authViewModel.setOtpServiceOrderId(orderId = orderId)
+
+        val fragment = VerifyOtpFragment()
+        val bundle = Bundle()
+        bundle.putString(BundleKeys.PHONE_NUMBER_KEY, authViewModel.getUserPhoneNumber())
+        bundle.putString(BundleKeys.OTP_SERVICE_ORDER_ID, authViewModel.getOtpServiceOrderId())
+        fragment.arguments = bundle
+
         requireActivity().supportFragmentManager
             .beginTransaction()
             .setCustomAnimations(
@@ -65,7 +78,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                 R.anim.fade_in, R.anim.slide_out
             )
             .replace(
-                R.id.parent_fragment_container, VerifyOtpFragment()
+                R.id.parent_fragment_container, fragment
             )
             .addToBackStack(null)
             .commit()
@@ -90,33 +103,31 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
     }
 
     private fun observePhoneAuthInitiation() {
-        lifecycleScope.launch(Dispatchers.Main) {
-            authViewModel.continueWithPhoneResponse.asLiveData()
-                .observe(viewLifecycleOwner) { response ->
-                    response?.let {
-                        when (it) {
-                            is NetworkHandler.Success -> {
-                                showLoader.value = false
-                                navigateToVerifyOtpScreen(
-                                    orderId = it.data?.orderId ?: ""
+        authViewModel.continueWithPhoneResponse.asLiveData()
+            .observe(viewLifecycleOwner) { response ->
+                response?.let {
+                    when (it) {
+                        is NetworkHandler.Success -> {
+                            showLoader.value = false
+                            navigateToVerifyOtpScreen(
+                                orderId = it.data?.orderId ?: ""
+                            )
+                        }
+
+                        is NetworkHandler.Error -> {
+                            showLoader.value = false
+                            errorDuringLogin.value =
+                                Pair(
+                                    true,
+                                    it.error?.message ?: "Unable to login, please try again!"
                                 )
-                            }
+                        }
 
-                            is NetworkHandler.Error -> {
-                                showLoader.value = false
-                                errorDuringLogin.value =
-                                    Pair(
-                                        true,
-                                        it.error?.message ?: "Unable to login, please try again!"
-                                    )
-                            }
-
-                            is NetworkHandler.Loading -> {
-                                showLoader.value = true
-                            }
+                        is NetworkHandler.Loading -> {
+                            showLoader.value = true
                         }
                     }
                 }
-        }
+            }
     }
 }

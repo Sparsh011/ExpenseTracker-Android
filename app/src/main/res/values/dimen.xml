@@ -12,6 +12,7 @@
     <dimen name="home_screen_top_bar_icon_size">@dimen/_27sdp</dimen>
     <dimen name="bottom_bar_height">@dimen/_40sdp</dimen>
     <dimen name="large_icon_size">@dimen/_100sdp</dimen>
+    <dimen name="otp_box_width">@dimen/_35sdp</dimen>
         <!-- Endregion    -->
 
         <!-- Region icons sizes   -->

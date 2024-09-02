@@ -1,16 +1,32 @@
 package com.sparshchadha.expensetracker.feature.auth.ui.compose.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -20,10 +36,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.sparshchadha.expensetracker.feature.auth.ui.compose.components.ChangeNumberAndCancelView
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.components.OTPInput
 import com.sparshchadha.expensetracker.utils.AppColors
 import com.sparshchadha.expensetracker.utils.Dimensions
+import com.sparshchadha.expensetracker.utils.FontSizes
 import com.sparshchadha.expensetracker.utils.FontSizes.nonScaledSp
 import kotlinx.coroutines.delay
 
@@ -34,6 +54,8 @@ fun VerifyOtpScreen(
     onResend: () -> Unit,
     onChangeNumber: () -> Unit,
     onCancel: () -> Unit,
+    loginError: MutableState<Pair<Boolean, String>?>?,
+    showLoader: Boolean,
 ) {
     var timer by rememberSaveable {
         mutableIntStateOf(30)
@@ -50,18 +72,95 @@ fun VerifyOtpScreen(
         }
     }
 
-    val context = LocalContext.current
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        ScreenContent(
+            onCancel = onCancel,
+            providedPhoneNumber = providedPhoneNumber,
+            onResend = onResend,
+            timer = timer,
+            onVerify = onVerify,
+            resendCount = resendCount,
+            onUpdateResendCount = { newResendCount ->
+                timer += 30 * newResendCount
+                resendCount = newResendCount
+            }
+        )
+
+        if (showLoader) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Color(248, 248, 248, 170)
+                    ),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(Dimensions.onboardingScreenIconSize()),
+                    color = AppColors.primaryPurple,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ScreenContent(
+    onCancel: () -> Unit,
+    providedPhoneNumber: String,
+    onResend: () -> Unit,
+    timer: Int,
+    onVerify: (String) -> Unit,
+    resendCount: Int,
+    onUpdateResendCount: (Int) -> Unit,
+) {
     var otp by rememberSaveable {
         mutableStateOf("")
     }
-
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxHeight()
     ) {
-        ChangeNumberAndCancelView(
-            providedPhoneNumber = providedPhoneNumber,
-            onChangeNumber = onChangeNumber,
-            onCancel = onCancel
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = Dimensions.mediumPadding()),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = null,
+                modifier = Modifier
+                    .weight(0.1f)
+                    .clickable {
+                        onCancel()
+                    }
+            )
+
+            Text(
+                text = "Verify Phone Number",
+                color = Color.Black,
+                fontSize = FontSizes.largeFontSize().value.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .weight(0.9f)
+                    .wrapContentHeight()
+            )
+        }
+
+        Spacer(modifier = Modifier.height(Dimensions.extraLargePadding()))
+
+        Text(
+            text = "Code has been sent to $providedPhoneNumber",
+            color = Color.Black,
+            fontSize = FontSizes.mediumNonScaledFontSize().value.sp,
+            modifier = Modifier
+                .wrapContentHeight()
         )
 
         Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
@@ -69,24 +168,19 @@ fun VerifyOtpScreen(
         OTPInput(
             otpLength = 6,
             onOTPComplete = {
-                Toast.makeText(context, "OTP $it", Toast.LENGTH_SHORT).show()
                 otp = it
+                onVerify(otp)
             }
         )
-
-        Spacer(modifier = Modifier.height(Dimensions.extraLargePadding()))
-
-        VerifyOTPButton {
-            onVerify(otp)
-        }
 
         Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
 
         if (timer > 0) {
             Text(
-                text = "Resend OTP after $timer seconds",
+                text = "Didn't get OTP? \nResend OTP after $timer seconds",
                 color = Color.Black,
-                fontSize = 16.nonScaledSp
+                fontSize = 16.nonScaledSp,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
         }
@@ -95,12 +189,15 @@ fun VerifyOtpScreen(
             timer = timer,
             onResend = onResend,
             updateResendCount = {
-                resendCount += 1
-                timer += 30 * resendCount
+                onUpdateResendCount(resendCount + 1)
             }
         )
 
-        Spacer(modifier = Modifier.height(Dimensions.extraLargePadding()))
+        Spacer(modifier = Modifier.height(Dimensions.largePadding()))
+
+        VerifyOTPButton {
+            onVerify(otp)
+        }
     }
 }
 
@@ -117,7 +214,7 @@ private fun VerifyOTPButton(
             .fillMaxWidth()
             .padding(horizontal = Dimensions.extraLargePadding()),
         colors = ButtonDefaults.buttonColors(
-            containerColor = AppColors.primaryColor
+            containerColor = AppColors.primaryPurple
         )
     ) {
         Text(text = "Verify OTP", color = Color.White)
@@ -131,20 +228,16 @@ private fun ResendOTPButton(
     onResend: () -> Unit,
     updateResendCount: () -> Unit,
 ) {
-    Button(
-        onClick = {
+    Text(
+        text = "Resend OTP",
+        color = if (timer == 0) AppColors.primaryPurple else Color.LightGray,
+        fontSize = FontSizes.mediumNonScaledFontSize(),
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.clickable {
             if (timer == 0) {
                 onResend()
                 updateResendCount()
             }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = Dimensions.extraLargePadding()),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (timer == 0) AppColors.primaryColor else Color.Gray
-        )
-    ) {
-        Text(text = "Resend OTP", color = Color.White)
-    }
+        }
+    )
 }

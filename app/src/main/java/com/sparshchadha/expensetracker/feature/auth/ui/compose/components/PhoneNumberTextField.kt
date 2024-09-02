@@ -23,10 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.sparshchadha.expensetracker.utils.AppColors
 import com.sparshchadha.expensetracker.utils.Dimensions
+import com.sparshchadha.expensetracker.utils.FontSizes
 
 @Composable
 fun PhoneNumberTextField(
@@ -63,7 +65,8 @@ fun PhoneNumberTextField(
             unfocusedPlaceholderColor = Color.Gray,
             focusedBorderColor = AppColors.primaryPurple
         ),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        textStyle = TextStyle.Default.copy(fontSize = FontSizes.largeNonScaledFontSize())
     )
 }
 
@@ -73,9 +76,11 @@ private fun LeadingIcon(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable(onClick = onClick)
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .padding(Dimensions.extraSmallPadding())
     ) {
-        Text(text = "+91")
+        Text(text = "+91", fontSize = FontSizes.largeNonScaledFontSize())
         Spacer(modifier = Modifier.width(Dimensions.smallPadding()))
         VerticalDivider(modifier = Modifier.height(Dimensions.largePadding()))
     }

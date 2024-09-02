@@ -3,48 +3,46 @@ package com.sparshchadha.expensetracker.feature.auth.ui.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.LoginScreen
-import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarScreen
-import com.sparshchadha.expensetracker.utils.BundleKeys
-import kotlinx.coroutines.delay
+import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
+import com.sparshchadha.expensetracker.utils.NetworkHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment(R.layout.login_fragment) {
+    private val authViewModel by activityViewModels<AuthViewModel>()
+
     private lateinit var loginComposeView: ComposeView
-    private var isVerifyOtpBottomSheetShowing = false
+    private val errorDuringLogin = mutableStateOf<Pair<Boolean, String>?>(null)
+    private val showLoader = mutableStateOf(false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initializeViewsUsing(view = view)
 
+        setObservers()
+
         loginComposeView.setContent {
             LoginScreen(
-                navigateToVerifyOtpScreen = { phoneNumberAndCountryCodePair ->
-                    if (isPhoneNumberValid(
-                            countryCode = phoneNumberAndCountryCodePair.second,
-                            phoneNumber = phoneNumberAndCountryCodePair.first,
-                        )
-                    ) {
-                        navigateToVerifyOtpScreen(
-                            phoneNumber = phoneNumberAndCountryCodePair.first,
-                            countryCode = phoneNumberAndCountryCodePair.second
-                        )
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "Enter A Valid Phone Number!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                continueWithPhoneAuth = { request ->
+                    if (!isPhoneNumberValid(request.phoneNumber)) {
+                        showToast(message = "Enter a valid phone number!")
+                        return@LoginScreen
                     }
+                    authViewModel.continueWithPhone(request = request)
                 },
-                navigateToHomeScreen = {
-                    navigateToHomeScreen()
+                showLoader = showLoader.value,
+                startGoogleSignIn = {
+
                 }
             )
         }
@@ -54,30 +52,12 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
         loginComposeView = view.findViewById(R.id.login_compose_view)
     }
 
-    private fun navigateToVerifyOtpScreen(phoneNumber: String, countryCode: String) {
-        if (isVerifyOtpBottomSheetShowing) return
-        val fragment = VerifyOtpFragment()
-        val bundle = Bundle()
-        bundle.putString(BundleKeys.PHONE_NUMBER_KEY, phoneNumber)
-        bundle.putString(BundleKeys.COUNTRY_CODE_KEY, countryCode)
-        fragment.arguments = bundle
-        fragment.show(requireActivity().supportFragmentManager, "VerifyOtpScreenTag")
-
-        isVerifyOtpBottomSheetShowing = true
-
-        lifecycleScope.launch {
-            delay(1000L)
-            isVerifyOtpBottomSheetShowing = false
+    private fun navigateToVerifyOtpScreen(orderId: String) {
+        if (orderId.isBlank()) {
+            showToast(message = "Internal server error, please try again!")
+            return
         }
-    }
 
-    private fun isPhoneNumberValid(countryCode: String, phoneNumber: String): Boolean {
-        if (countryCode.isBlank() || countryCode.first() != '+') return false
-        if (phoneNumber.isBlank() || phoneNumber.length < 6 || phoneNumber.length > 15 || !phoneNumber.isDigitsOnly()) return false
-        return true
-    }
-
-    private fun navigateToHomeScreen() {
         requireActivity().supportFragmentManager
             .beginTransaction()
             .setCustomAnimations(
@@ -85,8 +65,58 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                 R.anim.fade_in, R.anim.slide_out
             )
             .replace(
-                R.id.parent_fragment_container, MainBottomNavigationBarScreen()
+                R.id.parent_fragment_container, VerifyOtpFragment()
             )
+            .addToBackStack(null)
             .commit()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(
+            requireContext(),
+            message,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun isPhoneNumberValid(phoneNumber: String): Boolean {
+        if (!phoneNumber.startsWith("+")) return false
+        if (phoneNumber.isBlank() || phoneNumber.length < 6 || phoneNumber.length > 15) return false
+        return true
+    }
+
+    private fun setObservers() {
+        observePhoneAuthInitiation()
+    }
+
+    private fun observePhoneAuthInitiation() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            authViewModel.continueWithPhoneResponse.asLiveData()
+                .observe(viewLifecycleOwner) { response ->
+                    response?.let {
+                        when (it) {
+                            is NetworkHandler.Success -> {
+                                showLoader.value = false
+                                navigateToVerifyOtpScreen(
+                                    orderId = it.data?.orderId ?: ""
+                                )
+                            }
+
+                            is NetworkHandler.Error -> {
+                                showLoader.value = false
+                                errorDuringLogin.value =
+                                    Pair(
+                                        true,
+                                        it.error?.message ?: "Unable to login, please try again!"
+                                    )
+                            }
+
+                            is NetworkHandler.Loading -> {
+                                showLoader.value = true
+                            }
+                        }
+                    }
+                }
+        }
     }
 }

@@ -30,15 +30,7 @@ fun ChangeNumberAndCancelView(
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Icon(
-            imageVector = Icons.Default.Clear,
-            contentDescription = null,
-            modifier = Modifier
-                .weight(0.1f)
-                .clickable {
-                    onCancel()
-                }
-        )
+
 
         Spacer(modifier = Modifier.width(Dimensions.smallPadding()))
 

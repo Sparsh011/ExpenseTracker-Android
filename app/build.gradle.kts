@@ -5,6 +5,7 @@ plugins {
     id("kotlin-parcelize")
     id("kotlin-kapt")
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -99,5 +100,18 @@ dependencies {
 
     // region fragment navigation
     implementation(libs.fragment.navigation)
+    // endregion
+
+    // region Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+    implementation(libs.adapter.rxjava3)
+    // endregion
+
+    // region google auth
+    implementation (libs.androidx.credentials)
+    implementation (libs.androidx.credentials.play.services.auth)
+    implementation (libs.googleid)
     // endregion
 }

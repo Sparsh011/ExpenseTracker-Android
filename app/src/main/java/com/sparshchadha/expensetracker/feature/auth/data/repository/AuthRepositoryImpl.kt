@@ -1,14 +1,14 @@
 package com.sparshchadha.expensetracker.feature.auth.data.repository
 
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.ContinueWithPhoneResponse
+import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.OtpVerificationResponse
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.PhoneAuthRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.RetryPhoneAuthRequest
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.User
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
 import com.sparshchadha.expensetracker.network.api.ExpenseTrackerAPI
 import com.sparshchadha.expensetracker.storage.shared_preference.ExpenseTrackerSharedPref
-import com.sparshchadha.expensetracker.utils.NetworkHandler
+import com.sparshchadha.expensetracker.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -21,56 +21,56 @@ class AuthRepositoryImpl(
 
     override suspend fun continueWithPhone(
         request: PhoneAuthRequest,
-    ): Flow<NetworkHandler<ContinueWithPhoneResponse>> {
+    ): Flow<Resource<ContinueWithPhoneResponse>> {
         return flow {
-            emit(NetworkHandler.Loading())
+            emit(Resource.Loading())
 
             try {
                 val response = api.continueWithPhone(request)
 
                 if (response.isSuccessful) {
-                    emit(NetworkHandler.Success(data = response.body()))
+                    emit(Resource.Success(data = response.body()))
                 } else {
                     emit(
-                        NetworkHandler.Error(
+                        Resource.Error(
                             data = null,
-                            error = Throwable(message = response.message())
+                            error = Throwable(message = response.errorBody().toString())
                         )
                     )
                 }
             } catch (e: Exception) {
                 emit(
-                    NetworkHandler.Error(
+                    Resource.Error(
                         data = null,
-                        error = Throwable(message = e.message)
+                        error = e
                     )
                 )
             }
         }
     }
 
-    override fun retryPhoneAuth(request: RetryPhoneAuthRequest): Flow<NetworkHandler<ContinueWithPhoneResponse>> {
+    override fun retryPhoneAuth(request: RetryPhoneAuthRequest): Flow<Resource<ContinueWithPhoneResponse>> {
         return flow {
-            emit(NetworkHandler.Loading())
+            emit(Resource.Loading())
 
             try {
                 val response = api.resendOtp(request)
 
                 if (response.isSuccessful) {
-                    emit(NetworkHandler.Success(data = response.body()))
+                    emit(Resource.Success(data = response.body()))
                 } else {
                     emit(
-                        NetworkHandler.Error(
+                        Resource.Error(
                             data = null,
-                            error = Throwable(message = response.message())
+                            error = Throwable(message = response.errorBody().toString())
                         )
                     )
                 }
             } catch (e: Exception) {
                 emit(
-                    NetworkHandler.Error(
+                    Resource.Error(
                         data = null,
-                        error = Throwable(message = e.message)
+                        error = e
                     )
                 )
             }
@@ -80,25 +80,25 @@ class AuthRepositoryImpl(
 
     override fun verifyOtp(
         request: VerifyOtpRequest,
-    ): Flow<NetworkHandler<User>> {
+    ): Flow<Resource<OtpVerificationResponse>> {
         return flow {
-            emit(NetworkHandler.Loading())
+            emit(Resource.Loading())
 
             try {
                 val response = api.verifyOtp(request)
 
                 if (response.isSuccessful) {
-                    emit(NetworkHandler.Success(data = response.body()))
+                    emit(Resource.Success(data = response.body()))
                 } else {
                     emit(
-                        NetworkHandler.Error(
+                        Resource.Error(
                             data = null,
-                            error = Throwable(message = response.message())
+                            error = Throwable(message = response.errorBody().toString())
                         )
                     )
                 }
             } catch (e: Exception) {
-                emit(NetworkHandler.Error(data = null, error = Throwable(message = e.message)))
+                emit(Resource.Error(data = null, error = e))
             }
         }
     }

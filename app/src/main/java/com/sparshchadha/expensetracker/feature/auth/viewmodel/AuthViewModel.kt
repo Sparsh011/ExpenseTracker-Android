@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.ContinueWithPhoneResponse
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.PhoneAuthRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.RetryPhoneAuthRequest
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.User
+import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.OtpVerificationResponse
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
-import com.sparshchadha.expensetracker.utils.NetworkHandler
+import com.sparshchadha.expensetracker.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,11 +30,11 @@ class AuthViewModel @Inject constructor(
 
 
     private val _continueWithPhoneResponse =
-        MutableStateFlow<NetworkHandler<ContinueWithPhoneResponse>?>(null)
+        MutableStateFlow<Resource<ContinueWithPhoneResponse>?>(null)
     val continueWithPhoneResponse = _continueWithPhoneResponse.asStateFlow()
 
     private val _verifyIdentityResponse =
-        MutableStateFlow<NetworkHandler<User>?>(null)
+        MutableStateFlow<Resource<OtpVerificationResponse>?>(null)
     val verifyIdentityResponse = _verifyIdentityResponse.asStateFlow()
 
     private var userPhoneNumber = ""

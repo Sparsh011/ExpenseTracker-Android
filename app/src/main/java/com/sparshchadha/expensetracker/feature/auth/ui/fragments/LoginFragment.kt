@@ -12,7 +12,7 @@ import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.LoginScreen
 import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
 import com.sparshchadha.expensetracker.utils.BundleKeys
-import com.sparshchadha.expensetracker.utils.NetworkHandler
+import com.sparshchadha.expensetracker.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -107,14 +107,14 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
             .observe(viewLifecycleOwner) { response ->
                 response?.let {
                     when (it) {
-                        is NetworkHandler.Success -> {
+                        is Resource.Success -> {
                             showLoader.value = false
                             navigateToVerifyOtpScreen(
                                 orderId = it.data?.orderId ?: ""
                             )
                         }
 
-                        is NetworkHandler.Error -> {
+                        is Resource.Error -> {
                             showLoader.value = false
                             errorDuringLogin.value =
                                 Pair(
@@ -123,7 +123,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                                 )
                         }
 
-                        is NetworkHandler.Loading -> {
+                        is Resource.Loading -> {
                             showLoader.value = true
                         }
                     }

@@ -6,6 +6,8 @@ import com.sparshchadha.expensetracker.feature.auth.data.repository.AuthReposito
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
 import com.sparshchadha.expensetracker.feature.auth.domain.usecase.GetAccessTokenUseCase
 import com.sparshchadha.expensetracker.feature.auth.domain.usecase.SaveAccessTokenUseCase
+import com.sparshchadha.expensetracker.feature.profile.data.repository.ProfileRepositoryImpl
+import com.sparshchadha.expensetracker.feature.profile.domain.repository.ProfileRepository
 import com.sparshchadha.expensetracker.network.api.ExpenseTrackerAPI
 import com.sparshchadha.expensetracker.network.authenticator.AccessTokenInterceptor
 import com.sparshchadha.expensetracker.storage.datastore.ExpenseTrackerDataStorePreference
@@ -74,6 +76,14 @@ object SharedModule {
         api: ExpenseTrackerAPI,
     ): AuthRepository {
         return AuthRepositoryImpl(sharedPref = sharedPref, api = api)
+    }
+
+    @Singleton
+    @Provides
+    fun provideProfileRepository(
+        api: ExpenseTrackerAPI,
+    ): ProfileRepository {
+        return ProfileRepositoryImpl(api = api)
     }
 
     @Singleton

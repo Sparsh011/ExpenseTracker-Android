@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.feature.profile
+package com.sparshchadha.expensetracker.feature.profile.ui
 
 import android.os.Bundle
 import android.view.View

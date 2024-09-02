@@ -9,12 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.User
+import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.OtpVerificationResponse
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.VerifyOtpScreen
 import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
 import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarScreen
 import com.sparshchadha.expensetracker.utils.BundleKeys
-import com.sparshchadha.expensetracker.utils.NetworkHandler
+import com.sparshchadha.expensetracker.utils.Resource
 import com.sparshchadha.expensetracker.utils.vibrateDevice
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -77,12 +77,12 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
             .observe(viewLifecycleOwner) { response ->
                 response?.let {
                     when (it) {
-                        is NetworkHandler.Success -> {
+                        is Resource.Success -> {
                             showLoader.value = false
                             orderId = it.data?.orderId ?: ""
                         }
 
-                        is NetworkHandler.Error -> {
+                        is Resource.Error -> {
                             showLoader.value = false
                             Toast.makeText(
                                 context,
@@ -92,7 +92,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
                             requireContext().vibrateDevice()
                         }
 
-                        is NetworkHandler.Loading -> {
+                        is Resource.Loading -> {
                             showLoader.value = true
                         }
                     }
@@ -104,12 +104,12 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
         authViewModel.verifyIdentityResponse.asLiveData().observe(viewLifecycleOwner) { response ->
             response?.let {
                 when (it) {
-                    is NetworkHandler.Success -> {
+                    is Resource.Success -> {
                         showLoader.value = false
                         navigateToHomeScreen(withUser = it.data)
                     }
 
-                    is NetworkHandler.Error -> {
+                    is Resource.Error -> {
                         showLoader.value = false
                         Toast.makeText(
                             requireContext(),
@@ -119,7 +119,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
                         requireContext().vibrateDevice()
                     }
 
-                    is NetworkHandler.Loading -> {
+                    is Resource.Loading -> {
                         showLoader.value = true
                     }
                 }
@@ -131,7 +131,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
         verifyOtpComposeView = view.findViewById(R.id.verify_otp_compose_view)
     }
 
-    private fun navigateToHomeScreen(withUser: User?) {
+    private fun navigateToHomeScreen(withUser: OtpVerificationResponse?) {
 
         withUser?.let { user ->
             if (!user.isOTPVerified) {

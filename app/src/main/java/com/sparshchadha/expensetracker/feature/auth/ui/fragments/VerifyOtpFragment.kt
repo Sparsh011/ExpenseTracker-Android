@@ -12,7 +12,7 @@ import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.OtpVerificationResponse
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.VerifyOtpScreen
 import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
-import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarScreen
+import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
 import com.sparshchadha.expensetracker.utils.BundleKeys
 import com.sparshchadha.expensetracker.utils.Resource
 import com.sparshchadha.expensetracker.utils.vibrateDevice
@@ -149,7 +149,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
                     R.anim.fade_in, R.anim.slide_out
                 )
                 .replace(
-                    R.id.parent_fragment_container, MainBottomNavigationBarScreen()
+                    R.id.parent_fragment_container, MainBottomNavigationBarFragment()
                 )
                 .commit()
         } ?: run {

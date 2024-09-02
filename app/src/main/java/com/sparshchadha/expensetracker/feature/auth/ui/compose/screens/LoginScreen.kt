@@ -2,6 +2,7 @@ package com.sparshchadha.expensetracker.feature.auth.ui.compose.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.R
@@ -46,6 +50,7 @@ fun LoginScreen(
     continueWithPhoneAuth: (String) -> Unit,
     showLoader: Boolean,
     startGoogleSignIn: () -> Unit,
+    onLoginSkip: () -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
@@ -54,7 +59,8 @@ fun LoginScreen(
             screenWidth = screenWidth,
             continueWithPhoneAuth = continueWithPhoneAuth,
             startGoogleSignIn = startGoogleSignIn,
-            isLoaderShowing = showLoader
+            isLoaderShowing = showLoader,
+            onLoginSkip = onLoginSkip
         )
 
         if (showLoader) {
@@ -83,6 +89,7 @@ private fun ScreenContent(
     continueWithPhoneAuth: (String) -> Unit,
     startGoogleSignIn: () -> Unit,
     isLoaderShowing: Boolean,
+    onLoginSkip: () -> Unit
 ) {
     var phoneNumber by rememberSaveable {
         mutableStateOf("")
@@ -90,7 +97,8 @@ private fun ScreenContent(
     Column(
         modifier = Modifier
             .background(Color.White)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -117,7 +125,8 @@ private fun ScreenContent(
             onPhoneNumberChange = {
                 if (isLoaderShowing) return@PhoneNumberTextField
                 phoneNumber = it
-            }
+            },
+            isEnabled = !isLoaderShowing
         )
 
         SendOTPButton {
@@ -131,33 +140,22 @@ private fun ScreenContent(
 
         Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
 
-        Button(
-            onClick = {
-                if (isLoaderShowing) return@Button
-                startGoogleSignIn()
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = AppColors.secondaryWhite
-            ),
-            shape = RoundedCornerShape(Dimensions.smallPadding())
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Image(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.google_icon),
-                    contentDescription = null,
-                    modifier = Modifier.size(Dimensions.mediumPadding())
-                )
-                Spacer(modifier = Modifier.width(Dimensions.mediumPadding()))
-                Text(
-                    text = "Login With Google",
-                    color = Color.Black,
-                    fontSize = FontSizes.mediumNonScaledFontSize()
-                )
-            }
+        LoginWithGoogleButton(isLoaderShowing = isLoaderShowing) {
+            startGoogleSignIn()
         }
+
+        Spacer(modifier = Modifier.height(Dimensions.extraLargePadding()))
+
+        Text(
+            text = "Do it later",
+            fontSize = FontSizes.mediumNonScaledFontSize(),
+            color = Color.Black,
+            modifier = Modifier.clickable {
+                if (isLoaderShowing) return@clickable
+                onLoginSkip()
+            },
+            fontStyle = FontStyle.Italic
+        )
     }
 }
 
@@ -179,5 +177,41 @@ private fun SendOTPButton(
             color = Color.White,
             fontSize = FontSizes.mediumNonScaledFontSize()
         )
+    }
+}
+
+@Composable
+private fun LoginWithGoogleButton(
+    isLoaderShowing: Boolean,
+    startGoogleSignIn: () -> Unit
+) {
+    Button(
+        onClick = {
+            if (isLoaderShowing) return@Button
+            startGoogleSignIn()
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = AppColors.secondaryWhite
+        ),
+        shape = RoundedCornerShape(Dimensions.smallPadding())
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Image(
+                imageVector = ImageVector.vectorResource(id = R.drawable.google_icon),
+                contentDescription = null,
+                modifier = Modifier.size(Dimensions.mediumPadding())
+            )
+
+            Spacer(modifier = Modifier.width(Dimensions.mediumPadding()))
+
+            Text(
+                text = "Login With Google",
+                color = Color.Black,
+                fontSize = FontSizes.mediumNonScaledFontSize()
+            )
+        }
     }
 }

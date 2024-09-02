@@ -10,7 +10,9 @@ import com.sparshchadha.expensetracker.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
@@ -18,14 +20,46 @@ class ProfileViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ): ViewModel() {
 
+    init {
+        getUserProfile()
+    }
+
     private val _userProfile = MutableStateFlow<Resource<UserProfile>?>(null)
     val userProfile = _userProfile.asStateFlow()
 
-    fun getUserProfile() {
+    private val _userName = MutableStateFlow("")
+    val userName = _userName.asStateFlow()
+
+    private fun getUserProfile() {
         val accessToken = authRepository.getAccessToken()
 
+        if (accessToken.isBlank()) {
+            // let user login
+            return
+        }
         viewModelScope.launch(Dispatchers.IO) {
-            profileRepository.getUserProfile(access = accessToken)
+            profileRepository.getUserProfile(access = accessToken).collect {
+                withContext(Dispatchers.Main) {
+                    _userProfile.value = it
+                }
+            }
+        }
+    }
+
+    private fun updateUserName(newName: String) {
+        val accessToken = authRepository.getAccessToken()
+        if (accessToken.isBlank()) {
+            // let user login
+            return
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            profileRepository.saveUserName(
+                newName = newName,
+                access = accessToken
+            ).collect {
+
+            }
         }
     }
 }

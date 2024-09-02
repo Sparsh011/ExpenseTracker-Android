@@ -35,9 +35,11 @@ fun PhoneNumberTextField(
     modifier: Modifier = Modifier,
     phoneNumber: String,
     onPhoneNumberChange: (String) -> Unit,
+    isEnabled: Boolean
 ) {
     OutlinedTextField(
         modifier = modifier,
+        enabled = isEnabled,
         value = phoneNumber,
         onValueChange = { newValue ->
             if (newValue != "$phoneNumber\n" && newValue.length <= 15) onPhoneNumberChange(newValue)

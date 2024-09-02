@@ -11,6 +11,8 @@ import androidx.lifecycle.asLiveData
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.LoginScreen
 import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
+import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
+import com.sparshchadha.expensetracker.feature.home.fragment.HomeFragment
 import com.sparshchadha.expensetracker.utils.BundleKeys
 import com.sparshchadha.expensetracker.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +40,9 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                 showLoader = showLoader.value,
                 startGoogleSignIn = {
 
+                },
+                onLoginSkip = {
+                    navigateToHomeScreen()
                 }
             )
         }
@@ -129,5 +134,18 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                     }
                 }
             }
+    }
+
+    private fun navigateToHomeScreen() {
+        requireActivity().supportFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_in, R.anim.fade_out,
+                R.anim.fade_in, R.anim.slide_out
+            )
+            .replace(
+                R.id.parent_fragment_container, MainBottomNavigationBarFragment()
+            )
+            .commit()
     }
 }

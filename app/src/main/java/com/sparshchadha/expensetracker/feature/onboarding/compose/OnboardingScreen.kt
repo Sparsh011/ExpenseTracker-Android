@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.feature.onboarding.compose_screens
+package com.sparshchadha.expensetracker.feature.onboarding.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

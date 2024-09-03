@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.R
 
@@ -74,6 +75,26 @@ object Dimensions {
     @Composable
     fun otpBoxWidth(): Dp {
         return dimensionResource(id = R.dimen.otp_box_width)
+    }
+
+    @Composable
+    fun topBarHeight(): Dp {
+        return dimensionResource(id = R.dimen.top_bar_height)
+    }
+
+    @Composable
+    fun profilePicSize(): Dp {
+        return dimensionResource(id = R.dimen.profile_pic_size)
+    }
+
+    @Composable
+    fun cornerRadius(): Dp {
+        return dimensionResource(id = R.dimen.corner_radius)
+    }
+
+    @Composable
+    fun errorIconSize(): Dp {
+        return dimensionResource(id = R.dimen.error_icon)
     }
 }
 

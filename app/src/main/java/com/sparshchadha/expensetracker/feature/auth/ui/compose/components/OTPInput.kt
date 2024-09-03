@@ -73,7 +73,7 @@ fun OTPInput(
                             .border(
                                 width = if (i == otp.length) 2.dp else 1.dp,
                                 color = if (i == otp.length) Color.DarkGray else Color.LightGray,
-                                shape = RoundedCornerShape(Dimensions.smallPadding())
+                                shape = RoundedCornerShape(Dimensions.cornerRadius())
                             )
                             .padding(
                                 Dimensions.smallPadding()

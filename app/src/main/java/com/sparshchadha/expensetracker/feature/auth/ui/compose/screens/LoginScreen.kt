@@ -108,8 +108,8 @@ private fun ScreenContent(
                 .width(screenWidth.dp)
                 .clip(
                     RoundedCornerShape(
-                        bottomEnd = Dimensions.largePadding(),
-                        bottomStart = Dimensions.largePadding()
+                        bottomEnd = Dimensions.cornerRadius(),
+                        bottomStart = Dimensions.cornerRadius()
                     )
                 ),
             contentScale = ContentScale.Crop
@@ -193,7 +193,7 @@ private fun LoginWithGoogleButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = AppColors.secondaryWhite
         ),
-        shape = RoundedCornerShape(Dimensions.smallPadding())
+        shape = RoundedCornerShape(Dimensions.extraSmallPadding()) // Intentionally not used cornerRadius to simulate the real button
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

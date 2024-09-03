@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.feature.home.compose.components
+package com.sparshchadha.expensetracker.feature.home.ui.compose.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

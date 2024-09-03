@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.feature.home.compose.components
+package com.sparshchadha.expensetracker.feature.home.ui.compose.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -48,7 +48,7 @@ fun BalanceAndBudgetCard(
             .padding(Dimensions.largePadding())
             .shadow(
                 elevation = Dimensions.extraLargePadding(),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(Dimensions.cornerRadius())
             ),
         colors = CardDefaults.cardColors(
             containerColor = AppColors.primaryColor

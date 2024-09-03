@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.feature.home.compose.screen
+package com.sparshchadha.expensetracker.feature.home.ui.compose.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
@@ -21,10 +21,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.sparshchadha.expensetracker.feature.home.compose.components.BalanceAndBudgetCard
-import com.sparshchadha.expensetracker.feature.home.compose.components.CurrentDayExpenses
-import com.sparshchadha.expensetracker.feature.home.compose.components.GreetingAndTopBarIcons
-import com.sparshchadha.expensetracker.feature.home.compose.components.Top5TransactionsList
+import com.sparshchadha.expensetracker.feature.home.ui.compose.components.BalanceAndBudgetCard
+import com.sparshchadha.expensetracker.feature.home.ui.compose.components.CurrentDayExpenses
+import com.sparshchadha.expensetracker.feature.home.ui.compose.components.GreetingAndTopBarIcons
+import com.sparshchadha.expensetracker.feature.home.ui.compose.components.Top5TransactionsList
 import com.sparshchadha.expensetracker.utils.AppColors
 import com.sparshchadha.expensetracker.utils.Dimensions
 import com.sparshchadha.expensetracker.utils.FontSizes

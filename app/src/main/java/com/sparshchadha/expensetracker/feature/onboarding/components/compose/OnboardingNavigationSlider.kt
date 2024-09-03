@@ -105,7 +105,7 @@ private fun GetStartedSlider(
             .height(Dimensions.sliderContainerSize())
             .background(
                 sliderColor.value,
-                RoundedCornerShape(Dimensions.largePadding())
+                RoundedCornerShape(Dimensions.cornerRadius())
             )
             .padding(5.dp),
     ) {

@@ -22,12 +22,13 @@ class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
 
-    private val _accessToken = MutableStateFlow("")
-    val accessToken = _accessToken.asStateFlow()
+    private var accessToken = ""
 
-    private val _refreshToken = MutableStateFlow("")
-    val refreshToken = _refreshToken.asStateFlow()
+    private var refreshToken = ""
 
+    init {
+        initializeTokens()
+    }
 
     private val _continueWithPhoneResponse =
         MutableStateFlow<Resource<ContinueWithPhoneResponse>?>(null)
@@ -41,6 +42,11 @@ class AuthViewModel @Inject constructor(
 
     private var orderId = ""
 
+    private fun initializeTokens() {
+        this.accessToken = authRepository.getAccessToken()
+        this.refreshToken = authRepository.getRefreshToken()
+    }
+
     fun saveAccessToken(token: String) {
         authRepository.saveAccessToken(token)
     }
@@ -49,12 +55,12 @@ class AuthViewModel @Inject constructor(
         authRepository.saveRefreshToken(token)
     }
 
-    fun readAccessToken() {
-        _accessToken.value = authRepository.getAccessToken()
+    fun getAccessToken(): String {
+        return this.accessToken
     }
 
-    fun readRefreshToken() {
-        _refreshToken.value = authRepository.getRefreshToken()
+    fun getRefreshToken(): String {
+        return this.refreshToken
     }
 
     fun continueWithPhone(phoneNumber: String, otpLength: Int = 6, expiry: Int = 120) {

@@ -118,4 +118,11 @@ dependencies {
     implementation (libs.androidx.credentials.play.services.auth)
     implementation (libs.googleid)
     // endregion
+
+    // region Room DB -
+    implementation (libs.androidx.room.runtime)
+    kapt (libs.androidx.room.compiler)
+    implementation (libs.androidx.room.ktx)
+    // endregion
+
 }

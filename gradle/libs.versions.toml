@@ -23,6 +23,7 @@ activity = "1.9.0"
 constraintlayout = "2.1.4"
 okhttpDnsoverhttps = "4.9.0"
 retrofit = "2.9.0"
+roomRuntime = "2.5.2"
 sdpAndroid = "1.1.1"
 sspAndroid = "1.1.1"
 nav_version = "2.7.7"
@@ -45,6 +46,9 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 
 # region hilt
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }

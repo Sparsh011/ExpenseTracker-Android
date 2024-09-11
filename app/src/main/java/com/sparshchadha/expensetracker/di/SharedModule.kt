@@ -1,16 +1,21 @@
 package com.sparshchadha.expensetracker.di
 
 import android.content.Context
+import androidx.room.Room
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.sparshchadha.expensetracker.feature.auth.data.repository.AuthRepositoryImpl
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
 import com.sparshchadha.expensetracker.feature.auth.domain.usecase.GetAccessTokenUseCase
 import com.sparshchadha.expensetracker.feature.auth.domain.usecase.SaveAccessTokenUseCase
+import com.sparshchadha.expensetracker.feature.expense_cards.data.local.room.dao.ExpenseCardDao
+import com.sparshchadha.expensetracker.feature.expense_cards.data.repository.ExpenseCardRepositoryImpl
+import com.sparshchadha.expensetracker.feature.expense_cards.domain.repository.ExpenseCardRepository
 import com.sparshchadha.expensetracker.feature.profile.data.repository.ProfileRepositoryImpl
 import com.sparshchadha.expensetracker.feature.profile.domain.repository.ProfileRepository
 import com.sparshchadha.expensetracker.network.api.ExpenseTrackerAPI
 import com.sparshchadha.expensetracker.network.authenticator.AccessTokenInterceptor
 import com.sparshchadha.expensetracker.storage.datastore.ExpenseTrackerDataStorePreference
+import com.sparshchadha.expensetracker.storage.room.ExpenseTrackerDatabase
 import com.sparshchadha.expensetracker.storage.shared_preference.ExpenseTrackerSharedPref
 import dagger.Module
 import dagger.Provides
@@ -27,6 +32,20 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object SharedModule {
+
+    @Singleton
+    @Provides
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+    ): ExpenseTrackerDatabase {
+        return Room.databaseBuilder(
+            context,
+            ExpenseTrackerDatabase::class.java,
+            ExpenseTrackerDatabase.DATABASE_NAME
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+    }
 
     @Provides
     @Singleton
@@ -102,5 +121,22 @@ object SharedModule {
     @Provides
     fun provideAccessTokenInterceptor(sharedPref: ExpenseTrackerSharedPref): AccessTokenInterceptor {
         return AccessTokenInterceptor(sharedPref = sharedPref)
+    }
+
+    @Singleton
+    @Provides
+    fun provideExpenseCardDao(
+        database: ExpenseTrackerDatabase
+    ): ExpenseCardDao {
+        return database.expenseCardDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideExpenseCardRepository(
+        dataStorePreference: ExpenseTrackerDataStorePreference,
+        expenseCardDao: ExpenseCardDao
+    ): ExpenseCardRepository {
+        return ExpenseCardRepositoryImpl(dataStorePreference, expenseCardDao)
     }
 }

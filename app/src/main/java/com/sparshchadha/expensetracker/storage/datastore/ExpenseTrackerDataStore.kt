@@ -17,18 +17,18 @@ class ExpenseTrackerDataStorePreference @Inject constructor(
     private val dataStorePreference = context.dataStore
 
 
-//    val readAccessToken: Flow<String?>
-//        get() = dataStorePreference.data.map { pref ->
-//            pref[ACCESS_TOKEN_KEY]
-//        }
-//
-//    suspend fun saveAccessToken(token: String) {
-//        dataStorePreference.edit { pref ->
-//            pref[ACCESS_TOKEN_KEY] = token
-//        }
-//    }
-//
-//    companion object {
-//        val ACCESS_TOKEN_KEY = stringPreferencesKey("ACCESS_TOKEN_KEY")
-//    }
+    val readTotalExpenseCards: Flow<String?>
+        get() = dataStorePreference.data.map { pref ->
+            pref[TOTAL_EXPENSE_CARDS_KEY]
+        }
+
+    suspend fun saveTotalExpenseCards(n: String) {
+        dataStorePreference.edit { pref ->
+            pref[TOTAL_EXPENSE_CARDS_KEY] = n
+        }
+    }
+
+    companion object {
+        val TOTAL_EXPENSE_CARDS_KEY = stringPreferencesKey("TOTAL_EXPENSE_CARDS_KEY")
+    }
 }

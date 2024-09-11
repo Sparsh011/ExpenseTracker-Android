@@ -18,4 +18,7 @@ object AppColors {
 
     @Stable
     val secondaryWhite: Color = Color(248, 248, 248, 255)
+
+    @Stable
+    val errorRed: Color = Color(0xFFFF0026)
 }

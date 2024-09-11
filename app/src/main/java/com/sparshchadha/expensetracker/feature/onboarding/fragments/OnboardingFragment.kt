@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.feature.onboarding
+package com.sparshchadha.expensetracker.feature.onboarding.fragments
 
 import android.os.Bundle
 import android.view.View
@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.feature.auth.ui.fragments.LoginFragment
-import com.sparshchadha.expensetracker.feature.onboarding.compose_screens.OnboardingScreen
+import com.sparshchadha.expensetracker.feature.onboarding.compose.OnboardingScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

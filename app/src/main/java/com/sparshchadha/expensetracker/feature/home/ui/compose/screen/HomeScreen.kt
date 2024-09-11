@@ -1,6 +1,5 @@
-package com.sparshchadha.expensetracker.feature.home.compose.screen
+package com.sparshchadha.expensetracker.feature.home.ui.compose.screen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -23,10 +21,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.sparshchadha.expensetracker.feature.home.compose.components.BalanceAndBudgetCard
-import com.sparshchadha.expensetracker.feature.home.compose.components.CurrentDayExpenses
-import com.sparshchadha.expensetracker.feature.home.compose.components.GreetingAndTopBarIcons
-import com.sparshchadha.expensetracker.feature.home.compose.components.Top5TransactionsList
+import com.sparshchadha.expensetracker.feature.home.ui.compose.components.BalanceAndBudgetCard
+import com.sparshchadha.expensetracker.feature.home.ui.compose.components.CurrentDayExpenses
+import com.sparshchadha.expensetracker.feature.home.ui.compose.components.GreetingAndTopBarIcons
+import com.sparshchadha.expensetracker.feature.home.ui.compose.components.Top5TransactionsList
 import com.sparshchadha.expensetracker.utils.AppColors
 import com.sparshchadha.expensetracker.utils.Dimensions
 import com.sparshchadha.expensetracker.utils.FontSizes
@@ -34,7 +32,6 @@ import com.sparshchadha.expensetracker.utils.FontSizes
 
 private const val TAG = "HomeScreen"
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     navigateToNotificationsFragment: () -> Unit,
@@ -81,13 +78,8 @@ fun HomeScreen(
             )
         }
 
-        stickyHeader {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                color = headerColor
-            ) {
-                ExpensesHeader()
-            }
+        item {
+            ExpensesHeader()
         }
 
         item {

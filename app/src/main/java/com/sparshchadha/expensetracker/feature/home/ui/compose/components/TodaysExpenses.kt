@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.feature.home.compose.components
+package com.sparshchadha.expensetracker.feature.home.ui.compose.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring

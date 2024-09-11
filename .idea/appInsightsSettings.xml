@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.sparshchadha.expensetracker" />
+                  <option name="mobileSdkAppId" value="1:804888452348:android:4fba63132b3f66718bcb79" />
+                  <option name="projectId" value="expensetracker-3f40d" />
+                  <option name="projectNumber" value="804888452348" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

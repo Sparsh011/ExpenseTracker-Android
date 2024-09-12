@@ -1,5 +1,8 @@
 package com.sparshchadha.expensetracker.feature.auth.ui.fragments
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.credentials.GetCredentialException
 import android.credentials.GetCredentialRequest
 import android.os.Build
@@ -176,7 +179,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
 
     private fun navigateToHomeScreen(withUser: OtpVerificationResponse? = null) {
         withUser?.let { user ->
-            if (user.isOTPVerified != true) {
+            if (user.isOtpVerified != true) {
                 Toast.makeText(requireContext(), user.message, Toast.LENGTH_SHORT).show()
                 return
             }
@@ -274,6 +277,8 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                         // authenticate on your server.
                         val googleIdTokenCredential = GoogleIdTokenCredential
                             .createFrom(credential.data)
+                        showToast("Login success: ${googleIdTokenCredential.idToken}")
+                        requireContext().copyToClipboard(googleIdTokenCredential.idToken)
                         Log.d("MyTagggg", "handleSignIn: ${googleIdTokenCredential.idToken}")
                     } catch (e: GoogleIdTokenParsingException) {
                         Log.e("MyTagggg", "Received an invalid google id token response", e)
@@ -290,5 +295,11 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                 Log.e("MyTagggg", "Unexpected type of credential")
             }
         }
+    }
+
+    fun Context.copyToClipboard(text: CharSequence){
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("arbitrary label",text)
+        clipboard.setPrimaryClip(clip)
     }
 }

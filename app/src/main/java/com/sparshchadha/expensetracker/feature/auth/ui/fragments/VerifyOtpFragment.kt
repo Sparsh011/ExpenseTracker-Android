@@ -163,7 +163,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
     private fun navigateToHomeScreen(withUser: OtpVerificationResponse?) {
 
         withUser?.let { user ->
-            if (user.isOTPVerified != true) {
+            if (user.isOtpVerified != true) {
                 Toast.makeText(requireContext(), user.message, Toast.LENGTH_SHORT).show()
                 return
             }

@@ -4,6 +4,8 @@ import com.sparshchadha.expensetracker.feature.expense_cards.domain.entity.Expen
 import kotlinx.coroutines.flow.Flow
 
 interface ExpenseCardRepository {
+    fun getUserId(): String
+
     suspend fun getTotalExpenseCards(): Flow<Byte>
     suspend fun setTotalExpenseCards(n: Byte)
 

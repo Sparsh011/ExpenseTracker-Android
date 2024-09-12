@@ -27,8 +27,8 @@ class AccessTokenInterceptor @Inject constructor(
 
     override fun intercept(chain: Interceptor.Chain): Response = synchronized(this) {
         runBlocking {
-            val accessToken = sharedPref.getString(key = "expense_tracker_access_token")
-            val refreshToken = sharedPref.getString(key = "expense_tracker_refresh_token")
+            val accessToken = sharedPref.getAccessToken()
+            val refreshToken = sharedPref.getRefreshToken()
 
             val request: Request =
                 newRequestWithAccessToken(chain.request(), accessToken).newBuilder().build()
@@ -47,8 +47,8 @@ class AccessTokenInterceptor @Inject constructor(
 
                     //If refresh token also expires we Logout the user
                     if (refreshTokenResponse.code() == 401 || body == null || body.areTokensEmpty()) {
-                        sharedPref.saveString(key = "expense_tracker_access_token", value = accessToken)
-                        sharedPref.saveString(key = "expense_tracker_refresh_token", value = refreshToken)
+                        sharedPref.saveAccessToken(accessToken)
+                        sharedPref.saveRefreshToken(refreshToken)
 
                         val reqWithoutAuth = newRequestWithoutAccessToken(request)
                         return@runBlocking chain.proceed(reqWithoutAuth)

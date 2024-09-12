@@ -23,21 +23,6 @@ interface ExpenseTrackerAPI {
         @Body accessTokenRequest: AccessTokenRequest
     ): Response<AccessTokenResponse>
 
-    @POST("/login/send-otp")
-    suspend fun continueWithPhone(
-        @Body continueWithPhoneRequest: PhoneAuthRequest
-    ): Response<ContinueWithPhoneResponse>
-
-    @POST("/login/resend-otp")
-    suspend fun resendOtp(
-        @Body resendOtpRequest: RetryPhoneAuthRequest
-    ): Response<ContinueWithPhoneResponse>
-
-    @POST("/login/verify-otp")
-    suspend fun verifyOtp(
-        @Body verifyOtpRequest: VerifyOtpRequest
-    ): Response<OtpVerificationResponse>
-
     @GET("/user/profile")
     suspend fun getUserProfile(
         @Header("Authorization") authorization: String
@@ -48,6 +33,11 @@ interface ExpenseTrackerAPI {
         @Header("Authorization") authorization: String,
         @Body updateUserNameRequest: UpdateUserNameRequest
     ): Response<Unit>
+
+    @POST("/login/otp/verify-token")
+    suspend fun validateOtpVerificationToken(
+        @Body verifyTokenRequest: VerifyOtpRequest
+    ): Response<OtpVerificationResponse>
 
     companion object {
         const val BASE_URL = "https://expensetracker-engine.onrender.com"

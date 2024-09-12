@@ -29,6 +29,6 @@ class ExpenseTrackerDataStorePreference @Inject constructor(
     }
 
     companion object {
-        val TOTAL_EXPENSE_CARDS_KEY = stringPreferencesKey("TOTAL_EXPENSE_CARDS_KEY")
+        private val TOTAL_EXPENSE_CARDS_KEY = stringPreferencesKey("TOTAL_EXPENSE_CARDS_KEY")
     }
 }

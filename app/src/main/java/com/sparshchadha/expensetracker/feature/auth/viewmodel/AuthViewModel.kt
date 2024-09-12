@@ -3,8 +3,6 @@ package com.sparshchadha.expensetracker.feature.auth.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.ContinueWithPhoneResponse
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.PhoneAuthRequest
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.RetryPhoneAuthRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.OtpVerificationResponse
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
@@ -40,8 +38,6 @@ class AuthViewModel @Inject constructor(
 
     private var userPhoneNumber = ""
 
-    private var orderId = ""
-
     private fun initializeTokens() {
         this.accessToken = authRepository.getAccessToken()
         this.refreshToken = authRepository.getRefreshToken()
@@ -63,39 +59,15 @@ class AuthViewModel @Inject constructor(
         return this.refreshToken
     }
 
-    fun continueWithPhone(phoneNumber: String, otpLength: Int = 6, expiry: Int = 120) {
-        viewModelScope.launch(Dispatchers.IO) {
-            authRepository.continueWithPhone(
-                request = PhoneAuthRequest(
-                    phoneNumber = phoneNumber,
-                    otpLength = otpLength,
-                    expiry = expiry
-                )
-            ).collect {
-                _continueWithPhoneResponse.value = it
-            }
-        }
-    }
+    fun getUserPhoneNumber(): String = this.userPhoneNumber
 
-    fun retryPhoneAuth(orderId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            authRepository.retryPhoneAuth(
-                request = RetryPhoneAuthRequest(orderId = orderId)
-            ).collect {
-                withContext(Dispatchers.Main) {
-                    _continueWithPhoneResponse.value = it
-                }
-            }
-        }
-    }
+    fun setUserPhoneNumber(number: String) = run { this.userPhoneNumber = number }
 
-    fun verifyOtp(phoneNumber: String, otp: String, orderId: String) {
+    fun validateToken(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            authRepository.verifyOtp(
+            authRepository.validateOtpVerificationToken(
                 request = VerifyOtpRequest(
-                    phoneNumber = phoneNumber,
-                    otp = otp,
-                    orderId = orderId
+                    token = token
                 )
             ).collect {
                 withContext(Dispatchers.Main) {
@@ -104,13 +76,5 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-
-    fun getUserPhoneNumber(): String = this.userPhoneNumber
-
-    fun getOtpServiceOrderId(): String = this.orderId
-
-    fun setUserPhoneNumber(number: String) = run { this.userPhoneNumber = number }
-
-    fun setOtpServiceOrderId(orderId: String) = run { this.orderId = orderId }
 
 }

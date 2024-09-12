@@ -131,7 +131,7 @@ private fun ScreenContent(
 
         SendOTPButton {
             if (isLoaderShowing) return@SendOTPButton
-            continueWithPhoneAuth("+91$phoneNumber")
+            continueWithPhoneAuth("+91-$phoneNumber")
         }
 
         Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))

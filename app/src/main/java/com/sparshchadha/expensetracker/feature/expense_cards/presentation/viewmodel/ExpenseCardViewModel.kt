@@ -13,13 +13,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExpenseCardViewModel @Inject constructor(
-    private val expenseCardRepository: ExpenseCardRepository
-): ViewModel() {
+    private val expenseCardRepository: ExpenseCardRepository,
+) : ViewModel() {
     private val _totalExpenseCards = MutableStateFlow<Byte>(-1)
     val totalExpenseCards = _totalExpenseCards.asStateFlow()
 
     private val _allExpenseCards = MutableStateFlow<List<ExpenseCardEntity>?>(null)
     val allExpenseCards = _allExpenseCards.asStateFlow()
+
+    private var userId = ""
 
     fun getAllExpenseCards() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -51,13 +53,25 @@ class ExpenseCardViewModel @Inject constructor(
         cardName: String,
         cardLimit: Int,
         currentSpending: Int,
-        isPrimary: Boolean
+        isPrimary: Boolean,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val expenseCard = ExpenseCardEntity(cardLimit = cardLimit, cardName = cardName, currentSpending = currentSpending, isPrimary = isPrimary)
+            val expenseCard = ExpenseCardEntity(
+                cardLimit = cardLimit,
+                cardName = cardName,
+                currentSpending = currentSpending,
+                isPrimary = isPrimary,
+                userOwnerId = userId
+            )
             expenseCardRepository.createExpenseCard(cardEntity = expenseCard)
         }
     }
 
+    init {
+        getUserId()
+    }
 
+    private fun getUserId() {
+        this.userId = expenseCardRepository.getUserId()
+    }
 }

@@ -4,12 +4,14 @@ import com.sparshchadha.expensetracker.feature.expense_cards.data.local.room.dao
 import com.sparshchadha.expensetracker.feature.expense_cards.domain.entity.ExpenseCardEntity
 import com.sparshchadha.expensetracker.feature.expense_cards.domain.repository.ExpenseCardRepository
 import com.sparshchadha.expensetracker.storage.datastore.ExpenseTrackerDataStorePreference
+import com.sparshchadha.expensetracker.storage.shared_preference.ExpenseTrackerSharedPref
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class ExpenseCardRepositoryImpl(
     private val dataStorePreference: ExpenseTrackerDataStorePreference,
     private val expenseCardDao: ExpenseCardDao,
+    private val sharedPref: ExpenseTrackerSharedPref
 ) : ExpenseCardRepository {
     override suspend fun getTotalExpenseCards(): Flow<Byte> = flow {
         dataStorePreference.readTotalExpenseCards.collect { cardsStr ->
@@ -38,4 +40,8 @@ class ExpenseCardRepositoryImpl(
 
     override suspend fun updateExpenseCard(cardEntity: ExpenseCardEntity) =
         expenseCardDao.updateCard(cardEntity)
+
+    override fun getUserId(): String {
+        return sharedPref.getUserId()
+    }
 }

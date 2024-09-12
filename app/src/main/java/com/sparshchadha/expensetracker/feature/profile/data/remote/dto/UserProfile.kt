@@ -7,5 +7,6 @@ data class UserProfile(
     val expenseBudget: Int,
     val name: String,
     val phoneNumber: String,
-    val emailId: String
+    val emailId: String,
+    val userId: String
 )

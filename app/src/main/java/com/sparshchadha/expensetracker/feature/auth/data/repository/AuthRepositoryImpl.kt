@@ -1,9 +1,7 @@
 package com.sparshchadha.expensetracker.feature.auth.data.repository
 
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.ContinueWithPhoneResponse
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.OtpVerificationResponse
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.PhoneAuthRequest
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.RetryPhoneAuthRequest
+import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerificationResponse
+import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyGoogleIdTokenRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
 import com.sparshchadha.expensetracker.network.api.ExpenseTrackerAPI
@@ -19,7 +17,7 @@ class AuthRepositoryImpl(
 
     override fun validateOtpVerificationToken(
         request: VerifyOtpRequest,
-    ): Flow<Resource<OtpVerificationResponse>> {
+    ): Flow<Resource<UserVerificationResponse>> {
         return flow {
             emit(Resource.Loading())
 
@@ -39,6 +37,29 @@ class AuthRepositoryImpl(
             } catch (e: Exception) {
                 emit(Resource.Error(data = null, error = e))
             }
+        }
+    }
+
+    override fun validateGoogleIdToken(
+        request: VerifyGoogleIdTokenRequest
+    ) : Flow<Resource<UserVerificationResponse>> = flow {
+        emit(Resource.Loading())
+
+        try {
+            val response = api.validateGoogleIdToken(request)
+
+            if (response.isSuccessful) {
+                emit(Resource.Success(data = response.body()))
+            } else {
+                emit(
+                    Resource.Error(
+                        data = null,
+                        error = Throwable(message = response.errorBody().toString())
+                    )
+                )
+            }
+        }  catch (e: Exception) {
+            emit(Resource.Error(data = null, error = e))
         }
     }
 

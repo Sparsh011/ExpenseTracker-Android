@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.navigation
+package com.sparshchadha.expensetracker.core.navigation
 
 object ExpenseTrackerNavGraph {
     object MainRoutes {

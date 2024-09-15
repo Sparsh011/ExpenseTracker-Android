@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.utils
+package com.sparshchadha.expensetracker.common.utils
 
 object BundleKeys {
     const val PHONE_NUMBER_KEY = "phoneNumber"

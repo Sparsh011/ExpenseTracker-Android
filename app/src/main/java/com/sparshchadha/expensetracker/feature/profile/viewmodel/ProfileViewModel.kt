@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 import com.sparshchadha.expensetracker.feature.profile.domain.repository.ProfileRepository
-import com.sparshchadha.expensetracker.utils.Resource
+import com.sparshchadha.expensetracker.common.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

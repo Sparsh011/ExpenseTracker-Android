@@ -3,8 +3,8 @@ package com.sparshchadha.expensetracker.feature.expense_cards.data.repository
 import com.sparshchadha.expensetracker.feature.expense_cards.data.local.room.dao.ExpenseCardDao
 import com.sparshchadha.expensetracker.feature.expense_cards.domain.entity.ExpenseCardEntity
 import com.sparshchadha.expensetracker.feature.expense_cards.domain.repository.ExpenseCardRepository
-import com.sparshchadha.expensetracker.storage.datastore.ExpenseTrackerDataStorePreference
-import com.sparshchadha.expensetracker.storage.shared_preference.ExpenseTrackerSharedPref
+import com.sparshchadha.expensetracker.core.storage.datastore.ExpenseTrackerDataStorePreference
+import com.sparshchadha.expensetracker.core.storage.shared_preference.ExpenseTrackerSharedPref
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

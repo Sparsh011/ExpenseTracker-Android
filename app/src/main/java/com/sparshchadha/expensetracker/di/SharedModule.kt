@@ -3,6 +3,11 @@ package com.sparshchadha.expensetracker.di
 import android.content.Context
 import androidx.room.Room
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.sparshchadha.expensetracker.core.network.api.ExpenseTrackerAPI
+import com.sparshchadha.expensetracker.core.network.authenticator.AccessTokenInterceptor
+import com.sparshchadha.expensetracker.core.storage.datastore.ExpenseTrackerDataStorePreference
+import com.sparshchadha.expensetracker.core.storage.room.ExpenseTrackerDatabase
+import com.sparshchadha.expensetracker.core.storage.shared_preference.ExpenseTrackerSharedPref
 import com.sparshchadha.expensetracker.feature.auth.data.repository.AuthRepositoryImpl
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
 import com.sparshchadha.expensetracker.feature.auth.domain.usecase.GetAccessTokenUseCase
@@ -12,11 +17,6 @@ import com.sparshchadha.expensetracker.feature.expense_cards.data.repository.Exp
 import com.sparshchadha.expensetracker.feature.expense_cards.domain.repository.ExpenseCardRepository
 import com.sparshchadha.expensetracker.feature.profile.data.repository.ProfileRepositoryImpl
 import com.sparshchadha.expensetracker.feature.profile.domain.repository.ProfileRepository
-import com.sparshchadha.expensetracker.network.api.ExpenseTrackerAPI
-import com.sparshchadha.expensetracker.network.authenticator.AccessTokenInterceptor
-import com.sparshchadha.expensetracker.storage.datastore.ExpenseTrackerDataStorePreference
-import com.sparshchadha.expensetracker.storage.room.ExpenseTrackerDatabase
-import com.sparshchadha.expensetracker.storage.shared_preference.ExpenseTrackerSharedPref
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -19,11 +19,12 @@ import com.sparshchadha.expensetracker.feature.auth.ui.client.GoogleSignInUIClie
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.LoginScreen
 import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
 import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
-import com.sparshchadha.expensetracker.utils.BundleKeys
-import com.sparshchadha.expensetracker.utils.Constants
-import com.sparshchadha.expensetracker.utils.Resource
-import com.sparshchadha.expensetracker.utils.Utility
-import com.sparshchadha.expensetracker.utils.vibrateDevice
+import com.sparshchadha.expensetracker.common.utils.BundleKeys
+import com.sparshchadha.expensetracker.common.utils.Constants
+import com.sparshchadha.expensetracker.common.utils.Resource
+import com.sparshchadha.expensetracker.common.utils.Utility
+import com.sparshchadha.expensetracker.common.utils.vibrateDevice
+import com.sparshchadha.expensetracker.feature.auth.domain.exceptions.InvalidPhoneException
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -49,7 +50,6 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
             LoginScreen(
                 continueWithPhoneAuth = { phoneNumber ->
                     continuePhoneAuthUsing(phoneNumber)
-                    showLoadingScreen()
                 },
                 startGoogleSignIn = {
                     startGoogleSignIn()
@@ -83,7 +83,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
         } else {
             val error = response.response?.optString("errorMessage")
             Utility.errorLog(error ?: "Unable to get error message")
-            showToast(error ?: "Unable To Login, Please Try Again!")
+            showToast("Unable To Login, Please Try Again!")
         }
     }
 
@@ -104,30 +104,26 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
 
 
     private fun continuePhoneAuthUsing(phoneNumberWithCountryCode: String) {
-        if (!isPhoneNumberValid(phoneNumberWithCountryCode)) {
-            showToast(message = "Enter a valid phone number!")
-            return
+        try {
+            val pair = authViewModel.validateAndGetPhoneAndCC(phoneNumberWithCountryCode, '-')
+
+            if (pair.first.isBlank() || pair.second.isBlank()) {
+                showToast("Enter a valid phone number")
+                return
+            }
+            authViewModel.setUserPhoneNumber(phoneNumberWithCountryCode)
+
+
+            val headlessRequest = HeadlessRequest()
+            headlessRequest.setPhoneNumber(pair.first, pair.second)
+
+            otplessView.startHeadless(headlessRequest, this::onOtplessResult)
+            showLoadingScreen()
+        } catch (e: InvalidPhoneException) {
+            showToast(e.message ?: "Incorrect phone number.")
+            dismissLoadingScreen()
         }
 
-        val delimiterIndex = phoneNumberWithCountryCode.indexOf('-')
-
-        if (delimiterIndex + 1 >= phoneNumberWithCountryCode.length) {
-            showToast("Enter a valid phone number!")
-            return
-        }
-
-        authViewModel.setUserPhoneNumber(phoneNumberWithCountryCode)
-
-        val countryCode = phoneNumberWithCountryCode.substring(0, delimiterIndex)
-        val phone = phoneNumberWithCountryCode.substring(
-            delimiterIndex + 1,
-            phoneNumberWithCountryCode.length
-        )
-
-        val headlessRequest = HeadlessRequest()
-        headlessRequest.setPhoneNumber(countryCode, phone)
-
-        otplessView.startHeadless(headlessRequest, this::onOtplessResult)
     }
 
     private fun initializeViewsUsing(view: View) {
@@ -159,12 +155,6 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
             message,
             Toast.LENGTH_SHORT
         ).show()
-    }
-
-    private fun isPhoneNumberValid(phoneNumber: String): Boolean {
-        if (!phoneNumber.startsWith("+")) return false
-        if (phoneNumber.isBlank() || phoneNumber.length < 6 || phoneNumber.length > 15) return false
-        return true
     }
 
     private fun navigateToHomeScreen(withUser: UserVerificationResponse? = null) {

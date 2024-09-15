@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.storage.datastore
+package com.sparshchadha.expensetracker.core.storage.datastore
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
@@ -28,7 +28,19 @@ class ExpenseTrackerDataStorePreference @Inject constructor(
         }
     }
 
+    val readUserName: Flow<String?>
+        get() = dataStorePreference.data.map { pref ->
+            pref[USERNAME_KEY]
+        }
+
+    suspend fun saveUserName(name: String) {
+        dataStorePreference.edit { pref ->
+            pref[USERNAME_KEY] = name
+        }
+    }
+
     companion object {
         private val TOTAL_EXPENSE_CARDS_KEY = stringPreferencesKey("TOTAL_EXPENSE_CARDS_KEY")
+        private val USERNAME_KEY = stringPreferencesKey("ET_USERNAME_KEY")
     }
 }

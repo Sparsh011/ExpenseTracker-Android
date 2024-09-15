@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.utils
+package com.sparshchadha.expensetracker.common.utils
 
 sealed class Resource<T>(val data: T? = null, val error: Throwable? = null){
     class Success<T>(data: T? = null): Resource<T>(data)

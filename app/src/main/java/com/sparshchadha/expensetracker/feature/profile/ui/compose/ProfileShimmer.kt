@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.sparshchadha.expensetracker.common.ui.components.compose.Shimmer
-import com.sparshchadha.expensetracker.utils.Dimensions
+import com.sparshchadha.expensetracker.common.utils.Dimensions
 
 @Composable
 fun ProfileShimmer(

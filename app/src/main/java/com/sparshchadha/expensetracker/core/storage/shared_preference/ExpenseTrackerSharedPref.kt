@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.storage.shared_preference
+package com.sparshchadha.expensetracker.core.storage.shared_preference
 
 import android.content.Context
 import android.content.SharedPreferences

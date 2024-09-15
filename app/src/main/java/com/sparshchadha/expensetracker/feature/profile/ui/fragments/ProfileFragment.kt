@@ -11,7 +11,7 @@ import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 import com.sparshchadha.expensetracker.feature.profile.ui.compose.ProfileScreen
 import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
-import com.sparshchadha.expensetracker.utils.Resource
+import com.sparshchadha.expensetracker.common.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

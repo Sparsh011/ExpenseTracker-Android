@@ -3,8 +3,8 @@ package com.sparshchadha.expensetracker.feature.profile.data.repository
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UpdateUserNameRequest
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 import com.sparshchadha.expensetracker.feature.profile.domain.repository.ProfileRepository
-import com.sparshchadha.expensetracker.network.api.ExpenseTrackerAPI
-import com.sparshchadha.expensetracker.utils.Resource
+import com.sparshchadha.expensetracker.core.network.api.ExpenseTrackerAPI
+import com.sparshchadha.expensetracker.common.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

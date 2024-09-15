@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import com.sparshchadha.expensetracker.utils.AppColors
+import com.sparshchadha.expensetracker.common.utils.AppColors
 
 @Composable
 fun Shimmer(showShimmer: Boolean, colors: List<Color> = emptyList(), targetValue: Float): Brush {

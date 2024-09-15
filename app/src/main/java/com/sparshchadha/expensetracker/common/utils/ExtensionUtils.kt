@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.utils
+package com.sparshchadha.expensetracker.common.utils
 
 import android.content.Context
 import android.os.Build

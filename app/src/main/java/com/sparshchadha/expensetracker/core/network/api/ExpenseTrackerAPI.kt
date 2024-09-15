@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.network.api
+package com.sparshchadha.expensetracker.core.network.api
 
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.AccessTokenRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.AccessTokenResponse

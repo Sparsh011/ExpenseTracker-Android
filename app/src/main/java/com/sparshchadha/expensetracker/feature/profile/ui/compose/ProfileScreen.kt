@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.sparshchadha.expensetracker.common.ui.components.compose.ETTopBar
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
-import com.sparshchadha.expensetracker.utils.AppColors
-import com.sparshchadha.expensetracker.utils.Dimensions
-import com.sparshchadha.expensetracker.utils.Resource
+import com.sparshchadha.expensetracker.common.utils.AppColors
+import com.sparshchadha.expensetracker.common.utils.Dimensions
+import com.sparshchadha.expensetracker.common.utils.Resource
 
 @Composable
 fun ProfileScreen(

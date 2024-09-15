@@ -19,7 +19,7 @@ import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavig
 import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragment
 import com.sparshchadha.expensetracker.feature.onboarding.fragments.OnboardingFragment
 import com.sparshchadha.expensetracker.feature.profile.ui.fragments.ProfileFragment
-import com.sparshchadha.expensetracker.navigation.ExpenseTrackerNavGraph
+import com.sparshchadha.expensetracker.core.navigation.ExpenseTrackerNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

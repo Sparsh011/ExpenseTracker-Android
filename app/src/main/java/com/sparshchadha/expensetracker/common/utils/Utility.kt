@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.utils
+package com.sparshchadha.expensetracker.common.utils
 
 import android.util.Log
 import androidx.core.text.isDigitsOnly
@@ -13,7 +13,7 @@ object Utility {
         Log.d(TAG, "Berry.Fin debugLog: $str")
     }
 
-    fun isOtpValid(otp: String) : Boolean{
+    fun isOtpValid(otp: String): Boolean {
         if (otp.isBlank()) return false
         if (otp.trim().length != 6) return false
         if (!otp.isDigitsOnly()) return false

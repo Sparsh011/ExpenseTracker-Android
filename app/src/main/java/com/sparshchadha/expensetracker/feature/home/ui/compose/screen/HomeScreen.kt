@@ -25,9 +25,9 @@ import com.sparshchadha.expensetracker.feature.home.ui.compose.components.Balanc
 import com.sparshchadha.expensetracker.feature.home.ui.compose.components.CurrentDayExpenses
 import com.sparshchadha.expensetracker.feature.home.ui.compose.components.GreetingAndTopBarIcons
 import com.sparshchadha.expensetracker.feature.home.ui.compose.components.Top5TransactionsList
-import com.sparshchadha.expensetracker.utils.AppColors
-import com.sparshchadha.expensetracker.utils.Dimensions
-import com.sparshchadha.expensetracker.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.AppColors
+import com.sparshchadha.expensetracker.common.utils.Dimensions
+import com.sparshchadha.expensetracker.common.utils.FontSizes
 
 
 private const val TAG = "HomeScreen"

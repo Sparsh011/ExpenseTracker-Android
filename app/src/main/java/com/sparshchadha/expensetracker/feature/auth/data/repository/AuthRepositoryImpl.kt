@@ -4,9 +4,9 @@ import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerifica
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyGoogleIdTokenRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
-import com.sparshchadha.expensetracker.network.api.ExpenseTrackerAPI
-import com.sparshchadha.expensetracker.storage.shared_preference.ExpenseTrackerSharedPref
-import com.sparshchadha.expensetracker.utils.Resource
+import com.sparshchadha.expensetracker.core.network.api.ExpenseTrackerAPI
+import com.sparshchadha.expensetracker.core.storage.shared_preference.ExpenseTrackerSharedPref
+import com.sparshchadha.expensetracker.common.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

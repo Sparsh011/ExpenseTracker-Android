@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.storage.room
+package com.sparshchadha.expensetracker.core.storage.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

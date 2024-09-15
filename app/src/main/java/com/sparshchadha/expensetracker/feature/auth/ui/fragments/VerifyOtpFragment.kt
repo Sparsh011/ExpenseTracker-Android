@@ -17,11 +17,12 @@ import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerifica
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.VerifyOtpScreen
 import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
 import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
-import com.sparshchadha.expensetracker.utils.BundleKeys
-import com.sparshchadha.expensetracker.utils.Constants
-import com.sparshchadha.expensetracker.utils.Resource
-import com.sparshchadha.expensetracker.utils.Utility
-import com.sparshchadha.expensetracker.utils.vibrateDevice
+import com.sparshchadha.expensetracker.common.utils.BundleKeys
+import com.sparshchadha.expensetracker.common.utils.Constants
+import com.sparshchadha.expensetracker.common.utils.Resource
+import com.sparshchadha.expensetracker.common.utils.Utility
+import com.sparshchadha.expensetracker.common.utils.vibrateDevice
+import com.sparshchadha.expensetracker.feature.auth.domain.exceptions.InvalidPhoneException
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -57,7 +58,6 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
                     verifyOtp(otp)
                 },
                 onResend = {
-                    showLoadingScreen()
                     resendOtp(phoneNumberWithCountryCode)
                 },
                 onCancel = {
@@ -82,7 +82,6 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
                     showToast("OTP sent")
                 }
                 "ONETAP" -> {
-                    // final response with token
                     val token = response.response?.getString("token") ?: ""
                     authViewModel.validateOtpToken(token)
                 }
@@ -90,40 +89,34 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
         } else {
             val error = response.response?.optString("errorMessage")
             Utility.errorLog(error ?: "Unable to get error message")
-            showToast(error ?: "Unable To Login, Please Try Again!")
+            showToast("Unable To Login, Please Try Again!")
         }
     }
 
     private fun verifyOtp(otp: String) {
-        if (!Utility.isOtpValid(otp)){
-            showToast("Please enter a valid otp")
-            return
+        try {
+            val pair = authViewModel.validateAndGetPhoneAndCC(phoneNumberWithCountryCode, '-')
+
+            if (pair.first.isBlank() || pair.second.isBlank()) {
+                showToast("Enter a valid phone number")
+                return
+            }
+
+            if (!Utility.isOtpValid(otp)){
+                showToast("Please enter a valid otp")
+                return
+            }
+
+            val headlessRequest = HeadlessRequest()
+            headlessRequest.setPhoneNumber(pair.first, pair.second)
+            headlessRequest.setOtp(otp)
+
+            otplessView.startHeadless(headlessRequest, this::onOtplessResult)
+            showLoadingScreen()
+        } catch (e: InvalidPhoneException) {
+            showToast(e.message ?: "Incorrect phone number.")
+            dismissLoadingScreen()
         }
-
-        showLoadingScreen()
-        if (!isPhoneNumberValid(phoneNumberWithCountryCode)) {
-            showToast(message = "Enter a valid phone number!")
-            return
-        }
-
-        val delimiterIndex = phoneNumberWithCountryCode.indexOf('-')
-
-        if (delimiterIndex + 1 >= phoneNumberWithCountryCode.length) {
-            showToast("Enter a valid phone number!")
-            return
-        }
-
-        val countryCode = phoneNumberWithCountryCode.substring(0, delimiterIndex)
-        val phone = phoneNumberWithCountryCode.substring(
-            delimiterIndex + 1,
-            phoneNumberWithCountryCode.length
-        )
-
-        val headlessRequest = HeadlessRequest()
-        headlessRequest.setPhoneNumber(countryCode, phone)
-        headlessRequest.setOtp(otp)
-
-        otplessView.startHeadless(headlessRequest, this::onOtplessResult)
     }
 
     private fun observeIdentityVerification() {
@@ -181,34 +174,24 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
     }
 
     private fun resendOtp(phoneNumberWithCountryCode: String) {
-        if (!isPhoneNumberValid(phoneNumberWithCountryCode)) {
-            showToast(message = "Enter a valid phone number!")
-            return
+        try {
+            val pair = authViewModel.validateAndGetPhoneAndCC(phoneNumberWithCountryCode, '-')
+
+            if (pair.first.isBlank() || pair.second.isBlank()) {
+                showToast("Enter a valid phone number")
+                return
+            }
+
+            val headlessRequest = HeadlessRequest()
+            headlessRequest.setPhoneNumber(pair.first, pair.second)
+
+            otplessView.startHeadless(headlessRequest, this::onOtplessResult)
+
+            showLoadingScreen()
+        } catch (e: InvalidPhoneException) {
+            showToast("Please enter a correct phone number.")
+            dismissLoadingScreen()
         }
-
-        val delimiterIndex = phoneNumberWithCountryCode.indexOf('-')
-
-        if (delimiterIndex + 1 >= phoneNumberWithCountryCode.length) {
-            showToast("Enter a valid phone number!")
-            return
-        }
-
-        val countryCode = phoneNumberWithCountryCode.substring(0, delimiterIndex)
-        val phone = phoneNumberWithCountryCode.substring(
-            delimiterIndex + 1,
-            phoneNumberWithCountryCode.length
-        )
-
-        val headlessRequest = HeadlessRequest()
-        headlessRequest.setPhoneNumber(countryCode, phone)
-
-        otplessView.startHeadless(headlessRequest, this::onOtplessResult)
-    }
-
-    private fun isPhoneNumberValid(phoneNumber: String): Boolean {
-        if (!phoneNumber.startsWith("+")) return false
-        if (phoneNumber.isBlank() || phoneNumber.length < 6 || phoneNumber.length > 15) return false
-        return true
     }
 
 

@@ -6,7 +6,8 @@ import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerifica
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyGoogleIdTokenRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
-import com.sparshchadha.expensetracker.utils.Resource
+import com.sparshchadha.expensetracker.common.utils.Resource
+import com.sparshchadha.expensetracker.feature.auth.domain.usecase.ValidateAndSeparatePhoneAndCCUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +24,8 @@ class AuthViewModel @Inject constructor(
     private var accessToken = ""
 
     private var refreshToken = ""
+
+    private val validateAndSeparatePhoneAndCCUseCase = ValidateAndSeparatePhoneAndCCUseCase()
 
     init {
         initializeTokens()
@@ -53,6 +56,10 @@ class AuthViewModel @Inject constructor(
 
     fun getRefreshToken(): String {
         return this.refreshToken
+    }
+
+    fun validateAndGetPhoneAndCC(phoneNumberWithCountryCode: String, delimiter: Char): Pair<String, String> {
+        return validateAndSeparatePhoneAndCCUseCase(phoneNumberWithCountryCode, delimiter)
     }
 
     fun getUserPhoneNumber(): String = this.userPhoneNumber

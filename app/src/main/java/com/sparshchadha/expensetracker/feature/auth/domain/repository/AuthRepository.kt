@@ -3,7 +3,7 @@ package com.sparshchadha.expensetracker.feature.auth.domain.repository
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerificationResponse
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyGoogleIdTokenRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
-import com.sparshchadha.expensetracker.utils.Resource
+import com.sparshchadha.expensetracker.common.utils.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {

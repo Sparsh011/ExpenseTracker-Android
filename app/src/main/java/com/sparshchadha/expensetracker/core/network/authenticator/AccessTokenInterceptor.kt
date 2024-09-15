@@ -1,9 +1,9 @@
-package com.sparshchadha.expensetracker.network.authenticator
+package com.sparshchadha.expensetracker.core.network.authenticator
 
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.AccessTokenRequest
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
-import com.sparshchadha.expensetracker.network.api.ExpenseTrackerAPI
-import com.sparshchadha.expensetracker.storage.shared_preference.ExpenseTrackerSharedPref
+import com.sparshchadha.expensetracker.core.network.api.ExpenseTrackerAPI
+import com.sparshchadha.expensetracker.core.storage.shared_preference.ExpenseTrackerSharedPref
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

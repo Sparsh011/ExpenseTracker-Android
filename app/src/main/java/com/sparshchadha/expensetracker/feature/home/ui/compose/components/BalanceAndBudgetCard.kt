@@ -39,6 +39,7 @@ import com.sparshchadha.expensetracker.common.utils.FontSizes
 fun BalanceAndBudgetCard(
     cardHeight: Double,
     onClick: () -> Unit,
+    expenseBudget: Int,
 ) {
     Card(
         onClick = onClick,
@@ -63,7 +64,7 @@ fun BalanceAndBudgetCard(
         ) {
             RemainingBalance()
 
-            Budget()
+            Budget(expenseBudget)
         }
 
         BudgetAndBalanceProgress()
@@ -118,10 +119,12 @@ private fun RemainingBalance() {
 }
 
 @Composable
-private fun Budget() {
+private fun Budget(
+    budget: Int
+) {
     Column {
         Text(
-            text = "6,90,000 RS",
+            text = if (budget != -1) budget.toString() else "Add budget",
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = FontSizes.largeNonScaledFontSize(),

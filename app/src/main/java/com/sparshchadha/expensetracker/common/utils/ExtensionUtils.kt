@@ -6,6 +6,8 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.util.Log
+import android.widget.Toast
+import kotlin.time.Duration
 
 fun Context.vibrateDevice() {
     val vibrator: Vibrator
@@ -23,4 +25,12 @@ fun Context.vibrateDevice() {
     } else {
         vibrator.vibrate(500)
     }
+}
+
+fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(
+        this,
+        message,
+        duration
+    ).show()
 }

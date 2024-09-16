@@ -6,13 +6,15 @@ import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpReq
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
 import com.sparshchadha.expensetracker.core.network.api.ExpenseTrackerAPI
 import com.sparshchadha.expensetracker.core.storage.shared_preference.ExpenseTrackerSharedPref
-import com.sparshchadha.expensetracker.common.utils.Resource
+import com.sparshchadha.expensetracker.core.domain.Resource
+import com.sparshchadha.expensetracker.feature.profile.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class AuthRepositoryImpl(
     private val sharedPref: ExpenseTrackerSharedPref,
     private val api: ExpenseTrackerAPI,
+    private val profileRepository: ProfileRepository
 ) : AuthRepository {
 
     override fun validateOtpVerificationToken(
@@ -49,6 +51,12 @@ class AuthRepositoryImpl(
             val response = api.validateGoogleIdToken(request)
 
             if (response.isSuccessful) {
+                val userName = response.body()?.userProfile?.name ?: "Guest"
+                val expenseBudget = response.body()?.userProfile?.expenseBudget ?: -1
+
+                profileRepository.saveUserNameLocally(name = userName)
+                profileRepository.saveExpenseBudgetLocally(expenseBudget.toString())
+
                 emit(Resource.Success(data = response.body()))
             } else {
                 emit(

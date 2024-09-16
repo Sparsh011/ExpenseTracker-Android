@@ -10,11 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -28,32 +23,19 @@ import com.sparshchadha.expensetracker.feature.home.ui.compose.components.Top5Tr
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
-
-
-private const val TAG = "HomeScreen"
+import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 
 @Composable
 fun HomeScreen(
     navigateToNotificationsFragment: () -> Unit,
     navigateToProfileFragment: () -> Unit,
     isNoTransactionsAnimShown: Boolean,
+    expenseBudget: Int,
+    userName: String,
+    profileUri: String
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val listState = rememberLazyListState()
-    var headerColor by remember {
-        mutableStateOf(Color.Transparent)
-    }
-    val firstVisibleIndex = remember {
-        derivedStateOf {
-            listState.firstVisibleItemIndex >= 2
-        }
-    }
-
-    headerColor = if (firstVisibleIndex.value) {
-        AppColors.secondaryWhite
-    } else {
-        Color.Transparent
-    }
 
     LazyColumn(
         modifier = Modifier
@@ -65,13 +47,15 @@ fun HomeScreen(
         item {
             GreetingAndTopBarIcons(
                 navigateToNotificationsScreen = navigateToNotificationsFragment,
-                navigateToProfileScreen = navigateToProfileFragment
+                navigateToProfileScreen = navigateToProfileFragment,
+                userName = userName
             )
         }
 
         item {
             BalanceAndBudgetCard(
                 cardHeight = 0.3 * screenHeight,
+                expenseBudget = expenseBudget,
                 onClick = {
 
                 }

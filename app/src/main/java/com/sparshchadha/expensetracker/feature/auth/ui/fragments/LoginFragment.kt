@@ -21,16 +21,19 @@ import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
 import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
 import com.sparshchadha.expensetracker.common.utils.BundleKeys
 import com.sparshchadha.expensetracker.common.utils.Constants
-import com.sparshchadha.expensetracker.common.utils.Resource
+import com.sparshchadha.expensetracker.core.domain.Resource
 import com.sparshchadha.expensetracker.common.utils.Utility
+import com.sparshchadha.expensetracker.common.utils.showToast
 import com.sparshchadha.expensetracker.common.utils.vibrateDevice
 import com.sparshchadha.expensetracker.feature.auth.domain.exceptions.InvalidPhoneException
+import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.login_fragment) {
     private val authViewModel by viewModels<AuthViewModel>()
+    private val profileViewModel by viewModels<ProfileViewModel>()
 
     private lateinit var loginComposeView: ComposeView
 
@@ -83,7 +86,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
         } else {
             val error = response.response?.optString("errorMessage")
             Utility.errorLog(error ?: "Unable to get error message")
-            showToast("Unable To Login, Please Try Again!")
+            requireContext().showToast("Unable To Login, Please Try Again!")
         }
     }
 
@@ -108,7 +111,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
             val pair = authViewModel.validateAndGetPhoneAndCC(phoneNumberWithCountryCode, '-')
 
             if (pair.first.isBlank() || pair.second.isBlank()) {
-                showToast("Enter a valid phone number")
+                requireContext().showToast("Enter a valid phone number")
                 return
             }
             authViewModel.setUserPhoneNumber(phoneNumberWithCountryCode)
@@ -120,7 +123,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
             otplessView.startHeadless(headlessRequest, this::onOtplessResult)
             showLoadingScreen()
         } catch (e: InvalidPhoneException) {
-            showToast(e.message ?: "Incorrect phone number.")
+            requireContext().showToast(e.message ?: "Incorrect phone number.")
             dismissLoadingScreen()
         }
 
@@ -149,14 +152,6 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
             .commit()
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(
-            requireContext(),
-            message,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
     private fun navigateToHomeScreen(withUser: UserVerificationResponse? = null) {
         withUser?.let { user ->
             if (user.isVerified != true) {
@@ -166,6 +161,8 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
 
             authViewModel.saveAccessToken(user.access ?: "")
             authViewModel.saveRefreshToken(user.refresh ?: "")
+
+            profileViewModel.updateUserName(user.userProfile.name)
 
             requireActivity().supportFragmentManager
                 .beginTransaction()
@@ -179,7 +176,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                 .commit()
         } ?: run {
             dismissLoadingScreen()
-            showToast("Error during login, please try again!")
+            requireContext().showToast("Error during login, please try again!")
         }
     }
 
@@ -196,7 +193,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                         is Resource.Error -> {
                             dismissLoadingScreen()
                             Utility.errorLog(it.error?.message ?: "Unable to fetch error message.")
-                            showToast("Unable to login, please try again!")
+                            requireContext().showToast("Unable to login, please try again!")
                             requireContext().vibrateDevice()
                         }
 
@@ -221,7 +218,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                     } else {
                         dismissLoadingScreen()
                         Utility.errorLog(googleSignInResult.errorMessage)
-                        showToast("Unable to login, please try again.")
+                        requireContext().showToast("Unable to login, please try again.")
                     }
                 }
             )

@@ -19,15 +19,19 @@ import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
 import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
 import com.sparshchadha.expensetracker.common.utils.BundleKeys
 import com.sparshchadha.expensetracker.common.utils.Constants
-import com.sparshchadha.expensetracker.common.utils.Resource
+import com.sparshchadha.expensetracker.core.domain.Resource
 import com.sparshchadha.expensetracker.common.utils.Utility
+import com.sparshchadha.expensetracker.common.utils.showToast
 import com.sparshchadha.expensetracker.common.utils.vibrateDevice
 import com.sparshchadha.expensetracker.feature.auth.domain.exceptions.InvalidPhoneException
+import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
     private val authViewModel by viewModels<AuthViewModel>()
+
+    private val profileViewModel by viewModels<ProfileViewModel>()
 
     private lateinit var verifyOtpComposeView: ComposeView
     private var phoneNumberWithCountryCode = ""
@@ -79,7 +83,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
         if (response.statusCode == 200) {
             when (response.responseType) {
                 "INITIATE" -> {
-                    showToast("OTP sent")
+                    requireContext().showToast("OTP sent")
                 }
                 "ONETAP" -> {
                     val token = response.response?.getString("token") ?: ""
@@ -89,7 +93,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
         } else {
             val error = response.response?.optString("errorMessage")
             Utility.errorLog(error ?: "Unable to get error message")
-            showToast("Unable To Login, Please Try Again!")
+            requireContext().showToast("Unable To Login, Please Try Again!")
         }
     }
 
@@ -98,12 +102,12 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
             val pair = authViewModel.validateAndGetPhoneAndCC(phoneNumberWithCountryCode, '-')
 
             if (pair.first.isBlank() || pair.second.isBlank()) {
-                showToast("Enter a valid phone number")
+                requireContext().showToast("Enter a valid phone number")
                 return
             }
 
             if (!Utility.isOtpValid(otp)){
-                showToast("Please enter a valid otp")
+                requireContext().showToast("Please enter a valid otp")
                 return
             }
 
@@ -114,7 +118,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
             otplessView.startHeadless(headlessRequest, this::onOtplessResult)
             showLoadingScreen()
         } catch (e: InvalidPhoneException) {
-            showToast(e.message ?: "Incorrect phone number.")
+            requireContext().showToast(e.message ?: "Incorrect phone number.")
             dismissLoadingScreen()
         }
     }
@@ -130,7 +134,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
 
                     is Resource.Error -> {
                         dismissLoadingScreen()
-                        showToast("Unable to login, please try again!")
+                        requireContext().showToast("Unable to login, please try again!")
                         requireContext().vibrateDevice()
                     }
 
@@ -157,6 +161,8 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
             authViewModel.saveAccessToken(user.access ?: "")
             authViewModel.saveRefreshToken(user.refresh ?: "")
 
+            profileViewModel.updateUserName(user.userProfile.name)
+
             requireActivity().supportFragmentManager
                 .beginTransaction()
                 .setCustomAnimations(
@@ -169,7 +175,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
                 .commit()
         } ?: run {
             dismissLoadingScreen()
-            showToast("Unable to fetch details, please try again!")
+            requireContext().showToast("Unable to fetch details, please try again!")
         }
     }
 
@@ -178,7 +184,7 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
             val pair = authViewModel.validateAndGetPhoneAndCC(phoneNumberWithCountryCode, '-')
 
             if (pair.first.isBlank() || pair.second.isBlank()) {
-                showToast("Enter a valid phone number")
+                requireContext().showToast("Enter a valid phone number")
                 return
             }
 
@@ -189,18 +195,9 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
 
             showLoadingScreen()
         } catch (e: InvalidPhoneException) {
-            showToast("Please enter a correct phone number.")
+            requireContext().showToast("Please enter a correct phone number.")
             dismissLoadingScreen()
         }
-    }
-
-
-    private fun showToast(message: String) {
-        Toast.makeText(
-            requireContext(),
-            message,
-            Toast.LENGTH_SHORT
-        ).show()
     }
 
     private fun showLoadingScreen() {

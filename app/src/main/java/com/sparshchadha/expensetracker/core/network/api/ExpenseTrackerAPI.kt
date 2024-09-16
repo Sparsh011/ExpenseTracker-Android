@@ -5,7 +5,8 @@ import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.AccessTokenR
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerificationResponse
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyGoogleIdTokenRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
-import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UpdateUserNameRequest
+import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UpdateProfileFieldRequest
+import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UpdateProfileFieldResponse
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 import retrofit2.Response
 import retrofit2.http.Body
@@ -25,12 +26,6 @@ interface ExpenseTrackerAPI {
         @Header("Authorization") authorization: String
     ): Response<UserProfile>
 
-    @PATCH("/user/name")
-    suspend fun saveUserName(
-        @Header("Authorization") authorization: String,
-        @Body updateUserNameRequest: UpdateUserNameRequest
-    ): Response<Unit>
-
     @POST("/login/otp/verify-token")
     suspend fun validateOtpVerificationToken(
         @Body verifyTokenRequest: VerifyOtpRequest
@@ -40,6 +35,12 @@ interface ExpenseTrackerAPI {
     suspend fun validateGoogleIdToken(
         @Body verifyGoogleIdTokenRequest: VerifyGoogleIdTokenRequest
     ): Response<UserVerificationResponse>
+
+    @POST("/user/profile")
+    suspend fun updateProfileField(
+        @Header("Authorization") authorization: String,
+        @Body updateProfileFieldRequest: UpdateProfileFieldRequest
+    ): Response<UpdateProfileFieldResponse>
 
     companion object {
         const val BASE_URL = "https://expensetracker-engine.onrender.com"

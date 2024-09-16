@@ -6,7 +6,7 @@ import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerifica
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyGoogleIdTokenRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
-import com.sparshchadha.expensetracker.common.utils.Resource
+import com.sparshchadha.expensetracker.core.domain.Resource
 import com.sparshchadha.expensetracker.feature.auth.domain.usecase.ValidateAndSeparatePhoneAndCCUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

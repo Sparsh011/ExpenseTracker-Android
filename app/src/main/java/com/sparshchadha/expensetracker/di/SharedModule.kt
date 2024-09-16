@@ -12,9 +12,9 @@ import com.sparshchadha.expensetracker.feature.auth.data.repository.AuthReposito
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
 import com.sparshchadha.expensetracker.feature.auth.domain.usecase.GetAccessTokenUseCase
 import com.sparshchadha.expensetracker.feature.auth.domain.usecase.SaveAccessTokenUseCase
-import com.sparshchadha.expensetracker.feature.expense_cards.data.local.room.dao.ExpenseCardDao
-import com.sparshchadha.expensetracker.feature.expense_cards.data.repository.ExpenseCardRepositoryImpl
-import com.sparshchadha.expensetracker.feature.expense_cards.domain.repository.ExpenseCardRepository
+import com.sparshchadha.expensetracker.feature.expense.data.local.room.dao.ExpenseDao
+import com.sparshchadha.expensetracker.feature.expense.data.repository.ExpenseRepositoryImpl
+import com.sparshchadha.expensetracker.feature.expense.domain.repository.ExpenseRepository
 import com.sparshchadha.expensetracker.feature.profile.data.repository.ProfileRepositoryImpl
 import com.sparshchadha.expensetracker.feature.profile.domain.repository.ProfileRepository
 import dagger.Module
@@ -93,16 +93,18 @@ object SharedModule {
     fun provideAuthRepository(
         sharedPref: ExpenseTrackerSharedPref,
         api: ExpenseTrackerAPI,
+        profileRepository: ProfileRepository
     ): AuthRepository {
-        return AuthRepositoryImpl(sharedPref = sharedPref, api = api)
+        return AuthRepositoryImpl(sharedPref = sharedPref, api = api, profileRepository = profileRepository)
     }
 
     @Singleton
     @Provides
     fun provideProfileRepository(
         api: ExpenseTrackerAPI,
+        dataStorePreference: ExpenseTrackerDataStorePreference
     ): ProfileRepository {
-        return ProfileRepositoryImpl(api = api)
+        return ProfileRepositoryImpl(api = api, dataStorePreference = dataStorePreference)
     }
 
     @Singleton
@@ -125,19 +127,19 @@ object SharedModule {
 
     @Singleton
     @Provides
-    fun provideExpenseCardDao(
+    fun provideExpenseDao(
         database: ExpenseTrackerDatabase
-    ): ExpenseCardDao {
-        return database.expenseCardDao()
+    ): ExpenseDao {
+        return database.expenseDao()
     }
 
     @Singleton
     @Provides
-    fun provideExpenseCardRepository(
+    fun provideExpenseRepository(
         dataStorePreference: ExpenseTrackerDataStorePreference,
-        expenseCardDao: ExpenseCardDao,
+        expenseCardDao: ExpenseDao,
         sharedPref: ExpenseTrackerSharedPref
-    ): ExpenseCardRepository {
-        return ExpenseCardRepositoryImpl(dataStorePreference, expenseCardDao, sharedPref)
+    ): ExpenseRepository {
+        return ExpenseRepositoryImpl(dataStorePreference, expenseCardDao, sharedPref)
     }
 }

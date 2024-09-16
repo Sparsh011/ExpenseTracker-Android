@@ -32,21 +32,9 @@ class ExpenseTrackerSharedPref @Inject constructor(
         return sharedPreferences.getString(ET_REFRESH_TOKEN_KEY, "") ?: ""
     }
 
-    fun saveUserId(id: String) {
-        sharedPreferences.edit().apply {
-            putString(ET_USER_ID_KEY, id)
-            apply()
-        }
-    }
-
-    fun getUserId(): String {
-        return sharedPreferences.getString(ET_USER_ID_KEY, "") ?: ""
-    }
-
     companion object {
         // All the keys are stored here
         private const val ET_ACCESS_TOKEN_KEY = "expense_tracker_access_token"
         private const val ET_REFRESH_TOKEN_KEY = "expense_tracker_refresh_token"
-        private const val ET_USER_ID_KEY = "expense_tracker_user_id"
     }
 }

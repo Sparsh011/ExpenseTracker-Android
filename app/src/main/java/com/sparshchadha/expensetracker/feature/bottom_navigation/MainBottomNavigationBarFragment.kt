@@ -26,7 +26,7 @@ import com.sparshchadha.expensetracker.common.utils.Dimensions
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainBottomNavigationBarFragment : Fragment(R.layout.main_bottom_navigation_bar_fragment) {
+class MainBottomNavigationBarFragment : Fragment(R.layout.fragment_main_bottom_navigation_bar) {
     private lateinit var navController: NavController
     private lateinit var cvHomeIcon: ComposeView
     private lateinit var cvTransactionsIcon: ComposeView

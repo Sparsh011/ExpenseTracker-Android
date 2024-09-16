@@ -33,7 +33,7 @@ class ProfileViewModel @Inject constructor(
     private val _expenseBudget = MutableStateFlow(-1)
     val expenseBudget = _expenseBudget.asStateFlow()
 
-    private fun getUserProfile() {
+    fun getUserProfile() {
         val accessToken = authRepository.getAccessToken()
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -118,7 +118,6 @@ class ProfileViewModel @Inject constructor(
     }
 
     init {
-        getUserProfile()
         getUserNameFromLocal()
     }
 }

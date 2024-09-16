@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
-class OnboardingFragment : Fragment(R.layout.onboarding_fragment) {
+class OnboardingFragment : Fragment(R.layout.fragment_onboarding) {
     private lateinit var onboardingComposeView: ComposeView
 
 

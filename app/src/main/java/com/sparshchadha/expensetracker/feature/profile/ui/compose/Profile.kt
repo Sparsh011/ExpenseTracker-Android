@@ -1,7 +1,9 @@
 package com.sparshchadha.expensetracker.feature.profile.ui.compose
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.BasicAlertDialog
@@ -35,16 +38,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Profile(profile: UserProfile, onNameUpdate: (String) -> Unit) {
+fun Profile(
+    profile: UserProfile,
+    onNameUpdate: (String) -> Unit,
+    navigateToExpenseSettingsScreen: () -> Unit,
+) {
     var showNameUpdateDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -59,40 +69,114 @@ fun Profile(profile: UserProfile, onNameUpdate: (String) -> Unit) {
         )
     }
 
-    Column(
+    PhoneAndProfilePicture(
+        onEdit = {
+            showNameUpdateDialog = true
+        },
+        name = profile.name,
+        profileUri = profile.profileUri,
+        phoneNumber = profile.phoneNumber
+    )
 
+    Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
+
+    Text(
+        buildAnnotatedString {
+            append("Your ")
+            withStyle(
+                style = SpanStyle(
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            ) {
+                append("Preferences")
+            }
+        },
+        color = Color.Black,
+        modifier = Modifier
+            .padding(
+                horizontal = Dimensions.smallPadding(),
+                vertical = Dimensions.mediumPadding()
+            ),
+        fontSize = FontSizes.largeFontSize().value.sp
+    )
+
+    Column(
+        modifier = Modifier.background(AppColors.primaryWhite)
     ) {
+
         Row(
+            modifier = Modifier
+                .padding(
+                    horizontal = Dimensions.mediumPadding(),
+                    vertical = Dimensions.smallPadding()
+                )
+                .clickable {
+                    navigateToExpenseSettingsScreen()
+                },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(model = profile.profileUri),
-                contentDescription = null,
+            Text(
+                text = "Expense Budget",
+                modifier = Modifier.weight(0.7f),
+                fontSize = FontSizes.largeFontSize().value.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "INR " + profile.expenseBudget.toString(),
                 modifier = Modifier
-                    .clip(CircleShape)
-                    .size(Dimensions.profilePicSize())
+                    .weight(0.25f)
+                    .basicMarquee(iterations = 5),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = FontSizes.mediumFontSize().value.sp,
             )
 
-            Column {
-                NameAndEditIcon(
-                    name = profile.name,
-                    onEdit = {
-                        showNameUpdateDialog = true
-                    }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                modifier = Modifier.weight(
+                    0.1f
                 )
-
-                Spacer(modifier = Modifier.height(Dimensions.extraSmallPadding()))
-
-                Text(
-                    text = profile.phoneNumber,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = FontSizes.mediumNonScaledFontSize()
-                )
-            }
+            )
         }
-
     }
 
+}
+
+@Composable
+private fun PhoneAndProfilePicture(
+    onEdit: () -> Unit,
+    name: String,
+    profileUri: String,
+    phoneNumber: String,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = rememberAsyncImagePainter(model = profileUri),
+            contentDescription = null,
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(Dimensions.profilePicSize())
+        )
+
+        Column {
+            NameAndEditIcon(
+                name = name,
+                onEdit = onEdit
+            )
+
+            Spacer(modifier = Modifier.height(Dimensions.extraSmallPadding()))
+
+            Text(
+                text = phoneNumber,
+                fontWeight = FontWeight.Normal,
+                fontSize = FontSizes.mediumNonScaledFontSize()
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -222,6 +306,7 @@ private fun ProfilePrev() {
             emailId = "",
             profileUri = "https://delasign.com/delasignBlack.png",
         ),
-        onNameUpdate = {}
+        onNameUpdate = {},
+        navigateToExpenseSettingsScreen = {}
     )
 }

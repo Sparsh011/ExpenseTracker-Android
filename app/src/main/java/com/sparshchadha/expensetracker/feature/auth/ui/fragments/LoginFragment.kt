@@ -31,7 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(R.layout.login_fragment) {
+class LoginFragment : Fragment(R.layout.fragment_login) {
     private val authViewModel by viewModels<AuthViewModel>()
     private val profileViewModel by viewModels<ProfileViewModel>()
 

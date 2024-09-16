@@ -11,7 +11,7 @@ import com.sparshchadha.expensetracker.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class TransactionsFragment : Fragment(R.layout.transactions_fragment) {
+class TransactionsFragment : Fragment(R.layout.fragment_transactions) {
     private lateinit var transactionsComposeView: ComposeView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

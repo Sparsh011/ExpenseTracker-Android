@@ -10,7 +10,7 @@ import com.sparshchadha.expensetracker.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class StatisticsFragment : Fragment(R.layout.statistics_fragment) {
+class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
     private lateinit var statisticsComposeView: ComposeView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

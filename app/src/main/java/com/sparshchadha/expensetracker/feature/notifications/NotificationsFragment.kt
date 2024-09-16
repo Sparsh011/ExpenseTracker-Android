@@ -10,7 +10,7 @@ import com.sparshchadha.expensetracker.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NotificationsFragment : Fragment(R.layout.notifications_fragment) {
+class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
     private lateinit var notificationsComposeView: ComposeView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -11,18 +11,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.common.utils.showToast
-import com.sparshchadha.expensetracker.core.domain.Resource
 import com.sparshchadha.expensetracker.feature.home.ui.compose.screen.HomeScreen
 import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragment
-import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 import com.sparshchadha.expensetracker.feature.profile.ui.fragments.ProfileFragment
 import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.exp
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(R.layout.home_fragment) {
+class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var homeComposeView: ComposeView
     private var isNoTransactionsAnimShown = false
     private val profileViewModel by viewModels<ProfileViewModel>()

@@ -11,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.sparshchadha.expensetracker.common.ui.components.compose.ETTopBar
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
@@ -25,12 +26,13 @@ fun ProfileScreen(
     onRetryProfileFetch: () -> Unit,
     showLoader: Boolean,
     showError: Boolean,
-    onNameUpdate: (String) -> Unit
+    onNameUpdate: (String) -> Unit,
+    navigateToExpenseSettingsScreen: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-
+            .background(AppColors.secondaryWhite)
     ) {
         ETTopBar(
             text = "Profile",
@@ -38,7 +40,6 @@ fun ProfileScreen(
             onBackPress = onBackPress,
             modifier = Modifier
                 .statusBarsPadding()
-                .background(AppColors.secondaryWhite)
                 .height(Dimensions.topBarHeight())
                 .fillMaxWidth()
         )
@@ -54,13 +55,14 @@ fun ProfileScreen(
         profileState?.let {
             Column(
                 modifier = Modifier
+                    .background(AppColors.secondaryWhite)
                     .fillMaxSize()
-                    .background(AppColors.primaryWhite)
                     .verticalScroll(rememberScrollState()),
 
                 ) {
-                Profile(profile = it, onNameUpdate = onNameUpdate)
+                Profile(profile = it, onNameUpdate = onNameUpdate, navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen)
             }
         }
     }
 }
+

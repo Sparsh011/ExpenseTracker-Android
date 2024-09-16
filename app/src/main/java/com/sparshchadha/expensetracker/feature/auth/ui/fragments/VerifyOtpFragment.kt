@@ -28,7 +28,7 @@ import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewMode
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
+class VerifyOtpFragment : Fragment(R.layout.fragment_verify_otp) {
     private val authViewModel by viewModels<AuthViewModel>()
 
     private val profileViewModel by viewModels<ProfileViewModel>()

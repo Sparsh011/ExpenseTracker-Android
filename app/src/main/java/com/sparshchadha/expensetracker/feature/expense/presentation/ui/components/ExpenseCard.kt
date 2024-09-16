@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.feature.expense.presentation.ui
+package com.sparshchadha.expensetracker.feature.expense.presentation.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

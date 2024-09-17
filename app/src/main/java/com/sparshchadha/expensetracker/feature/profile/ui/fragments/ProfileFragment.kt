@@ -69,6 +69,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 },
                 navigateToExpenseSettingsScreen = {
                     navigateToExpenseSettingsScreen()
+                },
+                onLogout = {
+
                 }
             )
         }
@@ -113,7 +116,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 R.anim.slide_in, R.anim.fade_out,
                 R.anim.fade_in, R.anim.slide_out
             )
-            .replace(R.id.app_container, ExpenseSettingsFragment())
+            .add(R.id.app_container, ExpenseSettingsFragment())
             .addToBackStack("profile_fragment")
             .commit()
     }

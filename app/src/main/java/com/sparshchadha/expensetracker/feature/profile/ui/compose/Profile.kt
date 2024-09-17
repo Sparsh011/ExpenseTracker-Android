@@ -23,6 +23,7 @@ import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -48,100 +49,164 @@ import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Profile(
     profile: UserProfile,
     onNameUpdate: (String) -> Unit,
     navigateToExpenseSettingsScreen: () -> Unit,
+    onLogout: () -> Unit,
 ) {
-    var showNameUpdateDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
+    Column {
+        var showNameUpdateDialog by rememberSaveable {
+            mutableStateOf(false)
+        }
 
-    if (showNameUpdateDialog) {
-        NameUpdateDialog(
-            currentName = profile.name,
-            onNameUpdate = onNameUpdate,
-            onDismiss = {
-                showNameUpdateDialog = false
-            }
-        )
-    }
-
-    PhoneAndProfilePicture(
-        onEdit = {
-            showNameUpdateDialog = true
-        },
-        name = profile.name,
-        profileUri = profile.profileUri,
-        phoneNumber = profile.phoneNumber
-    )
-
-    Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
-
-    Text(
-        buildAnnotatedString {
-            append("Your ")
-            withStyle(
-                style = SpanStyle(
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
-            ) {
-                append("Preferences")
-            }
-        },
-        color = Color.Black,
-        modifier = Modifier
-            .padding(
-                horizontal = Dimensions.smallPadding(),
-                vertical = Dimensions.mediumPadding()
-            ),
-        fontSize = FontSizes.largeFontSize().value.sp
-    )
-
-    Column(
-        modifier = Modifier.background(AppColors.primaryWhite)
-    ) {
-
-        Row(
-            modifier = Modifier
-                .padding(
-                    horizontal = Dimensions.mediumPadding(),
-                    vertical = Dimensions.smallPadding()
-                )
-                .clickable {
-                    navigateToExpenseSettingsScreen()
-                },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Expense Budget",
-                modifier = Modifier.weight(0.7f),
-                fontSize = FontSizes.largeFontSize().value.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "INR " + profile.expenseBudget.toString(),
-                modifier = Modifier
-                    .weight(0.25f)
-                    .basicMarquee(iterations = 5),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontSize = FontSizes.mediumFontSize().value.sp,
-            )
-
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                modifier = Modifier.weight(
-                    0.1f
-                )
+        if (showNameUpdateDialog) {
+            NameUpdateDialog(
+                currentName = profile.name,
+                onNameUpdate = onNameUpdate,
+                onDismiss = {
+                    showNameUpdateDialog = false
+                }
             )
         }
+
+        PhoneAndProfilePicture(
+            onEdit = {
+                showNameUpdateDialog = true
+            },
+            name = profile.name,
+            profileUri = profile.profileUri,
+            phoneNumber = profile.phoneNumber
+        )
+
+        Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
+
+        Text(
+            buildAnnotatedString {
+                append("Your ")
+                withStyle(
+                    style = SpanStyle(
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
+                ) {
+                    append("Preferences")
+                }
+            },
+            color = Color.Black,
+            modifier = Modifier
+                .padding(
+                    horizontal = Dimensions.smallPadding(),
+                    vertical = Dimensions.mediumPadding()
+                ),
+            fontSize = FontSizes.largeFontSize().value.sp
+        )
+
+        Column(
+            modifier = Modifier
+                .clip(RoundedCornerShape(Dimensions.cornerRadius()))
+                .background(AppColors.primaryWhite)
+        ) {
+            ExpenseBudgetSetting(
+                navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
+                expenseBudget = profile.expenseBudget.toString()
+            )
+
+            HorizontalDivider(
+                color = Color.LightGray,
+                modifier = Modifier.padding(horizontal = Dimensions.largePadding())
+            )
+
+            Spacer(modifier = Modifier.padding(bottom = Dimensions.smallPadding()))
+
+            ExpenseBudgetSetting(
+                navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
+                expenseBudget = profile.expenseBudget.toString()
+            )
+
+            HorizontalDivider(
+                color = Color.LightGray,
+                modifier = Modifier.padding(horizontal = Dimensions.largePadding())
+            )
+
+            Spacer(modifier = Modifier.padding(bottom = Dimensions.smallPadding()))
+
+            ExpenseBudgetSetting(
+                navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
+                expenseBudget = profile.expenseBudget.toString()
+            )
+
+            HorizontalDivider(
+                color = Color.LightGray,
+                modifier = Modifier.padding(horizontal = Dimensions.largePadding())
+            )
+
+            Spacer(modifier = Modifier.padding(bottom = Dimensions.smallPadding()))
+
+            ExpenseBudgetSetting(
+                navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
+                expenseBudget = profile.expenseBudget.toString()
+            )
+
+            Spacer(modifier = Modifier.padding(bottom = Dimensions.smallPadding()))
+        }
+
+
+        Text(
+            text = "You've been able to keep your expenses under budget this month. Keep it up!",
+            fontSize = FontSizes.mediumFontSize().value.sp,
+            color = Color.Black,
+            modifier = Modifier.padding(Dimensions.mediumPadding())
+        )
+
+        LogoutButton(onLogout = onLogout)
     }
 
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ExpenseBudgetSetting(
+    navigateToExpenseSettingsScreen: () -> Unit,
+    expenseBudget: String,
+) {
+    Row(
+        modifier = Modifier
+            .padding(
+                horizontal = Dimensions.mediumPadding(),
+                vertical = Dimensions.smallPadding()
+            )
+            .clickable {
+                navigateToExpenseSettingsScreen()
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Expense Budget",
+            modifier = Modifier.weight(0.7f),
+            fontSize = FontSizes.mediumFontSize().value.sp,
+            color = Color.Black
+        )
+        Text(
+            text = "₹ $expenseBudget",
+            modifier = Modifier
+                .weight(0.25f)
+                .basicMarquee(iterations = 5),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontSize = FontSizes.mediumFontSize().value.sp,
+            color = Color.Black
+        )
+
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            modifier = Modifier.weight(
+                0.1f
+            )
+        )
+    }
 }
 
 @Composable
@@ -159,6 +224,7 @@ private fun PhoneAndProfilePicture(
             contentDescription = null,
             modifier = Modifier
                 .clip(CircleShape)
+                .padding(Dimensions.mediumPadding())
                 .size(Dimensions.profilePicSize())
         )
 
@@ -294,6 +360,23 @@ private fun NameAndEditIcon(
     }
 }
 
+@Composable
+private fun LogoutButton(
+    onLogout: () -> Unit,
+) {
+    Button(
+        onClick = onLogout,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = AppColors.errorRed
+        ),
+        modifier = Modifier
+            .padding(Dimensions.largePadding())
+            .fillMaxWidth()
+    ) {
+        Text(text = "Logout", color = Color.White)
+    }
+}
+
 @Preview
 @Composable
 private fun ProfilePrev() {
@@ -307,6 +390,7 @@ private fun ProfilePrev() {
             profileUri = "https://delasign.com/delasignBlack.png",
         ),
         onNameUpdate = {},
-        navigateToExpenseSettingsScreen = {}
+        navigateToExpenseSettingsScreen = {},
+        onLogout = {}
     )
 }

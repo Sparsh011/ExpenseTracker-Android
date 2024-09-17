@@ -27,7 +27,8 @@ fun ProfileScreen(
     showLoader: Boolean,
     showError: Boolean,
     onNameUpdate: (String) -> Unit,
-    navigateToExpenseSettingsScreen: () -> Unit
+    navigateToExpenseSettingsScreen: () -> Unit,
+    onLogout: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -60,7 +61,7 @@ fun ProfileScreen(
                     .verticalScroll(rememberScrollState()),
 
                 ) {
-                Profile(profile = it, onNameUpdate = onNameUpdate, navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen)
+                Profile(profile = it, onNameUpdate = onNameUpdate, navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen, onLogout = onLogout)
             }
         }
     }

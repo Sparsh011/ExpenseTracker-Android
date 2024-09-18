@@ -13,8 +13,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Clear
@@ -36,6 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +49,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
@@ -56,7 +62,9 @@ fun Profile(
     navigateToExpenseSettingsScreen: () -> Unit,
     onLogout: () -> Unit,
 ) {
-    Column {
+    Column (
+        modifier = Modifier.verticalScroll(rememberScrollState())
+    ) {
         var showNameUpdateDialog by rememberSaveable {
             mutableStateOf(false)
         }
@@ -109,42 +117,29 @@ fun Profile(
                 .background(AppColors.primaryWhite)
         ) {
             ExpenseBudgetSetting(
+                text = "Expense budget",
+                subText = "₹ 20000",
                 navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
                 expenseBudget = profile.expenseBudget.toString()
             )
 
-            HorizontalDivider(
-                color = Color.LightGray,
-                modifier = Modifier.padding(horizontal = Dimensions.largePadding())
-            )
-
-            Spacer(modifier = Modifier.padding(bottom = Dimensions.smallPadding()))
-
             ExpenseBudgetSetting(
+                text = "Notifications",
+                subText = "",
                 navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
                 expenseBudget = profile.expenseBudget.toString()
             )
 
-            HorizontalDivider(
-                color = Color.LightGray,
-                modifier = Modifier.padding(horizontal = Dimensions.largePadding())
-            )
-
-            Spacer(modifier = Modifier.padding(bottom = Dimensions.smallPadding()))
-
             ExpenseBudgetSetting(
+                text = "Link account with email",
+                subText = "",
                 navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
                 expenseBudget = profile.expenseBudget.toString()
             )
 
-            HorizontalDivider(
-                color = Color.LightGray,
-                modifier = Modifier.padding(horizontal = Dimensions.largePadding())
-            )
-
-            Spacer(modifier = Modifier.padding(bottom = Dimensions.smallPadding()))
-
             ExpenseBudgetSetting(
+                text = "Export last 30 expenses",
+                subText = "",
                 navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
                 expenseBudget = profile.expenseBudget.toString()
             )
@@ -154,13 +149,63 @@ fun Profile(
 
 
         Text(
-            text = "You've been able to keep your expenses under budget this month. Keep it up!",
-            fontSize = FontSizes.mediumFontSize().value.sp,
+            buildAnnotatedString {
+                append("Extra ")
+                withStyle(
+                    style = SpanStyle(
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
+                ) {
+                    append("Settings")
+                }
+            },
             color = Color.Black,
-            modifier = Modifier.padding(Dimensions.mediumPadding())
+            modifier = Modifier
+                .padding(
+                    horizontal = Dimensions.smallPadding(),
+                    vertical = Dimensions.mediumPadding()
+                ),
+            fontSize = FontSizes.largeFontSize().value.sp
         )
 
-        LogoutButton(onLogout = onLogout)
+        Column (
+            modifier = Modifier
+                .clip(RoundedCornerShape(Dimensions.cornerRadius()))
+                .background(AppColors.primaryWhite)
+        ){
+            ExpenseBudgetSetting(
+                text = "Rate us on playstore",
+                subText = "",
+                navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
+                expenseBudget = profile.expenseBudget.toString()
+            )
+
+            ExpenseBudgetSetting(
+                text = "Give us feedback",
+                subText = "",
+                navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
+                expenseBudget = profile.expenseBudget.toString()
+            )
+
+            ExpenseBudgetSetting(
+                text = "Privacy Policy",
+                subText = "",
+                navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
+                expenseBudget = profile.expenseBudget.toString()
+            )
+
+            ExpenseBudgetSetting(
+                text = "Contact us",
+                subText = "",
+                navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
+                expenseBudget = profile.expenseBudget.toString()
+            )
+
+            LogoutButton(onLogout = onLogout)
+
+        }
+
     }
 
 }
@@ -168,6 +213,8 @@ fun Profile(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ExpenseBudgetSetting(
+    text: String,
+    subText: String,
     navigateToExpenseSettingsScreen: () -> Unit,
     expenseBudget: String,
 ) {
@@ -183,19 +230,19 @@ private fun ExpenseBudgetSetting(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Expense Budget",
+            text = text,
             modifier = Modifier.weight(0.7f),
-            fontSize = FontSizes.mediumFontSize().value.sp,
+            fontSize = FontSizes.smallFontSize().value.sp,
             color = Color.Black
         )
         Text(
-            text = "₹ $expenseBudget",
+            text = subText,
             modifier = Modifier
                 .weight(0.25f)
                 .basicMarquee(iterations = 5),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            fontSize = FontSizes.mediumFontSize().value.sp,
+            fontSize = FontSizes.mediumNonScaledFontSize().value.sp,
             color = Color.Black
         )
 
@@ -364,16 +411,32 @@ private fun NameAndEditIcon(
 private fun LogoutButton(
     onLogout: () -> Unit,
 ) {
-    Button(
-        onClick = onLogout,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = AppColors.errorRed
-        ),
+//    Button(
+//        onClick = onLogout,
+//        colors = ButtonDefaults.buttonColors(
+//            containerColor = AppColors.primaryColor
+//        ),
+//        modifier = Modifier
+//            .padding(Dimensions.largePadding())
+//            .fillMaxWidth()
+//    ) {
+//        Text(text = "Logout", color = Color.White)
+//    }
+
+    Row (
         modifier = Modifier
-            .padding(Dimensions.largePadding())
             .fillMaxWidth()
-    ) {
-        Text(text = "Logout", color = Color.White)
+            .padding(horizontal = Dimensions.mediumPadding()),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Icon(imageVector = ImageVector.vectorResource(id = R.drawable.logout_icon), contentDescription = null, tint = AppColors.primaryColor)
+
+        ExpenseBudgetSetting(
+            text = "Logout",
+            subText = "",
+            navigateToExpenseSettingsScreen = { /*TODO*/ },
+            expenseBudget = ""
+        )
     }
 }
 

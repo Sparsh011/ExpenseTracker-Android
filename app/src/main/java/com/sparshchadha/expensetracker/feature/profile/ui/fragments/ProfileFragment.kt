@@ -1,6 +1,7 @@
 package com.sparshchadha.expensetracker.feature.profile.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.sparshchadha.expensetracker.R
+import com.sparshchadha.expensetracker.common.utils.Utility
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 import com.sparshchadha.expensetracker.feature.profile.ui.compose.ProfileScreen
 import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
@@ -72,6 +74,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 },
                 onLogout = {
 
+                },
+                navigateToNotificationsScreen = {
                 }
             )
         }
@@ -94,6 +98,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             profile?.let {
                 when (it) {
                     is Resource.Error -> {
+                        Utility.errorLog("observeProfile: ${it.error?.localizedMessage}")
                         showError = true
                         showLoader = false
                     }

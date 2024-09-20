@@ -105,7 +105,7 @@ private fun ExpensesHeader() {
 }
 
 @Composable
-private fun Footer() {
+fun Footer() {
     Text(
         text = "Track, Save & Grow.",
         color = Color.Black,

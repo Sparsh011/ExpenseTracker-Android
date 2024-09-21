@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.feature.home.ui.compose.screen.HomeScreen
@@ -21,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var homeComposeView: ComposeView
     private var isNoTransactionsAnimShown = false
-    private val profileViewModel by viewModels<ProfileViewModel>()
+    private val profileViewModel by activityViewModels<ProfileViewModel>()
     private var userName by mutableStateOf("")
     private var profileUri by mutableStateOf("")
     private var expenseBudget by mutableIntStateOf(-1)

@@ -3,26 +3,18 @@ package com.sparshchadha.expensetracker.feature.profile.ui.compose
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,6 +48,8 @@ fun Profile(
     navigateToExpenseSettingsScreen: () -> Unit,
     onLogout: () -> Unit,
     navigateToNotificationsScreen: () -> Unit,
+    userName: String,
+    expenseBudget: Int,
 ) {
 
     var showNameUpdateDialog by rememberSaveable {
@@ -76,7 +70,7 @@ fun Profile(
         onEdit = {
             showNameUpdateDialog = true
         },
-        name = profile.name,
+        name = userName,
         profileUri = profile.profileUri,
         phoneNumber = profile.phoneNumber
     )
@@ -113,7 +107,7 @@ fun Profile(
         ProfileItem(
             trailingIcon = ImageVector.vectorResource(id = R.drawable.bank_icon),
             trailingText = "Expense budget",
-            leadingText = profile.expenseBudget.toString(),
+            leadingText = expenseBudget.toString(),
             onItemClick = navigateToExpenseSettingsScreen
         )
 
@@ -232,9 +226,9 @@ private fun PhoneAndProfilePicture(
             painter = rememberAsyncImagePainter(model = profileUri),
             contentDescription = null,
             modifier = Modifier
-                .clip(CircleShape)
                 .padding(Dimensions.mediumPadding())
                 .size(Dimensions.profilePicSize())
+                .clip(CircleShape)
         )
 
         Column {
@@ -278,23 +272,4 @@ private fun NameAndEditIcon(
             modifier = Modifier.padding(horizontal = Dimensions.mediumPadding())
         )
     }
-}
-
-@Preview
-@Composable
-private fun ProfilePrev() {
-    Profile(
-        UserProfile(
-            verificationTime = "19/09/2002",
-            expenseBudget = 20000,
-            name = "Sparsh Chadha",
-            phoneNumber = "+910000000000",
-            emailId = "",
-            profileUri = "https://delasign.com/delasignBlack.png",
-        ),
-        onNameUpdate = {},
-        navigateToExpenseSettingsScreen = {},
-        onLogout = {},
-        navigateToNotificationsScreen = {}
-    )
 }

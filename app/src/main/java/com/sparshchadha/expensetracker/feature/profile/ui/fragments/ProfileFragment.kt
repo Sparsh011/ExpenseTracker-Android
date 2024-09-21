@@ -6,13 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.sparshchadha.expensetracker.R
+import com.sparshchadha.expensetracker.common.utils.BundleKeys
 import com.sparshchadha.expensetracker.common.utils.Utility
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 import com.sparshchadha.expensetracker.feature.profile.ui.compose.ProfileScreen
@@ -23,41 +26,29 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
-    private val profileViewModel by viewModels<ProfileViewModel>()
+    private val profileViewModel by activityViewModels<ProfileViewModel>()
 
     private lateinit var profileComposeView: ComposeView
     private var profileState = mutableStateOf<UserProfile?>(null)
     private var showError by mutableStateOf(false)
     private var showLoader by mutableStateOf(false)
-    private var isProfileFetchedOnce = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        savedInstanceState?.let {
-            isProfileFetchedOnce = it.getBoolean("isProfileFetchedOnce", false)
-        }
-
-        return inflater.inflate(R.layout.fragment_profile, container, false)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean("isProfileFetchedOnce", isProfileFetchedOnce)
-    }
-
+    private var name by mutableStateOf("")
+    private var expenseBudget by mutableIntStateOf(-1)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeViewsUsing(view = view)
 
-        fetchProfile()
         observeProfile()
+        observeName()
+        observeExpenseBudget()
 
         profileComposeView.setContent {
             ProfileScreen(
                 profileState = profileState.value,
+                userName = name,
+                expenseBudget = expenseBudget,
                 onBackPress = {
                     requireActivity().supportFragmentManager.popBackStack()
                 },
@@ -70,7 +61,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     profileViewModel.updateUserName(it)
                 },
                 navigateToExpenseSettingsScreen = {
-                    navigateToExpenseSettingsScreen()
+                    navigateToExpenseSettingsScreen(profileState.value?.expenseBudget ?: -1)
                 },
                 onLogout = {
 
@@ -81,16 +72,21 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
+    private fun observeExpenseBudget() {
+        profileViewModel.expenseBudget.asLiveData().observe(viewLifecycleOwner) {
+            this.expenseBudget = it
+        }
+    }
+
+    private fun observeName() {
+        profileViewModel.userName.asLiveData().observe(viewLifecycleOwner) {
+            this.name = it
+        }
+    }
+
 
     private fun initializeViewsUsing(view: View) {
         profileComposeView = view.findViewById(R.id.profile_compose_view)
-    }
-
-    private fun fetchProfile() {
-        if (!isProfileFetchedOnce) {
-            profileViewModel.getUserProfile()
-            isProfileFetchedOnce = true
-        }
     }
 
     private fun observeProfile() {
@@ -115,13 +111,18 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
-    private fun navigateToExpenseSettingsScreen() {
+    private fun navigateToExpenseSettingsScreen(currentExpenseBudget: Int) {
+        val fragment = ExpenseSettingsFragment()
+        fragment.arguments = Bundle().apply {
+            putInt(BundleKeys.EXPENSE_BUDGET_KEY, currentExpenseBudget)
+        }
+
         requireActivity().supportFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.slide_in, R.anim.fade_out,
                 R.anim.fade_in, R.anim.slide_out
             )
-            .add(R.id.app_container, ExpenseSettingsFragment())
+            .add(R.id.app_container, fragment)
             .addToBackStack("profile_fragment")
             .commit()
     }

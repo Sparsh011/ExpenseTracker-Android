@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -45,17 +46,25 @@ import kotlin.math.abs
 fun ExpenseSettingsScreen(
     currentExpenseBudget: Int,
     onChangeBudget: (Int) -> Unit,
-    onBackPress: () -> Unit
+    onBackPress: () -> Unit,
 ) {
     var newExpenseBudget by rememberSaveable {
         mutableStateOf(currentExpenseBudget.toString())
     }
 
-    Column (
+    Column(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
 
-        ETTopBar(text = "Expense Settings", onBackPress = onBackPress, isBackEnabled = true)
+        ETTopBar(
+            text = "Expense Settings",
+            onBackPress = onBackPress,
+            isBackEnabled = true,
+            modifier = Modifier
+                .statusBarsPadding()
+                .height(Dimensions.topBarHeight())
+                .fillMaxWidth()
+        )
 
         Text(
             buildAnnotatedString {

@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -33,7 +34,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
     private val authViewModel by viewModels<AuthViewModel>()
-    private val profileViewModel by viewModels<ProfileViewModel>()
+    private val profileViewModel by activityViewModels<ProfileViewModel>()
 
     private lateinit var loginComposeView: ComposeView
 

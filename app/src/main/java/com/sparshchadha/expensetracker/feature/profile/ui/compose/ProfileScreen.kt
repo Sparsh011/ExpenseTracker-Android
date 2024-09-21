@@ -21,6 +21,8 @@ import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfi
 @Composable
 fun ProfileScreen(
     profileState: UserProfile?,
+    userName: String,
+    expenseBudget: Int,
     onBackPress: () -> Unit,
     onRetryProfileFetch: () -> Unit,
     showLoader: Boolean,
@@ -63,6 +65,8 @@ fun ProfileScreen(
                 ) {
                 Profile(
                     profile = it,
+                    userName = userName,
+                    expenseBudget = expenseBudget,
                     onNameUpdate = onNameUpdate,
                     navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
                     onLogout = onLogout,

@@ -7,8 +7,7 @@ import com.sparshchadha.expensetracker.feature.expense.data.remote.dto.ExpenseCr
 @Entity
 data class ExpenseEntity(
     @PrimaryKey(autoGenerate = true)
-    val expenseId: Int,
-    val anonymousId: Int,
+    val expenseId: Int? = null,
     val createdAt: String,
     val updatedAt: String,
     val amount: Double,

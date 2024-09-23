@@ -4,7 +4,8 @@ import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEnti
 import kotlinx.coroutines.flow.Flow
 
 interface ExpenseRepository {
-    suspend fun getAllExpenses(expenseEntity: ExpenseEntity): Flow<List<ExpenseEntity>>
+    suspend fun getAllExpenses(): Flow<List<ExpenseEntity>>
+    fun getCurrentDayExpenses(currentDate: String): Flow<List<ExpenseEntity>>
 
     fun saveExpense(expenseEntity: ExpenseEntity)
     fun updateExpense(expenseEntity: ExpenseEntity)

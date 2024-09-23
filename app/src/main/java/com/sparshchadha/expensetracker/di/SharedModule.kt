@@ -137,9 +137,10 @@ object SharedModule {
     @Provides
     fun provideExpenseRepository(
         dataStorePreference: ExpenseTrackerDataStorePreference,
-        expenseCardDao: ExpenseDao,
-        sharedPref: ExpenseTrackerSharedPref
+        expenseDao: ExpenseDao,
+        sharedPref: ExpenseTrackerSharedPref,
+        api: ExpenseTrackerAPI
     ): ExpenseRepository {
-        return ExpenseRepositoryImpl(dataStorePreference, expenseCardDao, sharedPref)
+        return ExpenseRepositoryImpl(dataStorePreference, expenseDao, sharedPref, api)
     }
 }

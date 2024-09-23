@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId = "com.sparshchadha.expensetracker"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -145,6 +145,10 @@ dependencies {
 
     // region Otpless
     implementation (libs.otpless.android.sdk)
+    // endregion
+
+    // region LeakCanary
+    debugImplementation (libs.leakcanary.android)
     // endregion
 
 }

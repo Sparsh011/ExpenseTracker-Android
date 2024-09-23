@@ -5,6 +5,9 @@ import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.AccessTokenR
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerificationResponse
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyGoogleIdTokenRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
+import com.sparshchadha.expensetracker.feature.expense.data.remote.dto.ExpenseCreationResponse
+import com.sparshchadha.expensetracker.feature.expense.data.remote.dto.ExpenseCreationRequest
+import com.sparshchadha.expensetracker.feature.expense.data.remote.dto.ExpenseUpdateResponse
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UpdateProfileFieldRequest
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UpdateProfileFieldResponse
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
@@ -41,6 +44,18 @@ interface ExpenseTrackerAPI {
         @Header("Authorization") authorization: String,
         @Body updateProfileFieldRequest: UpdateProfileFieldRequest
     ): Response<UpdateProfileFieldResponse>
+
+    @POST("/expense")
+    suspend fun createExpense(
+        @Header("Authorization") authorization: String,
+        @Body expenseRequest: ExpenseCreationRequest
+    ): Response<ExpenseCreationResponse>
+
+    @PATCH("/expense")
+    suspend fun updateExpense(
+        @Header("Authorization") authorization: String,
+        @Body expenseRequest: ExpenseCreationRequest
+    ): Response<ExpenseUpdateResponse>
 
     companion object {
         const val BASE_URL = "https://expensetracker-engine.onrender.com"

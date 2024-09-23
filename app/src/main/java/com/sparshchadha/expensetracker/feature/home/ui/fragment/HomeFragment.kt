@@ -9,8 +9,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.sparshchadha.expensetracker.R
+import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
+import com.sparshchadha.expensetracker.feature.expense.presentation.viewmodel.ExpenseViewModel
 import com.sparshchadha.expensetracker.feature.home.ui.compose.screen.HomeScreen
 import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragment
 import com.sparshchadha.expensetracker.feature.profile.ui.fragments.ProfileFragment
@@ -19,19 +23,25 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
-    private lateinit var homeComposeView: ComposeView
-    private var isNoTransactionsAnimShown = false
     private val profileViewModel by activityViewModels<ProfileViewModel>()
+    private val expenseViewModel by viewModels<ExpenseViewModel>()
+
+    private lateinit var homeComposeView: ComposeView
+    private lateinit var createExpenseFab: FloatingActionButton
+
+    private var isNoTransactionsAnimShown = false
+
     private var userName by mutableStateOf("")
     private var profileUri by mutableStateOf("")
     private var expenseBudget by mutableIntStateOf(-1)
+    private var currentDayExpenses = mutableListOf<ExpenseEntity>()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeViewsUsing(view = view)
 
-       addObservers()
+        addObservers()
 
         homeComposeView.setContent {
             HomeScreen(
@@ -44,7 +54,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 isNoTransactionsAnimShown = isNoTransactionsAnimShown,
                 expenseBudget = expenseBudget,
                 profileUri = profileUri,
-                userName = userName
+                userName = userName,
+                allExpenses = currentDayExpenses.toList()
             )
         }
     }
@@ -52,12 +63,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun initializeViewsUsing(view: View) {
         homeComposeView = view.findViewById(R.id.home_compose_view)
+        createExpenseFab = view.findViewById(R.id.fab_create_expense)
+
+        createExpenseFab.setOnClickListener { navigateToExpenseCreationScreen() }
+    }
+
+    private fun navigateToExpenseCreationScreen() {
+
     }
 
     private fun addObservers() {
         observeUserName()
         observeProfileUri()
         observeExpenseBudget()
+        observeCurrentDayExpenses()
     }
 
     private fun observeExpenseBudget() {
@@ -75,6 +94,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun observeUserName() {
         profileViewModel.userName.asLiveData().observe(viewLifecycleOwner) {
             userName = it
+        }
+    }
+
+    private fun observeCurrentDayExpenses() {
+        expenseViewModel.currentDayExpenses.asLiveData().observe(viewLifecycleOwner) {
+            it?.let { expenses ->
+                currentDayExpenses = expenses.toMutableList()
+            }
         }
     }
 

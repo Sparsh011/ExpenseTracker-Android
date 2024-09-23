@@ -23,7 +23,7 @@ import com.sparshchadha.expensetracker.feature.home.ui.compose.components.Top5Tr
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
-import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
+import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 
 @Composable
 fun HomeScreen(
@@ -32,7 +32,8 @@ fun HomeScreen(
     isNoTransactionsAnimShown: Boolean,
     expenseBudget: Int,
     userName: String,
-    profileUri: String
+    profileUri: String,
+    allExpenses: List<ExpenseEntity>
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val listState = rememberLazyListState()

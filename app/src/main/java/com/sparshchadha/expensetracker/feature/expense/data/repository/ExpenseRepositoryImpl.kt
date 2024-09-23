@@ -1,5 +1,6 @@
 package com.sparshchadha.expensetracker.feature.expense.data.repository
 
+import com.sparshchadha.expensetracker.core.network.api.ExpenseTrackerAPI
 import com.sparshchadha.expensetracker.core.storage.datastore.ExpenseTrackerDataStorePreference
 import com.sparshchadha.expensetracker.core.storage.shared_preference.ExpenseTrackerSharedPref
 import com.sparshchadha.expensetracker.feature.expense.data.local.room.dao.ExpenseDao
@@ -12,8 +13,9 @@ class ExpenseRepositoryImpl(
     private val dataStorePreference: ExpenseTrackerDataStorePreference,
     private val expenseDao: ExpenseDao,
     private val sharedPref: ExpenseTrackerSharedPref,
+    private val api: ExpenseTrackerAPI
 ) : ExpenseRepository {
-    override suspend fun getAllExpenses(expenseEntity: ExpenseEntity): Flow<List<ExpenseEntity>> =
+    override suspend fun getAllExpenses(): Flow<List<ExpenseEntity>> =
         expenseDao.getAllExpenses()
 
 
@@ -27,5 +29,9 @@ class ExpenseRepositoryImpl(
 
     override fun deleteExpense(expenseEntity: ExpenseEntity) {
         expenseDao.deleteExpense(expenseEntity)
+    }
+
+    override fun getCurrentDayExpenses(currentDate: String): Flow<List<ExpenseEntity>> {
+        return expenseDao.getExpensesForCurrentDay(currentDate)
     }
 }

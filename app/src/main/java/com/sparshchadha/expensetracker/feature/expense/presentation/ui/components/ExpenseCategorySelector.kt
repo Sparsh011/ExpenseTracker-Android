@@ -33,7 +33,7 @@ import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.core.domain.ExpenseCategories
-import com.sparshchadha.expensetracker.feature.expense.presentation.getIconForCategory
+import com.sparshchadha.expensetracker.feature.expense.presentation.ExpenseCategoryMapper
 
 @Composable
 fun ExpenseCategorySelector(
@@ -146,7 +146,7 @@ private fun CategoryItem(modifier: Modifier, category: ExpenseCategories, onClic
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            imageVector = ImageVector.vectorResource(id = getIconForCategory(category)),
+            imageVector = ImageVector.vectorResource(id = ExpenseCategoryMapper.getIconForCategory(category)),
             contentDescription = null,
             tint = Color.DarkGray,
             modifier = Modifier.size(Dimensions.sliderIconSize())

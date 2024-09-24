@@ -69,16 +69,8 @@ fun HomeScreen(
 
         item {
             CurrentDayExpenses(
-                isEmptyListAnimationShown = isNoTransactionsAnimShown,
+                expenses = allExpenses
             )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
-        }
-
-        item {
-            Top5TransactionsList()
         }
 
         item {

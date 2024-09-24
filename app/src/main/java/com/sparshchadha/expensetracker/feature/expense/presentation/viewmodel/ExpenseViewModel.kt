@@ -50,7 +50,8 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun fetchCurrentDayExpenses() {
-        val currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+//        val currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val currentDate = "2024-09-24 02:51:00.000000 +0530"
         viewModelScope.launch(Dispatchers.IO) {
             expenseRepository.getCurrentDayExpenses(currentDate).collect {
                 _currentDayExpenses.value = it

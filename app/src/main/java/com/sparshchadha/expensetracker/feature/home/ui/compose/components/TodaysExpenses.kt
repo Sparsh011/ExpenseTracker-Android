@@ -30,9 +30,12 @@ import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 
 @Composable
-fun CurrentDayExpenses(isEmptyListAnimationShown: Boolean) {
+fun CurrentDayExpenses(
+    expenses: List<ExpenseEntity>
+) {
     Text(
         text = "Today's Transactions",
         color = Color.DarkGray,
@@ -43,11 +46,8 @@ fun CurrentDayExpenses(isEmptyListAnimationShown: Boolean) {
         fontSize = FontSizes.mediumFontSize().value.sp
     )
 
-    NoTransactionsComposable(
-        isEmptyListAnimationShown = isEmptyListAnimationShown,
-    )
-    for (i in 0..3) {
-        ExpenseCard()
+    for (expense in expenses) {
+        ExpenseCard(expense)
     }
 }
 

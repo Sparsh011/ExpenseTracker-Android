@@ -43,9 +43,9 @@ fun Top5TransactionsList() {
         )
     )
 
-    for (i in 0 until 5) {
-        ExpenseCard()
-    }
+//    for (i in 0 until 5) {
+//        ExpenseCard()
+//    }
 }
 
 

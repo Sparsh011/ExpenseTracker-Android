@@ -1,6 +1,8 @@
 package com.sparshchadha.expensetracker.feature.home.ui.compose.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -21,15 +21,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.convertToHumanReadableDate
+import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
+import com.sparshchadha.expensetracker.feature.expense.presentation.ExpenseCategoryMapper
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ExpenseCard(modifier: Modifier = Modifier) {
+fun ExpenseCard(expense: ExpenseEntity) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,7 +62,7 @@ fun ExpenseCard(modifier: Modifier = Modifier) {
                     .background(AppColors.secondaryWhite)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Build,
+                    imageVector = ImageVector.vectorResource(id = ExpenseCategoryMapper.getIconForCategory(expense.category)),
                     contentDescription = null,
                     modifier = Modifier.align(Alignment.Center)
                 )
@@ -66,7 +72,7 @@ fun ExpenseCard(modifier: Modifier = Modifier) {
                 modifier = Modifier.weight(0.65f)
             ) {
                 Text(
-                    text = "Top 5 Big Spends",
+                    text = expense.title,
                     color = Color.DarkGray,
                     modifier = Modifier.padding(
                         start = Dimensions.largePadding(),
@@ -80,12 +86,14 @@ fun ExpenseCard(modifier: Modifier = Modifier) {
                 )
 
                 Text(
-                    text = "21 Sept 2024",
+                    text = expense.createdAt.convertToHumanReadableDate(),
                     color = Color.Gray,
-                    modifier = Modifier.padding(
-                        start = Dimensions.largePadding(),
-                        end = Dimensions.mediumPadding()
-                    ),
+                    modifier = Modifier
+                        .padding(
+                            start = Dimensions.largePadding(),
+                            end = Dimensions.mediumPadding()
+                        )
+                        .basicMarquee(2),
                     fontSize = FontSizes.smallNonScaledFontSize(),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -93,7 +101,7 @@ fun ExpenseCard(modifier: Modifier = Modifier) {
             }
 
             Text(
-                text = "- ₹45",
+                text = "-" + expense.amount.toString(),
                 color = Color.Black,
                 fontSize = FontSizes.mediumNonScaledFontSize(),
                 maxLines = 1,

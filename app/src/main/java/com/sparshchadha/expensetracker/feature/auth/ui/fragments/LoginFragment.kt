@@ -122,7 +122,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             headlessRequest.setPhoneNumber(pair.first, pair.second)
 
             otplessView.startHeadless(headlessRequest, this::onOtplessResult)
-            showLoadingScreen()
+//            showLoadingScreen()
         } catch (e: InvalidPhoneException) {
             requireContext().showToast(e.message ?: "Incorrect phone number.")
             dismissLoadingScreen()

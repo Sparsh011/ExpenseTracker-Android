@@ -4,13 +4,12 @@ enum class ExpenseCategories(val displayName: String) {
     FUEL("Fuel"),
     FOOD("Food"),
     TRAVEL("Travel"),
-    E_COMMERCE("E-Commerce"),
-    ENTERTAINMENT("Entertainment"),
+    GROCERY("Grocery"),
+    MOVIES("Movies"),
     MEDICAL("Medical"),
     INSURANCE("Insurance"),
     MOBILE_RECHARGE("Recharge"),
     OTT_SUBSCRIPTION("OTT"),
-    UTILITY_BILL("Utility"),
     BROADBAND("Broadband"),
     OTHER("Other");
 

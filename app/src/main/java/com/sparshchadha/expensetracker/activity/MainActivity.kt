@@ -12,7 +12,10 @@ import androidx.navigation.NavController
 import androidx.navigation.createGraph
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.fragment
+import com.otpless.main.OtplessManager
+import com.otpless.main.OtplessView
 import com.sparshchadha.expensetracker.R
+import com.sparshchadha.expensetracker.common.utils.Constants
 import com.sparshchadha.expensetracker.core.navigation.ExpenseTrackerNavGraph
 import com.sparshchadha.expensetracker.feature.auth.ui.fragments.LoginFragment
 import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
@@ -26,11 +29,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val authViewModel: AuthViewModel by viewModels()
     private lateinit var parentNavController: NavController
+    private lateinit var otplessView: OtplessView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        initializeOtpless()
 
         if (savedInstanceState == null) {
             // Used to fix the issue of onCreate being called again when configuration changes
@@ -86,5 +92,10 @@ class MainActivity : AppCompatActivity() {
             window,
             findViewById(R.id.app_container)
         ).isAppearanceLightStatusBars = true
+    }
+
+    private fun initializeOtpless() {
+        otplessView = OtplessManager.getInstance().getOtplessView(this)
+        otplessView.initHeadless(Constants.OTPLESS_APPID)
     }
 }

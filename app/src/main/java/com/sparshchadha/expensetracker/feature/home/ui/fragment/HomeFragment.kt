@@ -14,6 +14,7 @@ import androidx.lifecycle.asLiveData
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
+import com.sparshchadha.expensetracker.feature.expense.presentation.ui.screens.ExpenseFragment
 import com.sparshchadha.expensetracker.feature.expense.presentation.viewmodel.ExpenseViewModel
 import com.sparshchadha.expensetracker.feature.home.ui.compose.screen.HomeScreen
 import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragment
@@ -69,7 +70,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun navigateToExpenseCreationScreen() {
-
+        requireActivity().supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_up, R.anim.fade_out,
+                R.anim.fade_in, R.anim.slide_down
+            )
+            .add(R.id.app_container, ExpenseFragment())
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun addObservers() {

@@ -51,14 +51,15 @@ fun DateAndTimeSelector(
     timePickerState: TimePickerState,
 ) {
     Column(
-        modifier = Modifier.background(AppColors.secondaryWhite)
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(Dimensions.cornerRadius()))
+            .background(AppColors.secondaryWhite)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+
                 .padding(Dimensions.smallPadding())
-                .clip(RoundedCornerShape(Dimensions.cornerRadius()))
-                .background(AppColors.secondaryWhite)
                 .clickable {
                     hideDatePicker(!isShowingDateAndTimePicker)
                 },

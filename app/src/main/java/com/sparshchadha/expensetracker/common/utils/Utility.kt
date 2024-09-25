@@ -1,6 +1,11 @@
 package com.sparshchadha.expensetracker.common.utils
 
 import android.util.Log
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.core.text.isDigitsOnly
 
 object Utility {
@@ -18,5 +23,13 @@ object Utility {
         if (otp.trim().length != 6) return false
         if (!otp.isDigitsOnly()) return false
         return true
+    }
+
+    fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = composed {
+        this.clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
+            onClick()
+        }
     }
 }

@@ -49,7 +49,7 @@ fun Profile(
     onLogout: () -> Unit,
     navigateToNotificationsScreen: () -> Unit,
     userName: String,
-    expenseBudget: Int,
+    expenseBudget: Double,
 ) {
 
     var showNameUpdateDialog by rememberSaveable {

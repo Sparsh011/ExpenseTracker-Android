@@ -23,6 +23,7 @@ import com.sparshchadha.expensetracker.feature.transactions.TransactionsFragment
 import com.sparshchadha.expensetracker.core.navigation.ExpenseTrackerNavGraph.BottomBarScreenRoutes
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
+import com.sparshchadha.expensetracker.common.utils.Utility.noRippleClickable
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -100,7 +101,7 @@ class MainBottomNavigationBarFragment : Fragment(R.layout.fragment_main_bottom_n
                 contentDescription = null,
                 tint = if (selectedIcon.value == BottomBarScreenNames.HOME) AppColors.primaryColor else Color.LightGray,
                 modifier = Modifier
-                    .clickable {
+                    .noRippleClickable {
                         if (selectedIcon.value != BottomBarScreenNames.HOME) {
                             selectedIcon.value = BottomBarScreenNames.HOME
                             navigateToHomeScreen()
@@ -116,7 +117,7 @@ class MainBottomNavigationBarFragment : Fragment(R.layout.fragment_main_bottom_n
                 contentDescription = null,
                 tint = if (selectedIcon.value == BottomBarScreenNames.TRANSACTIONS) AppColors.primaryColor else Color.LightGray,
                 modifier = Modifier
-                    .clickable {
+                    .noRippleClickable {
                         if (selectedIcon.value != BottomBarScreenNames.TRANSACTIONS) {
                             selectedIcon.value = BottomBarScreenNames.TRANSACTIONS
                             navigateToTransactionsScreen()
@@ -132,7 +133,7 @@ class MainBottomNavigationBarFragment : Fragment(R.layout.fragment_main_bottom_n
                 contentDescription = null,
                 tint = if (selectedIcon.value == BottomBarScreenNames.STATISTICS) AppColors.primaryColor else Color.LightGray,
                 modifier = Modifier
-                    .clickable {
+                    .noRippleClickable {
                         if (selectedIcon.value != BottomBarScreenNames.STATISTICS) {
                             selectedIcon.value = BottomBarScreenNames.STATISTICS
                             navigateToStatisticsScreen()

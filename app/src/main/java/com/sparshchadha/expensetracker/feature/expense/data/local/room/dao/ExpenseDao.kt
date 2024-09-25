@@ -29,4 +29,16 @@ interface ExpenseDao {
 
     @Query("SELECT * FROM ExpenseEntity WHERE expenseId = :id")
     fun getExpenseById(id: Int): Flow<ExpenseEntity>
+
+    @Query("SELECT SUM(amount) FROM ExpenseEntity")
+    fun getLifetimeExpenditure(): Flow<Double>
+
+    @Query("SELECT SUM(amount) FROM ExpenseEntity WHERE createdOnDate <= :finalDate AND createdOnDate >= :initialDate")
+    fun getExpenditureBetweenDates(initialDate: String, finalDate: String): Flow<Long>
+
+    @Query("SELECT * FROM ExpenseEntity LIMIT :n")
+    fun getNRecentExpenses(n: Int): Flow<List<ExpenseEntity>>
+
+    @Query("SELECT SUM(amount) FROM ExpenseEntity WHERE createdOnDate >= :dateNDaysAgo")
+    fun getAmountSpentInLastNDays(dateNDaysAgo: String): Flow<Long>
 }

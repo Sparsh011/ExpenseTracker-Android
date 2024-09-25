@@ -5,17 +5,24 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import java.util.Calendar
@@ -25,6 +32,7 @@ fun GreetingAndTopBarIcons(
     navigateToNotificationsScreen: () -> Unit,
     navigateToProfileScreen: () -> Unit,
     userName: String,
+    profileUri: String,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -32,7 +40,7 @@ fun GreetingAndTopBarIcons(
 
     ) {
         Text(
-            text = getGreetingBasedOnTime() + ", $userName",
+            text = getGreetingBasedOnTime() + " $userName",
             fontSize = FontSizes.largeNonScaledFontSize(),
             color = Color.Black,
             modifier = Modifier
@@ -41,20 +49,20 @@ fun GreetingAndTopBarIcons(
             fontWeight = FontWeight.Bold
         )
 
-        Icon(
-            imageVector = Icons.Outlined.AccountCircle,
+        AsyncImage(
+            model = profileUri,
             contentDescription = null,
-            tint = Color.LightGray,
             modifier = Modifier
                 .padding(end = Dimensions.mediumPadding())
                 .size(Dimensions.homeScreenTopBarIconSize())
+                .clip(CircleShape)
                 .clickable { navigateToProfileScreen() }
         )
 
         Icon(
             imageVector = Icons.Outlined.Notifications,
             contentDescription = null,
-            tint = Color.LightGray,
+            tint = Color.Gray,
             modifier = Modifier
                 .padding(end = Dimensions.mediumPadding())
                 .size(Dimensions.homeScreenTopBarIconSize())

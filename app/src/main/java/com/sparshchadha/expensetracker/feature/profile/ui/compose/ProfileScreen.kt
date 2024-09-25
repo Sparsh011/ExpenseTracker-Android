@@ -22,7 +22,7 @@ import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfi
 fun ProfileScreen(
     profileState: UserProfile?,
     userName: String,
-    expenseBudget: Int,
+    expenseBudget: Double,
     onBackPress: () -> Unit,
     onRetryProfileFetch: () -> Unit,
     showLoader: Boolean,

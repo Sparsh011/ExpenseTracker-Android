@@ -38,4 +38,20 @@ class ExpenseRepositoryImpl(
     override fun getExpenseById(id: Int): Flow<ExpenseEntity> {
         return expenseDao.getExpenseById(id)
     }
+
+    override fun getLifetimeExpenditure(): Flow<Double> {
+        return expenseDao.getLifetimeExpenditure()
+    }
+
+    override fun getExpenditureBetweenDates(initialDate: String, finalDate: String): Flow<Long> {
+        return expenseDao.getExpenditureBetweenDates(initialDate, finalDate)
+    }
+
+    override fun getNRecentExpenses(n: Int): Flow<List<ExpenseEntity>> {
+        return expenseDao.getNRecentExpenses(n)
+    }
+
+    override fun getAmountSpentInLastNDays(dateNDaysAgo: String): Flow<Long?> {
+        return expenseDao.getAmountSpentInLastNDays(dateNDaysAgo)
+    }
 }

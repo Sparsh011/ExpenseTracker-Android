@@ -7,6 +7,9 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.widget.Toast
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -59,4 +62,14 @@ fun String.convertStrMillisToHumanReadableDate(): String {
         Utility.errorLog(e.message ?: "Unable to parse date")
         this
     }
+}
+
+fun String.convertToMilliseconds(): Long {
+    // Define the pattern that matches the date string
+    val formatter = DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMATTER_PATTERN)
+
+    // Parse the string into a LocalDate object
+    val localDate = LocalDate.parse(this, formatter)
+
+    return localDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }

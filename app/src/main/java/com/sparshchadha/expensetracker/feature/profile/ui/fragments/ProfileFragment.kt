@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -34,7 +35,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private var showLoader by mutableStateOf(false)
 
     private var name by mutableStateOf("")
-    private var expenseBudget by mutableIntStateOf(-1)
+    private var expenseBudget by mutableDoubleStateOf(-1.0)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,7 +62,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     profileViewModel.updateUserName(it)
                 },
                 navigateToExpenseSettingsScreen = {
-                    navigateToExpenseSettingsScreen(profileState.value?.expenseBudget ?: -1)
+                    navigateToExpenseSettingsScreen(profileState.value?.expenseBudget?.toDouble() ?: -1.0)
                 },
                 onLogout = {
 
@@ -111,10 +112,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
-    private fun navigateToExpenseSettingsScreen(currentExpenseBudget: Int) {
+    private fun navigateToExpenseSettingsScreen(currentExpenseBudget: Double) {
         val fragment = ExpenseSettingsFragment()
         fragment.arguments = Bundle().apply {
-            putInt(BundleKeys.EXPENSE_BUDGET_KEY, currentExpenseBudget)
+            putDouble(BundleKeys.EXPENSE_BUDGET_KEY, currentExpenseBudget)
         }
 
         requireActivity().supportFragmentManager.beginTransaction()

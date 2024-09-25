@@ -80,10 +80,6 @@ androidx-compose-material3-android = { group = "androidx.compose.material3", nam
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 # endregion
 
-# region date time dialogs
-datetime = { module = "io.github.vanpra.compose-material-dialogs:datetime", version.ref = "datetime" }
-# endregion
-
 # region ssp and sdp
 sdp-android = { module = "com.intuit.sdp:sdp-android", version.ref = "sdpAndroid" }
 ssp-android = { module = "com.intuit.ssp:ssp-android", version.ref = "sspAndroid" }

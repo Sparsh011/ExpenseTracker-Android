@@ -38,7 +38,11 @@ class ExpenseFragment : Fragment(R.layout.fragment_expense) {
                     if (!it.isValid()) {
                         requireContext().showToast("Please fill ${it.getInvalidField()}")
                     }
-                    expenseViewModel.saveExpense(it)
+                    if (selectedExpense.value == null) {
+                        expenseViewModel.saveExpense(it)
+                    } else {
+                        expenseViewModel.updateExpense(it)
+                    }
                     requireContext().showToast("Expense Saved!")
                     requireActivity().supportFragmentManager.popBackStack()
                 },

@@ -44,7 +44,7 @@ import kotlin.math.abs
 
 @Composable
 fun ExpenseSettingsScreen(
-    currentExpenseBudget: Int,
+    currentExpenseBudget: Double,
     onChangeBudget: (Int) -> Unit,
     onBackPress: () -> Unit,
 ) {

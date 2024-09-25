@@ -8,6 +8,11 @@ interface ExpenseRepository {
     fun getCurrentDayExpenses(currentDate: String): Flow<List<ExpenseEntity>>
     fun getExpenseById(id: Int): Flow<ExpenseEntity>
 
+    fun getLifetimeExpenditure(): Flow<Double>
+    fun getExpenditureBetweenDates(initialDate: String, finalDate: String): Flow<Long>
+    fun getNRecentExpenses(n: Int): Flow<List<ExpenseEntity>>
+    fun getAmountSpentInLastNDays(dateNDaysAgo: String): Flow<Long?>
+
     fun saveExpense(expenseEntity: ExpenseEntity)
     fun updateExpense(expenseEntity: ExpenseEntity)
     fun deleteExpense(expenseEntity: ExpenseEntity)

@@ -17,6 +17,7 @@ object ExpenseCategoryMapper {
             ExpenseCategories.OTHER -> R.drawable.ic_other_expense
             ExpenseCategories.MEDICAL -> R.drawable.ic_medical
             ExpenseCategories.BROADBAND -> R.drawable.ic_broadband
+            ExpenseCategories.INVESTMENT -> R.drawable.ic_investment
         }
     }
 

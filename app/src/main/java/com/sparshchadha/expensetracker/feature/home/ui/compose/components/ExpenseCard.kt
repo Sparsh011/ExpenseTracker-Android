@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sparshchadha.expensetracker.common.utils.AppColors
@@ -87,29 +88,46 @@ fun ExpenseCard(expense: ExpenseEntity, onExpenseItemClick: (Int) -> Unit) {
                     fontWeight = FontWeight.Bold
                 )
 
-                Text(
-                    text = expense.createdOnDate.convertToHumanReadableDate(),
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .padding(
-                            start = Dimensions.largePadding(),
-                            end = Dimensions.mediumPadding()
-                        )
-                        .basicMarquee(2),
-                    fontSize = FontSizes.smallNonScaledFontSize(),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Row {
+                    Text(
+                        text = expense.createdOnDate.convertToHumanReadableDate().replace(' ', '-') + ",",
+                        color = Color.Gray,
+                        modifier = Modifier
+                            .padding(
+                                start = Dimensions.largePadding(),
+                            )
+                            .basicMarquee(2),
+                        fontSize = FontSizes.smallNonScaledFontSize(),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Text(
+                        text = expense.createdAtTime.convertToHumanReadableDate() + " " +if (expense.createdAtTime.substring(0, expense.createdAtTime.indexOf(':')) >= "12") "PM" else "AM",
+                        color = Color.Gray,
+                        modifier = Modifier
+                            .padding(
+                                start = Dimensions.extraSmallPadding(),
+                                end = Dimensions.mediumPadding()
+                            )
+                            .basicMarquee(2),
+                        fontSize = FontSizes.smallNonScaledFontSize(),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+
             }
 
             Text(
-                text = "-" + expense.amount.toString(),
-                color = Color.Black,
+                text =  expense.amount.toString(),
+                color = AppColors.errorRed,
                 fontSize = FontSizes.mediumNonScaledFontSize(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(0.2f)
+                modifier = Modifier.weight(0.2f),
+                textAlign = TextAlign.End
             )
 
         }

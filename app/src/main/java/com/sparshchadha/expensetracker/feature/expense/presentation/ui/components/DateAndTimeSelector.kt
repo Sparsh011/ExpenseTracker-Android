@@ -63,7 +63,6 @@ fun DateAndTimeSelector(
     ) {
         Row(
             modifier = Modifier
-
                 .padding(Dimensions.smallPadding())
                 .clickable {
                     hideDatePicker(!isShowingDateAndTimePicker)
@@ -84,7 +83,7 @@ fun DateAndTimeSelector(
             }
 
             Text(
-                text = createdOnDate.ifBlank { datePickerState.selectedDateMillis?.convertToHumanReadableDate() ?: "" },
+                text = createdOnDate.ifBlank { datePickerState.selectedDateMillis?.convertToHumanReadableDate()?.replace(' ', '-') ?: "" }.replace(' ', '-'),
                 color = Color.Black,
                 fontSize = FontSizes.mediumNonScaledFontSize(),
                 modifier = Modifier
@@ -95,12 +94,11 @@ fun DateAndTimeSelector(
             Text(
                 text = createdAtTime.ifBlank {
                     String.format(
-                        "%02d:%02d %s",
-                        if (timePickerState.hour % 12 == 0) 12 else timePickerState.hour % 12, // Adjust hour for AM/PM
-                        timePickerState.minute, // Minute
-                        if (timePickerState.hour >= 12) "PM" else "AM" // Determine AM or PM
+                        "%02d:%02d",
+                        if (timePickerState.hour % 12 == 0) 12 else timePickerState.hour % 12,
+                        timePickerState.minute,
                     )
-                },
+                } + " " + if (timePickerState.hour >= 12) "PM" else "AM",
                 color = Color.Black,
                 fontSize = FontSizes.mediumNonScaledFontSize(),
                 modifier = Modifier

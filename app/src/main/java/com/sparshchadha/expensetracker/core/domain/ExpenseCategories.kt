@@ -11,6 +11,7 @@ enum class ExpenseCategories(val displayName: String) {
     MOBILE_RECHARGE("Recharge"),
     OTT_SUBSCRIPTION("OTT"),
     BROADBAND("Broadband"),
+    INVESTMENT("Investment"),
     OTHER("Other");
 
     override fun toString(): String {

@@ -104,10 +104,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     // endregion
 
-    // region date and time picker
-    implementation(libs.datetime)
-    // endregion
-
     // region coil
     implementation(libs.coil.compose)
     // endregion

@@ -35,6 +35,7 @@ import androidx.compose.ui.text.withStyle
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.Utility.noRippleClickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,7 +80,7 @@ fun NameUpdateDialog(currentName: String, onNameUpdate: (String) -> Unit, onDism
                     imageVector = Icons.Default.Clear,
                     contentDescription = null,
                     modifier = Modifier
-                        .clickable {
+                        .noRippleClickable {
                             onDismiss()
                         }
                         .padding(

@@ -30,16 +30,21 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import java.text.NumberFormat
+import java.util.Locale
+import kotlin.math.exp
 
 @Composable
 fun BalanceAndBudgetCard(
     cardHeight: Double,
     onClick: () -> Unit,
-    expenseBudget: Int,
+    expenseBudget: Double,
+    amountSpentInLast30Days: Double,
 ) {
     Card(
         onClick = onClick,
@@ -62,12 +67,12 @@ fun BalanceAndBudgetCard(
             horizontalArrangement = Arrangement.Absolute.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            RemainingBalance()
+            RemainingBalance(amountSpentInLast30Days)
 
             Budget(expenseBudget)
         }
 
-        BudgetAndBalanceProgress()
+        BudgetAndBalanceProgress(amountSpent = amountSpentInLast30Days, expenseBudget = expenseBudget)
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -93,10 +98,12 @@ fun BalanceAndBudgetCard(
 }
 
 @Composable
-private fun RemainingBalance() {
+private fun RemainingBalance(balance: Double) {
+    val formattedBalance = formatAmount(balance)
+
     Column {
         Text(
-            text = "69,000 RS",
+            text = "₹$formattedBalance ",
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = FontSizes.largeNonScaledFontSize(),
@@ -104,27 +111,31 @@ private fun RemainingBalance() {
                 start = Dimensions.mediumPadding(),
                 top = Dimensions.mediumPadding(),
                 bottom = Dimensions.extraSmallPadding()
-            )
+            ),
+            textAlign = TextAlign.Start
         )
 
         Text(
-            text = "Balance",
+            text = "Spent",
             color = Color.LightGray,
             fontSize = FontSizes.mediumNonScaledFontSize(),
             modifier = Modifier.padding(
                 horizontal = Dimensions.mediumPadding(),
-            )
+            ),
+            textAlign = TextAlign.Start
         )
     }
 }
 
 @Composable
 private fun Budget(
-    budget: Int
+    budget: Double
 ) {
+    val formattedBudget = if (budget != -1.0) formatAmount(budget) else "Add budget"
+
     Column {
         Text(
-            text = if (budget != -1) budget.toString() else "Add budget",
+            text = if (budget != -1.0) "₹$formattedBudget" else formattedBudget,
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = FontSizes.largeNonScaledFontSize(),
@@ -132,7 +143,8 @@ private fun Budget(
                 end = Dimensions.mediumPadding(),
                 top = Dimensions.mediumPadding(),
                 bottom = Dimensions.extraSmallPadding()
-            )
+            ),
+            textAlign = TextAlign.End
         )
 
         Text(
@@ -141,26 +153,31 @@ private fun Budget(
             fontSize = FontSizes.mediumNonScaledFontSize(),
             modifier = Modifier.padding(
                 horizontal = Dimensions.mediumPadding(),
-            )
+            ),
+            textAlign = TextAlign.End
         )
     }
 }
 
-@Composable
-private fun BudgetAndBalanceProgress() {
-    var progress by rememberSaveable { mutableFloatStateOf(0F) }
-    val progressAnimDuration = 1_000
-    val progressAnimation by animateFloatAsState(
-        targetValue = progress,
-        animationSpec = tween(progressAnimDuration), label = "",
-    )
-    LaunchedEffect(key1 = Unit) {
-        progress = 0.7f
-    }
+private fun formatAmount(amount: Double): String {
+    val formatter = NumberFormat.getNumberInstance(Locale("en", "IN"))
+    return formatter.format(amount)
+}
 
-    val gradient = Brush.linearGradient(
-        colors = listOf(AppColors.primaryGreen, AppColors.primaryPurple)
+
+@Composable
+private fun BudgetAndBalanceProgress(
+    amountSpent: Double,
+    expenseBudget: Double
+) {
+    val targetProgress = if (expenseBudget > 0) (amountSpent / expenseBudget).toFloat() else 0f
+
+    val progressAnimation by animateFloatAsState(
+        targetValue = targetProgress,
+        animationSpec = tween(1_000),
+        label = ""
     )
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -176,8 +193,8 @@ private fun BudgetAndBalanceProgress() {
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(fraction = progressAnimation)
-                .clip(RoundedCornerShape(2.dp))
-                .background(gradient)
+                .clip(RoundedCornerShape(Dimensions.cornerRadius()))
+                .background(AppColors.primaryPurple)
         )
     }
 }

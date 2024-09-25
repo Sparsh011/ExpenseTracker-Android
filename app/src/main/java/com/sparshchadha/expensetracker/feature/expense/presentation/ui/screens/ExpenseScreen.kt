@@ -17,14 +17,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -41,6 +44,7 @@ import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.common.utils.convertStrMillisToHumanReadableDate
 import com.sparshchadha.expensetracker.common.utils.convertToHumanReadableDate
+import com.sparshchadha.expensetracker.common.utils.convertToMilliseconds
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.components.DateAndTimeSelector
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.components.ExpenseCategorySelector
@@ -62,17 +66,13 @@ fun ExpenseScreen(
     onCancel: () -> Unit,
     isNewExpense: Boolean,
 ) {
-    var title by rememberSaveable { mutableStateOf(expenseEntity?.title ?: "") }
-    var description by rememberSaveable { mutableStateOf(expenseEntity?.description ?: "") }
-    var amount by rememberSaveable { mutableStateOf(expenseEntity?.amount?.toString() ?: "") }
-    var category by rememberSaveable { mutableStateOf(expenseEntity?.category ?: "") }
-    var isRecurring by rememberSaveable { mutableStateOf(expenseEntity?.isRecurring ?: false) }
-    var recurAfterDays by rememberSaveable {
-        mutableStateOf(
-            expenseEntity?.recurAfterDays?.toString() ?: ""
-        )
-    }
-    val currency by rememberSaveable { mutableStateOf(expenseEntity?.currency ?: "INR") }
+    var title by rememberSaveable { mutableStateOf("") }
+    var description by rememberSaveable { mutableStateOf("") }
+    var amount by rememberSaveable { mutableStateOf("") }
+    var category by rememberSaveable { mutableStateOf("") }
+    var isRecurring by rememberSaveable { mutableStateOf(false) }
+    var recurAfterDays by rememberSaveable { mutableStateOf("") }
+    val currency by remember { mutableStateOf( "INR") }
 
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(
@@ -85,19 +85,19 @@ fun ExpenseScreen(
         is24Hour = false,
     )
 
-    val createdOnDate by rememberSaveable {
+    var createdOnDate by remember {
         mutableStateOf(expenseEntity?.createdOnDate?.takeIf { it.isNotBlank() } ?: "")
     }
 
-    val createdAtTime by rememberSaveable {
+    var createdAtTime by remember {
         mutableStateOf(expenseEntity?.createdAtTime?.takeIf { it.isNotBlank() } ?: "")
     }
 
-    val updatedOnDate by rememberSaveable {
+    val updatedOnDate by remember {
         mutableStateOf("")
     }
 
-    val updatedAtTime by rememberSaveable {
+    val updatedAtTime by remember {
         mutableStateOf("")
     }
 
@@ -108,6 +108,33 @@ fun ExpenseScreen(
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
+    LaunchedEffect(key1 = timePickerState.hour, key2 = timePickerState.minute) {
+        createdAtTime = String.format(
+            "%02d:%02d",
+            timePickerState.hour,
+            timePickerState.minute
+        )
+    }
+
+    LaunchedEffect (key1 = datePickerState.selectedDateMillis) {
+        datePickerState.selectedDateMillis?.let {
+            createdOnDate = it.convertToHumanReadableDate()
+        }
+    }
+
+    LaunchedEffect(expenseEntity) {
+        expenseEntity?.let {
+            title = it.title
+            description = it.description
+            amount = it.amount.toString()
+            category = it.category
+            isRecurring = it.isRecurring
+            recurAfterDays = it.recurAfterDays.toString()
+            createdOnDate = it.createdOnDate
+            createdAtTime = it.createdAtTime
+            datePickerState.selectedDateMillis = it.createdOnDate.convertToMilliseconds()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -182,19 +209,11 @@ fun ExpenseScreen(
                 isNewExpense = isNewExpense
             )
 
-            if (!isNewExpense) {
-                Text(
-                    text = "Last Updated: $updatedOnDate $updatedAtTime",
-                    modifier = Modifier.padding(Dimensions.smallPadding()),
-                    fontSize = FontSizes.mediumFontSize().value.sp,
-                    color = Color.Black
-                )
-            }
-
             Button(
                 onClick = {
                     val expense = ExpenseEntity(
-                        createdOnDate = datePickerState.selectedDateMillis?.convertToHumanReadableDate()?.lowercase()
+                        expenseId = expenseEntity?.expenseId,
+                        createdOnDate = datePickerState.selectedDateMillis?.convertToHumanReadableDate()
                             ?: "",
                         createdAtTime = String.format(
                             "%02d:%02d",

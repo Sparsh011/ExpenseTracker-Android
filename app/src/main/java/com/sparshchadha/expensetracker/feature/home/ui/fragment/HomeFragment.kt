@@ -3,6 +3,7 @@ package com.sparshchadha.expensetracker.feature.home.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,13 +37,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var userName by mutableStateOf("")
     private var profileUri by mutableStateOf("")
-    private var expenseBudget by mutableIntStateOf(-1)
+    private var expenseBudget by mutableDoubleStateOf(-1.0)
     private val currentDayExpenses = mutableStateListOf<ExpenseEntity>()
+    private var amountSpentInLast30Days by mutableDoubleStateOf(0.0)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeViewsUsing(view = view)
 
+        expenseViewModel.fetchLast30DaysAmountSpent()
         addObservers()
 
         homeComposeView.setContent {
@@ -57,10 +60,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 expenseBudget = expenseBudget,
                 profileUri = profileUri,
                 userName = userName,
+                amountSpentInLast30Days = amountSpentInLast30Days,
                 allExpenses = currentDayExpenses,
                 onExpenseItemClick = { expenseId ->
                     navigateToExpenseScreen(expenseId)
-                }
+                },
             )
         }
     }
@@ -96,6 +100,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         observeProfileUri()
         observeExpenseBudget()
         observeCurrentDayExpenses()
+        observeAmountSpendInLast30Days()
+    }
+
+    private fun observeAmountSpendInLast30Days() {
+        expenseViewModel.last30DaysAmountSpent.asLiveData().observe(viewLifecycleOwner) {
+            amountSpentInLast30Days = if (it == -1.0) 0.0 else it
+        }
     }
 
     private fun observeExpenseBudget() {

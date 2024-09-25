@@ -29,11 +29,12 @@ fun HomeScreen(
     navigateToNotificationsFragment: () -> Unit,
     navigateToProfileFragment: () -> Unit,
     isNoTransactionsAnimShown: Boolean,
-    expenseBudget: Int,
+    expenseBudget: Double,
     userName: String,
     profileUri: String,
     allExpenses: List<ExpenseEntity>,
-    onExpenseItemClick: (Int) -> Unit
+    onExpenseItemClick: (Int) -> Unit,
+    amountSpentInLast30Days: Double
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val listState = rememberLazyListState()
@@ -49,7 +50,8 @@ fun HomeScreen(
             GreetingAndTopBarIcons(
                 navigateToNotificationsScreen = navigateToNotificationsFragment,
                 navigateToProfileScreen = navigateToProfileFragment,
-                userName = userName
+                userName = userName,
+                profileUri = profileUri
             )
         }
 
@@ -57,6 +59,7 @@ fun HomeScreen(
             BalanceAndBudgetCard(
                 cardHeight = 0.3 * screenHeight,
                 expenseBudget = expenseBudget,
+                amountSpentInLast30Days = amountSpentInLast30Days,
                 onClick = {
 
                 }

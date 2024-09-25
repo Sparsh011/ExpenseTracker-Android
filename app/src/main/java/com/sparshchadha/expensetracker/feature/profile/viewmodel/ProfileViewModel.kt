@@ -30,7 +30,7 @@ class ProfileViewModel @Inject constructor(
     private val _profileUri = MutableStateFlow("")
     val profileUri = _profileUri.asStateFlow()
 
-    private val _expenseBudget = MutableStateFlow(-1)
+    private val _expenseBudget = MutableStateFlow(-1.0)
     val expenseBudget = _expenseBudget.asStateFlow()
 
     private fun getUserProfile() {
@@ -106,13 +106,7 @@ class ProfileViewModel @Inject constructor(
     private fun getExpenseBudgetFromLocal() {
         viewModelScope.launch(Dispatchers.IO) {
             profileRepository.readExpenseBudget().collect{
-                it?.let {
-                    try {
-                        _expenseBudget.value = it.toInt()
-                    } catch (_: Exception) {
-
-                    }
-                }
+                _expenseBudget.value = it?.toDoubleOrNull() ?: 0.0
             }
         }
     }

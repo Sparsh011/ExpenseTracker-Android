@@ -24,6 +24,9 @@ interface ExpenseDao {
     @Update
     fun updateExpense(expense: ExpenseEntity)
 
-    @Query("SELECT * FROM ExpenseEntity WHERE createdAt= :currentDate")
+    @Query("SELECT * FROM ExpenseEntity WHERE createdOnDate = :currentDate")
     fun getExpensesForCurrentDay(currentDate: String): Flow<List<ExpenseEntity>>
+
+    @Query("SELECT * FROM ExpenseEntity WHERE expenseId = :id")
+    fun getExpenseById(id: Int): Flow<ExpenseEntity>
 }

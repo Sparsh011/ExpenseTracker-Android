@@ -3,6 +3,7 @@ package com.sparshchadha.expensetracker.feature.home.ui.compose.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,7 +36,7 @@ import com.sparshchadha.expensetracker.feature.expense.presentation.ExpenseCateg
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ExpenseCard(expense: ExpenseEntity) {
+fun ExpenseCard(expense: ExpenseEntity, onExpenseItemClick: (Int) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,7 +44,8 @@ fun ExpenseCard(expense: ExpenseEntity) {
             .padding(
                 horizontal = Dimensions.mediumPadding(),
                 vertical = Dimensions.extraSmallPadding()
-            ),
+            )
+            .clickable { onExpenseItemClick(expense.expenseId ?: -1) },
         colors = CardDefaults.cardColors(
             containerColor = AppColors.primaryWhite
         )
@@ -69,7 +71,7 @@ fun ExpenseCard(expense: ExpenseEntity) {
             }
 
             Column(
-                modifier = Modifier.weight(0.65f)
+                modifier = Modifier.weight(0.60f)
             ) {
                 Text(
                     text = expense.title,
@@ -86,7 +88,7 @@ fun ExpenseCard(expense: ExpenseEntity) {
                 )
 
                 Text(
-                    text = expense.createdAt.convertToHumanReadableDate(),
+                    text = expense.createdOnDate.convertToHumanReadableDate(),
                     color = Color.Gray,
                     modifier = Modifier
                         .padding(
@@ -107,7 +109,7 @@ fun ExpenseCard(expense: ExpenseEntity) {
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(0.15f)
+                modifier = Modifier.weight(0.2f)
             )
 
         }

@@ -1,5 +1,6 @@
 package com.sparshchadha.expensetracker.feature.expense.presentation.ui.components
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -34,21 +35,25 @@ import androidx.compose.ui.graphics.Color
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
-import com.sparshchadha.expensetracker.common.utils.convertStrMillisToHumanReadableDate
+import com.sparshchadha.expensetracker.common.utils.convertToHumanReadableDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@SuppressLint("DefaultLocale")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun DateAndTimeSelector(
     hideDatePicker: (Boolean) -> Unit,
     isShowingDateAndTimePicker: Boolean,
-    createdAt: String,
-    combinedDateTimeInMillis: String,
     dateAndTimePagerState: PagerState,
     coroutineScope: CoroutineScope,
     datePickerState: DatePickerState,
     timePickerState: TimePickerState,
+    createdOnDate: String,
+    createdAtTime: String,
+    updatedOnDate: String,
+    updatedAtTime: String,
+    isNewExpense: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -79,13 +84,30 @@ fun DateAndTimeSelector(
             }
 
             Text(
-                text = createdAt.ifBlank { combinedDateTimeInMillis.convertStrMillisToHumanReadableDate() },
+                text = createdOnDate.ifBlank { datePickerState.selectedDateMillis?.convertToHumanReadableDate() ?: "" },
                 color = Color.Black,
                 fontSize = FontSizes.mediumNonScaledFontSize(),
                 modifier = Modifier
-                    .weight(0.6f)
+                    .weight(0.3f)
                     .basicMarquee(5)
             )
+
+            Text(
+                text = createdAtTime.ifBlank {
+                    String.format(
+                        "%02d:%02d %s",
+                        if (timePickerState.hour % 12 == 0) 12 else timePickerState.hour % 12, // Adjust hour for AM/PM
+                        timePickerState.minute, // Minute
+                        if (timePickerState.hour >= 12) "PM" else "AM" // Determine AM or PM
+                    )
+                },
+                color = Color.Black,
+                fontSize = FontSizes.mediumNonScaledFontSize(),
+                modifier = Modifier
+                    .weight(0.3f)
+                    .basicMarquee(5)
+            )
+
 
             Icon(
                 imageVector = if (isShowingDateAndTimePicker) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
@@ -151,7 +173,6 @@ fun DateAndTimeSelector(
                             )
                         }
                     }
-
                 }
             }
         }

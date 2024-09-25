@@ -32,13 +32,8 @@ fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
     ).show()
 }
 
-fun Long.convertMillisToDate(): String {
-    val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS Z", Locale.getDefault())
-    return formatter.format(Date(this))
-}
-
 fun Long.convertToHumanReadableDate(): String {
-    val formatter = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
+    val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMATTER_PATTERN, Locale.getDefault())
     return formatter.format(Date(this))
 }
 

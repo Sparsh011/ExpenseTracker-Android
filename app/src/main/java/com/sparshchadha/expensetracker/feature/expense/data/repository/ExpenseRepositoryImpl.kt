@@ -34,4 +34,8 @@ class ExpenseRepositoryImpl(
     override fun getCurrentDayExpenses(currentDate: String): Flow<List<ExpenseEntity>> {
         return expenseDao.getExpensesForCurrentDay(currentDate)
     }
+
+    override fun getExpenseById(id: Int): Flow<ExpenseEntity> {
+        return expenseDao.getExpenseById(id)
+    }
 }

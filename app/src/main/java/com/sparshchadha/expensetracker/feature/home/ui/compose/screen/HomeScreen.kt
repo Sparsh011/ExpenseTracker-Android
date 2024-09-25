@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.feature.home.ui.compose.components.BalanceAndBudgetCard
 import com.sparshchadha.expensetracker.feature.home.ui.compose.components.CurrentDayExpenses
 import com.sparshchadha.expensetracker.feature.home.ui.compose.components.GreetingAndTopBarIcons
-import com.sparshchadha.expensetracker.feature.home.ui.compose.components.Top5TransactionsList
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
@@ -33,7 +32,8 @@ fun HomeScreen(
     expenseBudget: Int,
     userName: String,
     profileUri: String,
-    allExpenses: List<ExpenseEntity>
+    allExpenses: List<ExpenseEntity>,
+    onExpenseItemClick: (Int) -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val listState = rememberLazyListState()
@@ -69,7 +69,8 @@ fun HomeScreen(
 
         item {
             CurrentDayExpenses(
-                expenses = allExpenses
+                expenses = allExpenses,
+                onExpenseItemClick = onExpenseItemClick
             )
         }
 

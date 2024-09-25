@@ -1,8 +1,10 @@
 package com.sparshchadha.expensetracker.feature.expense.data.remote.dto
 
 data class ExpenseCreationRequest(
-    val createdAt: String,
-    val updatedAt: String,
+    val createdOnDate: String,
+    val createdAtTime: String,
+    val updatedOnDate: String,
+    val updatedAtTime: String,
     val amount: Double,
     val category: String,
     val isRecurring: Boolean = false,

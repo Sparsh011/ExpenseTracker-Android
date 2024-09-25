@@ -3,16 +3,22 @@ package com.sparshchadha.expensetracker.feature.expense.presentation.ui.screens
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import com.sparshchadha.expensetracker.R
+import com.sparshchadha.expensetracker.common.utils.BundleKeys
+import com.sparshchadha.expensetracker.common.utils.showToast
+import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.presentation.viewmodel.ExpenseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ExpenseFragment : Fragment(R.layout.fragment_expense) {
     private val expenseViewModel by viewModels<ExpenseViewModel>()
+    private val selectedExpense = mutableStateOf<ExpenseEntity?>(null)
 
     private lateinit var expenseComposeView: ComposeView
 
@@ -21,14 +27,23 @@ class ExpenseFragment : Fragment(R.layout.fragment_expense) {
 
         initializeViewsUsing(view = view)
 
+        val expenseId = arguments?.getInt(BundleKeys.EXPENSE_DB_ID_KEY) ?: -1
+        expenseViewModel.setSelectedExpenseId(expenseId)
+        expenseViewModel.fetchExpenseById()
+        observeSelectedExpense()
+
         expenseComposeView.setContent {
             ExpenseScreen(
                 onSaveExpense = {
+                    if (!it.isValid()) {
+                        requireContext().showToast("Please fill ${it.getInvalidField()}")
+                    }
                     expenseViewModel.saveExpense(it)
-                    Toast.makeText(requireContext(), "Expense created", Toast.LENGTH_SHORT).show()
+                    requireContext().showToast("Expense Saved!")
                     requireActivity().supportFragmentManager.popBackStack()
                 },
-                expenseEntity = null,
+                expenseEntity = selectedExpense.value,
+                isNewExpense = selectedExpense.value == null,
                 onCancel = {
                     requireActivity().supportFragmentManager.popBackStack()
                 }
@@ -38,6 +53,12 @@ class ExpenseFragment : Fragment(R.layout.fragment_expense) {
 
     private fun initializeViewsUsing(view: View) {
         expenseComposeView = view.findViewById(R.id.expense_compose_view)
+    }
+
+    private fun observeSelectedExpense() {
+        expenseViewModel.selectedExpense.asLiveData().observe(viewLifecycleOwner) {
+            selectedExpense.value = it
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface ExpenseRepository {
     suspend fun getAllExpenses(): Flow<List<ExpenseEntity>>
     fun getCurrentDayExpenses(currentDate: String): Flow<List<ExpenseEntity>>
+    fun getExpenseById(id: Int): Flow<ExpenseEntity>
 
     fun saveExpense(expenseEntity: ExpenseEntity)
     fun updateExpense(expenseEntity: ExpenseEntity)

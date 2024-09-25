@@ -8,8 +8,10 @@ import com.sparshchadha.expensetracker.feature.expense.data.remote.dto.ExpenseCr
 data class ExpenseEntity(
     @PrimaryKey(autoGenerate = true)
     val expenseId: Int? = null,
-    val createdAt: String,
-    val updatedAt: String,
+    val createdOnDate: String,
+    val createdAtTime: String,
+    val updatedOnDate: String,
+    val updatedAtTime: String,
     val amount: Double,
     val category: String,
     val isRecurring: Boolean = false,
@@ -20,8 +22,10 @@ data class ExpenseEntity(
 ) {
     fun toExpenseCreationRequest(): ExpenseCreationRequest {
         return ExpenseCreationRequest(
-            createdAt = this.createdAt,
-            updatedAt = this.updatedAt,
+            createdAtTime = this.createdAtTime,
+            createdOnDate = this.createdOnDate,
+            updatedAtTime = this.updatedAtTime,
+            updatedOnDate = this.updatedOnDate,
             amount = this.amount,
             isRecurring = this.isRecurring,
             recurAfterDays = this.recurAfterDays,
@@ -33,12 +37,23 @@ data class ExpenseEntity(
     }
 
     fun isValid(): Boolean {
-        return if (this.createdAt.isBlank()) false
+        return if (this.createdOnDate.isBlank()) false
+        else if (this.createdAtTime.isBlank()) false
         else if (this.amount == 0.0) false
         else if (category.isBlank()) false
         else if (recurAfterDays == 0) false
         else if (title.isBlank()) false
         else if (description.isBlank()) false
         else true
+    }
+
+    fun getInvalidField(): String {
+        return if (this.createdOnDate.isBlank()) "Date"
+        else if (this.createdAtTime.isBlank()) "Time"
+        else if (this.amount == 0.0) "Amount"
+        else if (category.isBlank()) "Category"
+        else if (title.isBlank()) "Title"
+        else if (description.isBlank()) "Description"
+        else "recurring days more than 0"
     }
 }

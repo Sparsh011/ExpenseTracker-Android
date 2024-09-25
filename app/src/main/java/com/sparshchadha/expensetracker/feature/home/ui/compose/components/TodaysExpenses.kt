@@ -34,7 +34,8 @@ import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEnti
 
 @Composable
 fun CurrentDayExpenses(
-    expenses: List<ExpenseEntity>
+    expenses: List<ExpenseEntity>,
+    onExpenseItemClick: (Int) -> Unit
 ) {
     Text(
         text = "Today's Transactions",
@@ -47,7 +48,7 @@ fun CurrentDayExpenses(
     )
 
     for (expense in expenses) {
-        ExpenseCard(expense)
+        ExpenseCard(expense, onExpenseItemClick)
     }
 }
 

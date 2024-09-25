@@ -1,7 +1,7 @@
 package com.sparshchadha.expensetracker.feature.expense.presentation.ui.screens
 
+import android.annotation.SuppressLint
 import android.icu.util.Calendar
-import android.icu.util.TimeZone
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,8 +25,8 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,46 +36,47 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.common.ui.components.compose.ETTopBar
 import com.sparshchadha.expensetracker.common.utils.AppColors
+import com.sparshchadha.expensetracker.common.utils.Constants
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
-import com.sparshchadha.expensetracker.common.utils.convertMillisToDate
 import com.sparshchadha.expensetracker.common.utils.convertStrMillisToHumanReadableDate
+import com.sparshchadha.expensetracker.common.utils.convertToHumanReadableDate
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.components.DateAndTimeSelector
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.components.ExpenseCategorySelector
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.components.ExpenseFieldInputFields
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.components.RecurringExpenseSelector
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
 
+@SuppressLint("DefaultLocale")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ExpenseScreen(
     expenseEntity: ExpenseEntity? = null,
     onSaveExpense: (ExpenseEntity) -> Unit,
     onCancel: () -> Unit,
+    isNewExpense: Boolean,
 ) {
-    var title by remember { mutableStateOf(expenseEntity?.title ?: "") }
-    var description by remember { mutableStateOf(expenseEntity?.description ?: "") }
-    var amount by remember { mutableStateOf(expenseEntity?.amount?.toString() ?: "") }
-    var category by remember { mutableStateOf(expenseEntity?.category ?: "") }
-    var isRecurring by remember { mutableStateOf(expenseEntity?.isRecurring ?: false) }
-    var recurAfterDays by remember {
+    var title by rememberSaveable { mutableStateOf(expenseEntity?.title ?: "") }
+    var description by rememberSaveable { mutableStateOf(expenseEntity?.description ?: "") }
+    var amount by rememberSaveable { mutableStateOf(expenseEntity?.amount?.toString() ?: "") }
+    var category by rememberSaveable { mutableStateOf(expenseEntity?.category ?: "") }
+    var isRecurring by rememberSaveable { mutableStateOf(expenseEntity?.isRecurring ?: false) }
+    var recurAfterDays by rememberSaveable {
         mutableStateOf(
             expenseEntity?.recurAfterDays?.toString() ?: ""
         )
     }
-    val currency by remember { mutableStateOf(expenseEntity?.currency ?: "INR") }
+    val currency by rememberSaveable { mutableStateOf(expenseEntity?.currency ?: "INR") }
 
-    val createdAt by remember {
-        mutableStateOf("")
-    }
-    val updatedAt by remember { mutableStateOf(expenseEntity?.updatedAt ?: "") }
-
-    var showDatePicker by remember { mutableStateOf(false) }
+    var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = Calendar.getInstance().apply {
-            timeZone = TimeZone.getDefault()
-        }.timeInMillis
+        initialSelectedDateMillis = parseDateToMillis()
     )
 
     val timePickerState = rememberTimePickerState(
@@ -83,15 +84,27 @@ fun ExpenseScreen(
         initialMinute = Calendar.getInstance().get(Calendar.MINUTE),
         is24Hour = false,
     )
+
+    val createdOnDate by rememberSaveable {
+        mutableStateOf(expenseEntity?.createdOnDate?.takeIf { it.isNotBlank() } ?: "")
+    }
+
+    val createdAtTime by rememberSaveable {
+        mutableStateOf(expenseEntity?.createdAtTime?.takeIf { it.isNotBlank() } ?: "")
+    }
+
+    val updatedOnDate by rememberSaveable {
+        mutableStateOf("")
+    }
+
+    val updatedAtTime by rememberSaveable {
+        mutableStateOf("")
+    }
+
     val dateAndTimePagerState = rememberPagerState {
         2
     }
     val coroutineScope = rememberCoroutineScope()
-
-    val combinedDateTimeInMillis = combineDateAndTime(
-        datePickerState.selectedDateMillis,
-        timePickerState
-    )
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
@@ -158,17 +171,20 @@ fun ExpenseScreen(
             DateAndTimeSelector(
                 hideDatePicker = { showDatePicker = it },
                 isShowingDateAndTimePicker = showDatePicker,
-                createdAt = createdAt,
-                combinedDateTimeInMillis = (combinedDateTimeInMillis ?: 0L).toString(),
                 dateAndTimePagerState = dateAndTimePagerState,
                 coroutineScope = coroutineScope,
                 datePickerState = datePickerState,
-                timePickerState = timePickerState
+                timePickerState = timePickerState,
+                createdOnDate = createdOnDate,
+                createdAtTime = createdAtTime,
+                updatedOnDate = updatedOnDate,
+                updatedAtTime = updatedAtTime,
+                isNewExpense = isNewExpense
             )
 
-            if (updatedAt.isNotBlank()) {
+            if (!isNewExpense) {
                 Text(
-                    text = "Last Updated: ${updatedAt.convertStrMillisToHumanReadableDate()}",
+                    text = "Last Updated: $updatedOnDate $updatedAtTime",
                     modifier = Modifier.padding(Dimensions.smallPadding()),
                     fontSize = FontSizes.mediumFontSize().value.sp,
                     color = Color.Black
@@ -178,8 +194,15 @@ fun ExpenseScreen(
             Button(
                 onClick = {
                     val expense = ExpenseEntity(
-                        createdAt = combinedDateTimeInMillis?.convertMillisToDate() ?: "",
-                        updatedAt = if (updatedAt.isBlank()) "" else combinedDateTimeInMillis?.convertMillisToDate() ?: "",
+                        createdOnDate = datePickerState.selectedDateMillis?.convertToHumanReadableDate()?.lowercase()
+                            ?: "",
+                        createdAtTime = String.format(
+                            "%02d:%02d",
+                            timePickerState.hour,
+                            timePickerState.minute
+                        ).lowercase(),
+                        updatedOnDate = updatedOnDate,
+                        updatedAtTime = updatedAtTime,
                         amount = amount.trim().toDoubleOrNull() ?: 0.0,
                         category = category.trim(),
                         isRecurring = isRecurring,
@@ -188,9 +211,7 @@ fun ExpenseScreen(
                         title = title.trim(),
                         description = description.trim()
                     )
-                    if (expense.isValid()) {
-                        onSaveExpense(expense)
-                    }
+                    onSaveExpense(expense)
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AppColors.primaryColor
@@ -209,26 +230,15 @@ fun ExpenseScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-fun combineDateAndTime(dateMillis: Long?, timePickerState: TimePickerState): Long? {
-    dateMillis?.let {
-        val calendar = Calendar.getInstance().apply {
-            this.timeInMillis = dateMillis // Set the selected date in milliseconds
-            this.set(Calendar.HOUR_OF_DAY, timePickerState.hour) // Set the selected hour
-            this.set(Calendar.MINUTE, timePickerState.minute) // Set the selected minute
-            this.set(Calendar.SECOND, 0) // Optional: Set seconds to 0
-            this.set(Calendar.MILLISECOND, 0) // Optional: Set milliseconds to 0
-        }
-        return calendar.timeInMillis
-    }
-    return null
-}
+fun parseDateToMillis(): Long {
+    val formatter = DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMATTER_PATTERN)
 
+    val localDate = LocalDate.parse(
+        LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMATTER_PATTERN)),
+        formatter
+    )
 
-@Preview
-@Composable
-private fun ExpensePrev() {
-    ExpenseScreen(onSaveExpense = {}) {
+    val zonedDateTime = localDate.atStartOfDay(ZoneId.systemDefault())
 
-    }
+    return Date.from(zonedDateTime.toInstant()).time
 }

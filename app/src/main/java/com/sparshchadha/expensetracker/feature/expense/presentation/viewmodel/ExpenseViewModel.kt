@@ -1,7 +1,9 @@
 package com.sparshchadha.expensetracker.feature.expense.presentation.viewmodel
 
+import androidx.compose.ui.unit.Constraints
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sparshchadha.expensetracker.common.utils.Constants
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.domain.repository.ExpenseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +24,11 @@ class ExpenseViewModel @Inject constructor(
 
     private val _currentDayExpenses = MutableStateFlow<List<ExpenseEntity>>(emptyList())
     val currentDayExpenses = _currentDayExpenses.asStateFlow()
+
+    private val _selectedExpense = MutableStateFlow<ExpenseEntity?>(null)
+    val selectedExpense = _selectedExpense.asStateFlow()
+
+    private var selectedExpenseId = -1
 
     private fun fetchAllExpenses() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -50,13 +57,26 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun fetchCurrentDayExpenses() {
-//        val currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        val currentDate = "2024-09-24 02:51:00.000000 +0530"
+        val currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMATTER_PATTERN)).lowercase()
         viewModelScope.launch(Dispatchers.IO) {
             expenseRepository.getCurrentDayExpenses(currentDate).collect {
                 _currentDayExpenses.value = it
             }
         }
+    }
+
+    fun fetchExpenseById() {
+        if (selectedExpenseId == -1) return
+        if (_selectedExpense.value != null) return
+        viewModelScope.launch(Dispatchers.IO) {
+            expenseRepository.getExpenseById(selectedExpenseId).collect {
+                _selectedExpense.value = it
+            }
+        }
+    }
+
+    fun setSelectedExpenseId(id: Int) {
+        if (selectedExpenseId == -1) selectedExpenseId = id
     }
 
     init {

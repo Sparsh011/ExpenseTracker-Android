@@ -147,4 +147,8 @@ dependencies {
     debugImplementation (libs.leakcanary.android)
     // endregion
 
+    // region CalendarView
+    implementation(libs.compose.calendar)
+    // endregion
+
 }

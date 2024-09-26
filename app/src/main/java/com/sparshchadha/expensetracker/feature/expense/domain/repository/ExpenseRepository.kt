@@ -12,6 +12,7 @@ interface ExpenseRepository {
     fun getExpenditureBetweenDates(initialDate: String, finalDate: String): Flow<Long>
     fun getNRecentExpenses(n: Int): Flow<List<ExpenseEntity>>
     fun getAmountSpentInLastNDays(dateNDaysAgo: String): Flow<Long?>
+    fun getTop5TransactionsByAmountInDateRange(initialDate: String, finalDate: String): Flow<List<ExpenseEntity>>
 
     fun saveExpense(expenseEntity: ExpenseEntity)
     fun updateExpense(expenseEntity: ExpenseEntity)

@@ -47,7 +47,6 @@ class ExpenseFragment : Fragment(R.layout.fragment_expense) {
                     requireActivity().supportFragmentManager.popBackStack()
                 },
                 expenseEntity = selectedExpense.value,
-                isNewExpense = selectedExpense.value == null,
                 onCancel = {
                     requireActivity().supportFragmentManager.popBackStack()
                 }

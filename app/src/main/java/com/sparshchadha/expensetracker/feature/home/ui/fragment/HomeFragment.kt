@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,6 +15,7 @@ import androidx.lifecycle.asLiveData
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.common.utils.BundleKeys
+import com.sparshchadha.expensetracker.common.utils.Constants
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.screens.ExpenseFragment
 import com.sparshchadha.expensetracker.feature.expense.presentation.viewmodel.ExpenseViewModel
@@ -24,6 +24,8 @@ import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragme
 import com.sparshchadha.expensetracker.feature.profile.ui.fragments.ProfileFragment
 import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -33,19 +35,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var homeComposeView: ComposeView
     private lateinit var createExpenseFab: FloatingActionButton
 
-    private var isNoTransactionsAnimShown = false
-
     private var userName by mutableStateOf("")
     private var profileUri by mutableStateOf("")
     private var expenseBudget by mutableDoubleStateOf(-1.0)
     private val currentDayExpenses = mutableStateListOf<ExpenseEntity>()
     private var amountSpentInLast30Days by mutableDoubleStateOf(0.0)
+    private val top5TransactionsByAmountSpent = mutableStateListOf<ExpenseEntity>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeViewsUsing(view = view)
 
-        expenseViewModel.fetchLast30DaysAmountSpent()
+        fetchRelevantExpenses()
         addObservers()
 
         homeComposeView.setContent {
@@ -56,17 +57,25 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 navigateToProfileFragment = {
                     navigateToProfileFragment()
                 },
-                isNoTransactionsAnimShown = isNoTransactionsAnimShown,
                 expenseBudget = expenseBudget,
-                profileUri = profileUri,
                 userName = userName,
-                amountSpentInLast30Days = amountSpentInLast30Days,
+                profileUri = profileUri,
                 allExpenses = currentDayExpenses,
                 onExpenseItemClick = { expenseId ->
                     navigateToExpenseScreen(expenseId)
                 },
+                amountSpentInLast30Days = amountSpentInLast30Days,
+                top5TransactionsByAmountSpent = top5TransactionsByAmountSpent
             )
         }
+    }
+
+    private fun fetchRelevantExpenses() {
+        expenseViewModel.fetchLast30DaysAmountSpent()
+        expenseViewModel.fetchTop5TransactionsByAmountInDateRange(
+            initialDate = LocalDateTime.now().minusDays(30).format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN)),
+            finalDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN)),
+        )
     }
 
 
@@ -101,6 +110,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         observeExpenseBudget()
         observeCurrentDayExpenses()
         observeAmountSpendInLast30Days()
+        observeTop5TransactionsByAmountSpent()
     }
 
     private fun observeAmountSpendInLast30Days() {
@@ -136,6 +146,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
+    private fun observeTop5TransactionsByAmountSpent() {
+        expenseViewModel.top5TransactionsByAmount.asLiveData().observe(viewLifecycleOwner) {
+            it?.let { expenses ->
+                top5TransactionsByAmountSpent.clear()
+                top5TransactionsByAmountSpent.addAll(expenses)
+            }
+        }
+    }
+
 
     private fun navigateToNotificationsFragment() {
         requireActivity().supportFragmentManager.beginTransaction()
@@ -157,12 +176,5 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             .replace(R.id.app_container, ProfileFragment())
             .addToBackStack(null)
             .commit()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // Set isNoTransactionsAnimShown to true here so that whenever we come back to this fragment,
-        // animation is not shown again and again
-        isNoTransactionsAnimShown = true
     }
 }

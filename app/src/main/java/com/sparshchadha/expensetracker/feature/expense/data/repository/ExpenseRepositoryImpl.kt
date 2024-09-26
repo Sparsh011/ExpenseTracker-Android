@@ -7,7 +7,6 @@ import com.sparshchadha.expensetracker.feature.expense.data.local.room.dao.Expen
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.domain.repository.ExpenseRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class ExpenseRepositoryImpl(
     private val dataStorePreference: ExpenseTrackerDataStorePreference,
@@ -53,5 +52,12 @@ class ExpenseRepositoryImpl(
 
     override fun getAmountSpentInLastNDays(dateNDaysAgo: String): Flow<Long?> {
         return expenseDao.getAmountSpentInLastNDays(dateNDaysAgo)
+    }
+
+    override fun getTop5TransactionsByAmountInDateRange(
+        initialDate: String,
+        finalDate: String,
+    ): Flow<List<ExpenseEntity>> {
+        return expenseDao.getTop5TransactionsByAmountInDateRange(initialDate = initialDate, finalDate = finalDate)
     }
 }

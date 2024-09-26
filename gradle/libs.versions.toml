@@ -1,6 +1,7 @@
 [versions]
 agp = "8.5.0"
 coilCompose = "2.5.0"
+compose = "2.6.0"
 credentials = "1.2.2"
 datastorePreferences = "1.1.1"
 datetime = "0.9.0"
@@ -42,6 +43,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 # endregion
 
 # region retrofit
+compose-calendar = { module = "com.kizitonwose.calendar:compose", version.ref = "compose" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 google-firebase-auth = { module = "com.google.firebase:firebase-auth" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }

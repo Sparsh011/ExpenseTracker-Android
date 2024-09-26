@@ -41,4 +41,7 @@ interface ExpenseDao {
 
     @Query("SELECT SUM(amount) FROM ExpenseEntity WHERE createdOnDate >= :dateNDaysAgo")
     fun getAmountSpentInLastNDays(dateNDaysAgo: String): Flow<Long>
+
+    @Query("SELECT * FROM ExpenseEntity WHERE createdOnDate <= :finalDate AND createdOnDate >= :initialDate ORDER BY amount DESC LIMIT 5")
+    fun getTop5TransactionsByAmountInDateRange(initialDate: String, finalDate: String): Flow<List<ExpenseEntity>>
 }

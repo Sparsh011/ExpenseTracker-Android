@@ -32,10 +32,10 @@ import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.common.utils.convertToHumanReadableDate
+import com.sparshchadha.expensetracker.common.utils.formatAmount
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.presentation.ExpenseCategoryMapper
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExpenseCard(expense: ExpenseEntity, onExpenseItemClick: (Int) -> Unit) {
     Card(
@@ -121,7 +121,7 @@ fun ExpenseCard(expense: ExpenseEntity, onExpenseItemClick: (Int) -> Unit) {
             }
 
             Text(
-                text =  expense.amount.toString(),
+                text =  expense.amount.formatAmount(),
                 color = AppColors.errorRed,
                 fontSize = FontSizes.mediumNonScaledFontSize(),
                 maxLines = 1,

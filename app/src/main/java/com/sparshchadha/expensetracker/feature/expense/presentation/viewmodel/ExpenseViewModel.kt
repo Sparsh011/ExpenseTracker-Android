@@ -3,6 +3,7 @@ package com.sparshchadha.expensetracker.feature.expense.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sparshchadha.expensetracker.common.utils.Constants
+import com.sparshchadha.expensetracker.common.utils.convertToISOFormat
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.domain.repository.ExpenseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +32,9 @@ class ExpenseViewModel @Inject constructor(
 
     private val _last30DaysAmountSpent = MutableStateFlow(-1.0)
     val last30DaysAmountSpent = _last30DaysAmountSpent.asStateFlow()
+
+    private val _top5TransactionsByAmount = MutableStateFlow<List<ExpenseEntity>>(emptyList())
+    val top5TransactionsByAmount = _top5TransactionsByAmount.asStateFlow()
 
     private var selectedExpenseId = -1
 
@@ -61,7 +65,8 @@ class ExpenseViewModel @Inject constructor(
     }
 
     private fun fetchCurrentDayExpenses() {
-        val currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMATTER_PATTERN))
+        val currentDate = LocalDateTime.now()
+            .format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN))
         viewModelScope.launch(Dispatchers.IO) {
             expenseRepository.getCurrentDayExpenses(currentDate).collect {
                 _currentDayExpenses.value = it
@@ -86,8 +91,9 @@ class ExpenseViewModel @Inject constructor(
     fun fetchLast30DaysAmountSpent() {
         if (_last30DaysAmountSpent.value != -1.0) return
 
-        val date = LocalDateTime.now().minusDays(30).format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMATTER_PATTERN))
-        val compatibleDate = convertToISOFormat(date)
+        val date = LocalDateTime.now().minusDays(30)
+            .format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN))
+        val compatibleDate = date.convertToISOFormat()
         viewModelScope.launch(Dispatchers.IO) {
             expenseRepository.getAmountSpentInLastNDays(compatibleDate).collect {
                 _last30DaysAmountSpent.value = it?.toDouble() ?: 0.0
@@ -95,13 +101,20 @@ class ExpenseViewModel @Inject constructor(
         }
     }
 
-    private fun convertToISOFormat(dateString: String): String {
-        val inputFormat = SimpleDateFormat("dd MM yyyy", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    fun fetchTop5TransactionsByAmountInDateRange(initialDate: String, finalDate: String) {
+//        val date = LocalDateTime.now().minusDays(30).format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMATTER_PATTERN))
+        if (_top5TransactionsByAmount.value.isNotEmpty()) return
 
-        val date = inputFormat.parse(dateString)
-
-        return outputFormat.format(date)
+        val compatibleInitialDate = initialDate.convertToISOFormat()
+        val compatibleFinalDate = finalDate.convertToISOFormat()
+        viewModelScope.launch(Dispatchers.IO) {
+            expenseRepository.getTop5TransactionsByAmountInDateRange(
+                initialDate = compatibleInitialDate,
+                finalDate = compatibleFinalDate
+            ).collect {
+                _top5TransactionsByAmount.value = it
+            }
+        }
     }
 
     init {

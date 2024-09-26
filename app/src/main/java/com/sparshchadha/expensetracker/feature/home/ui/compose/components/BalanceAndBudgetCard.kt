@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.formatAmount
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.exp
@@ -99,11 +100,9 @@ fun BalanceAndBudgetCard(
 
 @Composable
 private fun RemainingBalance(balance: Double) {
-    val formattedBalance = formatAmount(balance)
-
     Column {
         Text(
-            text = "₹$formattedBalance ",
+            text = "₹${balance.formatAmount()}",
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = FontSizes.largeNonScaledFontSize(),
@@ -131,7 +130,7 @@ private fun RemainingBalance(balance: Double) {
 private fun Budget(
     budget: Double
 ) {
-    val formattedBudget = if (budget != -1.0) formatAmount(budget) else "Add budget"
+    val formattedBudget = if (budget != -1.0) budget.formatAmount() else "Add budget"
 
     Column {
         Text(
@@ -157,11 +156,6 @@ private fun Budget(
             textAlign = TextAlign.End
         )
     }
-}
-
-private fun formatAmount(amount: Double): String {
-    val formatter = NumberFormat.getNumberInstance(Locale("en", "IN"))
-    return formatter.format(amount)
 }
 
 

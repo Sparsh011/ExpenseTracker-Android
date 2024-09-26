@@ -7,6 +7,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.widget.Toast
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -35,11 +36,6 @@ fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
     ).show()
 }
 
-fun Long.convertToHumanReadableDate(): String {
-    val formatter = SimpleDateFormat(Constants.DATE_TIME_FORMATTER_PATTERN, Locale.getDefault())
-    return formatter.format(Date(this))
-}
-
 /**
 * To be used when converting date from backend to show on frontend
 * */
@@ -55,21 +51,23 @@ fun String.convertToHumanReadableDate(): String {
     }
 }
 
-fun String.convertStrMillisToHumanReadableDate(): String {
-    return try {
-        this.toLong().convertToHumanReadableDate()
-    } catch (e: Exception) {
-        Utility.errorLog(e.message ?: "Unable to parse date")
-        this
-    }
+/**
+ * Formats the given amount (double) to include commas in it for better visualization.
+ * */
+fun Double.formatAmount(language: String = "en", country: String = "IN"): String {
+    val formatter = NumberFormat.getNumberInstance(Locale(language, country))
+    return formatter.format(this)
 }
 
-fun String.convertToMilliseconds(): Long {
-    // Define the pattern that matches the date string
-    val formatter = DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMATTER_PATTERN)
+/**
+ * Formats the given Date string to ISO string for DB operations.
+ * */
+fun String.convertToISOFormat(): String {
+    val inputFormat = java.text.SimpleDateFormat("dd MM yyyy", Locale.getDefault())
+    val outputFormat = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-    // Parse the string into a LocalDate object
-    val localDate = LocalDate.parse(this, formatter)
+    val date = inputFormat.parse(this)
 
-    return localDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    return outputFormat.format(date)
 }
+

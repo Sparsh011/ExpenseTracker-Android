@@ -47,12 +47,14 @@ class AccessTokenInterceptor @Inject constructor(
 
                     //If refresh token also expires we Logout the user
                     if (refreshTokenResponse.code() == 401 || body == null || body.areTokensEmpty()) {
-                        sharedPref.saveAccessToken(accessToken)
-                        sharedPref.saveRefreshToken(refreshToken)
+                        sharedPref.saveAccessToken("")
+                        sharedPref.saveRefreshToken("")
 
                         val reqWithoutAuth = newRequestWithoutAccessToken(request)
                         return@runBlocking chain.proceed(reqWithoutAuth)
                     }
+
+                    sharedPref.saveAccessToken(body.access)
 
                     val reqWithNewToken = newRequestWithAccessToken(request, body.access)
                     response.close()

@@ -51,7 +51,7 @@ fun ProfileScreen(
         }
 
         if (showError) {
-            LocalContext.current.showToast("Error aa gya")
+            ProfileFetchError(onRetryClick = onRetryProfileFetch)
         }
 
         profileState?.let {

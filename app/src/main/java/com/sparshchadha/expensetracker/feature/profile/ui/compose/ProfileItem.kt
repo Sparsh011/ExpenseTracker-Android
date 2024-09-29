@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileItem(
     trailingIcon: ImageVector,

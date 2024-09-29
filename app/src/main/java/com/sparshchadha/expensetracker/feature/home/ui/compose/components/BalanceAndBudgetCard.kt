@@ -19,15 +19,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,9 +31,7 @@ import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.common.utils.formatAmount
-import java.text.NumberFormat
-import java.util.Locale
-import kotlin.math.exp
+import okhttp3.internal.format
 
 @Composable
 fun BalanceAndBudgetCard(
@@ -80,8 +73,8 @@ fun BalanceAndBudgetCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Primary Card",
-                color = Color.LightGray,
+                text = (expenseBudget - amountSpentInLast30Days).formatAmount() + " balance remaining.",
+                color = Color.White,
                 fontSize = FontSizes.mediumNonScaledFontSize(),
                 modifier = Modifier.padding(
                     horizontal = Dimensions.mediumPadding(),
@@ -102,7 +95,7 @@ fun BalanceAndBudgetCard(
 private fun RemainingBalance(balance: Double) {
     Column {
         Text(
-            text = "₹${balance.formatAmount()}",
+            text = balance.formatAmount(),
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = FontSizes.largeNonScaledFontSize(),
@@ -134,7 +127,7 @@ private fun Budget(
 
     Column {
         Text(
-            text = if (budget != -1.0) "₹$formattedBudget" else formattedBudget,
+            text = formattedBudget,
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = FontSizes.largeNonScaledFontSize(),

@@ -14,18 +14,16 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.common.utils.BundleKeys
 import com.sparshchadha.expensetracker.common.utils.Constants
+import com.sparshchadha.expensetracker.core.navigation.NavigationProvider
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
-import com.sparshchadha.expensetracker.feature.expense.presentation.ui.screens.ExpenseFragment
 import com.sparshchadha.expensetracker.feature.expense.presentation.viewmodel.ExpenseViewModel
 import com.sparshchadha.expensetracker.feature.home.ui.compose.screen.HomeScreen
-import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragment
-import com.sparshchadha.expensetracker.feature.profile.ui.fragments.ProfileFragment
 import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -42,6 +40,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private var amountSpentInLast30Days by mutableDoubleStateOf(0.0)
     private val top5TransactionsByAmountSpent = mutableStateListOf<ExpenseEntity>()
 
+    @Inject
+    lateinit var navigationProvider: NavigationProvider
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializeViewsUsing(view = view)
@@ -52,20 +53,23 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         homeComposeView.setContent {
             HomeScreen(
                 navigateToNotificationsFragment = {
-                    navigateToNotificationsFragment()
+                    navigationProvider.navigateToNotificationsFragment()
                 },
                 navigateToProfileFragment = {
-                    navigateToProfileFragment()
+                    navigationProvider.navigateToProfileFragment()
                 },
                 expenseBudget = expenseBudget,
                 userName = userName,
                 profileUri = profileUri,
                 allExpenses = currentDayExpenses,
                 onExpenseItemClick = { expenseId ->
-                    navigateToExpenseScreen(expenseId)
+                    navigationProvider.navigateToExpenseFragment(expenseId)
                 },
                 amountSpentInLast30Days = amountSpentInLast30Days,
-                top5TransactionsByAmountSpent = top5TransactionsByAmountSpent
+                top5TransactionsByAmountSpent = top5TransactionsByAmountSpent,
+                navigateToExpenseSettingsScreen = {
+                    navigationProvider.navigateToExpenseSettingsFragment(expenseBudget)
+                }
             )
         }
     }
@@ -73,8 +77,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun fetchRelevantExpenses() {
         expenseViewModel.fetchLast30DaysAmountSpent()
         expenseViewModel.fetchTop5TransactionsByAmountInDateRange(
-            initialDate = LocalDateTime.now().minusDays(30).format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN)),
-            finalDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN)),
+            initialDate = LocalDateTime.now().minusDays(30)
+                .format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN)),
+            finalDate = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN)),
         )
     }
 
@@ -83,25 +89,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         homeComposeView = view.findViewById(R.id.home_compose_view)
         createExpenseFab = view.findViewById(R.id.fab_create_expense)
 
-        createExpenseFab.setOnClickListener { navigateToExpenseScreen() }
-    }
-
-    private fun navigateToExpenseScreen(id: Int = -1) {
-        val fragment = ExpenseFragment()
-        if (id != -1) {
-            val bundle = Bundle()
-            bundle.putInt(BundleKeys.EXPENSE_DB_ID_KEY, id)
-            fragment.arguments = bundle
+        createExpenseFab.setOnClickListener {
+            navigationProvider.navigateToExpenseFragment(id)
         }
-
-        requireActivity().supportFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_up, R.anim.fade_out,
-                R.anim.fade_in, R.anim.slide_down
-            )
-            .add(R.id.app_container, fragment)
-            .addToBackStack(null)
-            .commit()
     }
 
     private fun addObservers() {
@@ -153,28 +143,5 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 top5TransactionsByAmountSpent.addAll(expenses)
             }
         }
-    }
-
-
-    private fun navigateToNotificationsFragment() {
-        requireActivity().supportFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in, R.anim.fade_out,
-                R.anim.fade_in, R.anim.slide_out
-            )
-            .replace(R.id.app_container, NotificationsFragment())
-            .addToBackStack(null)
-            .commit()
-    }
-
-    private fun navigateToProfileFragment() {
-        requireActivity().supportFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in, R.anim.fade_out,
-                R.anim.fade_in, R.anim.slide_out
-            )
-            .replace(R.id.app_container, ProfileFragment())
-            .addToBackStack(null)
-            .commit()
     }
 }

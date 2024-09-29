@@ -28,11 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.sparshchadha.expensetracker.feature.auth.ui.compose.components.OTPInput
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.common.utils.FontSizes.nonScaledSp
+import com.sparshchadha.expensetracker.feature.auth.ui.compose.components.OTPInput
 import kotlinx.coroutines.delay
 
 @Composable

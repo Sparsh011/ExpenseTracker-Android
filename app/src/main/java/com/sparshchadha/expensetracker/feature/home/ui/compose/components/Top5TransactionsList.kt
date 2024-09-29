@@ -76,7 +76,7 @@ private fun HeaderAndFilterIcon() {
             modifier = Modifier.weight(1f)
         ) {
             Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_filter),
                 contentDescription = null,
                 tint = Color.Black,
                 modifier = Modifier.clickable {

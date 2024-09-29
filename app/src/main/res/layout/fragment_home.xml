@@ -17,7 +17,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/large_padding"
-        app:srcCompat="@drawable/pen"
+        app:srcCompat="@drawable/ic_pen"
         app:tint="@color/white"
        />
 </FrameLayout>

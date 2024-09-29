@@ -2,11 +2,11 @@ package com.sparshchadha.expensetracker.feature.auth.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sparshchadha.expensetracker.core.domain.Resource
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerificationResponse
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyGoogleIdTokenRequest
 import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.VerifyOtpRequest
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
-import com.sparshchadha.expensetracker.core.domain.Resource
 import com.sparshchadha.expensetracker.feature.auth.domain.usecase.ValidateAndSeparatePhoneAndCCUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

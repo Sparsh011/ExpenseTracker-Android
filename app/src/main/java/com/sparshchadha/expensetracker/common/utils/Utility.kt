@@ -7,8 +7,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.core.text.isDigitsOnly
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 object Utility {
     private const val TAG = "BerryFinTag"

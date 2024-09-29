@@ -2,11 +2,11 @@ package com.sparshchadha.expensetracker.feature.profile.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sparshchadha.expensetracker.core.domain.Resource
 import com.sparshchadha.expensetracker.feature.auth.domain.repository.AuthRepository
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
-import com.sparshchadha.expensetracker.feature.profile.domain.repository.ProfileRepository
-import com.sparshchadha.expensetracker.core.domain.Resource
 import com.sparshchadha.expensetracker.feature.profile.domain.model.UserField
+import com.sparshchadha.expensetracker.feature.profile.domain.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
-    private val authRepository: AuthRepository
-): ViewModel() {
+    private val authRepository: AuthRepository,
+) : ViewModel() {
     private val _userProfile = MutableStateFlow<Resource<UserProfile>?>(null)
     val userProfile = _userProfile.asStateFlow()
 
@@ -33,7 +33,7 @@ class ProfileViewModel @Inject constructor(
     private val _expenseBudget = MutableStateFlow(-1.0)
     val expenseBudget = _expenseBudget.asStateFlow()
 
-    private fun getUserProfile() {
+    fun getUserProfile() {
         val accessToken = authRepository.getAccessToken()
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -97,7 +97,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun getProfileUriFromLocal() {
         viewModelScope.launch(Dispatchers.IO) {
-            profileRepository.readProfileUri().collect{
+            profileRepository.readProfileUri().collect {
                 _profileUri.value = it ?: ""
             }
         }
@@ -105,7 +105,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun getExpenseBudgetFromLocal() {
         viewModelScope.launch(Dispatchers.IO) {
-            profileRepository.readExpenseBudget().collect{
+            profileRepository.readExpenseBudget().collect {
                 _expenseBudget.value = it?.toDoubleOrNull() ?: 0.0
             }
         }

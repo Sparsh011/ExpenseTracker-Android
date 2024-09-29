@@ -14,22 +14,21 @@ import com.otpless.dto.HeadlessResponse
 import com.otpless.main.OtplessManager
 import com.otpless.main.OtplessView
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.common.ui.screens.xml.FullScreenLoaderFragment
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerificationResponse
-import com.sparshchadha.expensetracker.feature.auth.ui.client.GoogleSignInUIClient
-import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.LoginScreen
-import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
-import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
-import com.sparshchadha.expensetracker.common.utils.BundleKeys
 import com.sparshchadha.expensetracker.common.utils.Constants
-import com.sparshchadha.expensetracker.core.domain.Resource
 import com.sparshchadha.expensetracker.common.utils.Utility
 import com.sparshchadha.expensetracker.common.utils.showToast
 import com.sparshchadha.expensetracker.common.utils.vibrateDevice
+import com.sparshchadha.expensetracker.core.domain.Resource
+import com.sparshchadha.expensetracker.core.navigation.NavigationProvider
+import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerificationResponse
 import com.sparshchadha.expensetracker.feature.auth.domain.exceptions.InvalidPhoneException
+import com.sparshchadha.expensetracker.feature.auth.ui.client.GoogleSignInUIClient
+import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.LoginScreen
+import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
 import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
@@ -40,6 +39,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private lateinit var otplessView: OtplessView
     private var isLoading: Boolean = false
+
+
+    @Inject
+    lateinit var navigationProvider: NavigationProvider
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -94,16 +97,13 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private fun showLoadingScreen() {
         if (isLoading) return
         isLoading = true
-        val loaderFragment = FullScreenLoaderFragment()
-        loaderFragment.show(requireActivity().supportFragmentManager, "loader")
+        navigationProvider.showLoadingFragment()
     }
 
     private fun dismissLoadingScreen() {
         if (!isLoading) return
         isLoading = false
-        val loaderFragment =
-            requireActivity().supportFragmentManager.findFragmentByTag("loader") as? FullScreenLoaderFragment
-        loaderFragment?.dismiss()
+        navigationProvider.dismissLoadingFragment()
     }
 
 
@@ -135,22 +135,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun navigateToVerifyOtpScreen() {
-        val fragment = VerifyOtpFragment()
-        val bundle = Bundle()
-        bundle.putString(BundleKeys.PHONE_NUMBER_KEY, authViewModel.getUserPhoneNumber())
-        fragment.arguments = bundle
-
-        requireActivity().supportFragmentManager
-            .beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in, R.anim.fade_out,
-                R.anim.fade_in, R.anim.slide_out
-            )
-            .replace(
-                R.id.parent_fragment_container, fragment
-            )
-            .addToBackStack(null)
-            .commit()
+        navigationProvider.navigateToVerifyOTPFragment(authViewModel.getUserPhoneNumber())
     }
 
     private fun navigateToHomeScreen(withUser: UserVerificationResponse? = null) {
@@ -165,16 +150,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
             profileViewModel.updateUserName(user.userProfile.name)
 
-            requireActivity().supportFragmentManager
-                .beginTransaction()
-                .setCustomAnimations(
-                    R.anim.slide_in, R.anim.fade_out,
-                    R.anim.fade_in, R.anim.slide_out
-                )
-                .replace(
-                    R.id.parent_fragment_container, MainBottomNavigationBarFragment()
-                )
-                .commit()
+            navigationProvider.navigateToMainBottomBarNavigationFragment()
         } ?: run {
             dismissLoadingScreen()
             requireContext().showToast("Error during login, please try again!")

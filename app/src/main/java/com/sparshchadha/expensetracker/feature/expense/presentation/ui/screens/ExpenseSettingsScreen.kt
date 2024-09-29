@@ -40,6 +40,7 @@ import com.sparshchadha.expensetracker.common.ui.components.compose.ETTopBar
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.formatAmount
 import kotlin.math.abs
 
 @Composable
@@ -75,7 +76,7 @@ fun ExpenseSettingsScreen(
                         fontWeight = FontWeight.Bold
                     )
                 ) {
-                    append(currentExpenseBudget.toString())
+                    append(currentExpenseBudget.formatAmount())
                 }
             },
             color = Color.Black,
@@ -131,7 +132,7 @@ fun ExpenseSettingsScreen(
                 maxLines = 1,
                 leadingIcon = {
                     Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.rupee_icon),
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_rupee),
                         contentDescription = null,
                         modifier = Modifier.size(Dimensions.mediumPadding())
                     )

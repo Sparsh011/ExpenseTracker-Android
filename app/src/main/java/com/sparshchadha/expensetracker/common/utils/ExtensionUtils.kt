@@ -8,10 +8,6 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.widget.Toast
 import java.text.NumberFormat
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 
 fun Context.vibrateDevice() {
@@ -52,11 +48,11 @@ fun String.convertToHumanReadableDate(): String {
 }
 
 /**
- * Formats the given amount (double) to include commas in it for better visualization.
+ * Formats the given amount (double) to include commas in it for better visualization and prefixes Rupee symbol
  * */
-fun Double.formatAmount(language: String = "en", country: String = "IN"): String {
+fun Double.formatAmount(language: String = "en", country: String = "IN", prefixRupeeSymbol: Boolean = true): String {
     val formatter = NumberFormat.getNumberInstance(Locale(language, country))
-    return formatter.format(this)
+    return if (prefixRupeeSymbol) "₹" + formatter.format(this) else formatter.format(this)
 }
 
 /**

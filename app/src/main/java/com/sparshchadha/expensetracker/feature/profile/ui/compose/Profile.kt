@@ -31,13 +31,13 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.formatAmount
 import com.sparshchadha.expensetracker.feature.home.ui.compose.screen.Footer
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 
@@ -105,9 +105,9 @@ fun Profile(
             .padding(Dimensions.extraSmallPadding())
     ) {
         ProfileItem(
-            trailingIcon = ImageVector.vectorResource(id = R.drawable.bank_icon),
+            trailingIcon = ImageVector.vectorResource(id = R.drawable.ic_bank),
             trailingText = "Expense budget",
-            leadingText = expenseBudget.toString(),
+            leadingText = expenseBudget.formatAmount(),
             onItemClick = navigateToExpenseSettingsScreen
         )
 
@@ -122,7 +122,7 @@ fun Profile(
         Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
 
         ProfileItem(
-            trailingIcon = ImageVector.vectorResource(id = R.drawable.mail_icon),
+            trailingIcon = ImageVector.vectorResource(id = R.drawable.ic_mail),
             trailingText = profile.emailId.ifBlank { "Link account with email" },
             onItemClick = navigateToExpenseSettingsScreen
         )
@@ -130,7 +130,7 @@ fun Profile(
         Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
 
         ProfileItem(
-            trailingIcon = ImageVector.vectorResource(id = R.drawable.export_icon),
+            trailingIcon = ImageVector.vectorResource(id = R.drawable.ic_export),
             trailingText = "Export expenses",
             onItemClick = navigateToExpenseSettingsScreen
         )
@@ -168,7 +168,7 @@ fun Profile(
 
     ) {
         ProfileItem(
-            trailingIcon = ImageVector.vectorResource(id = R.drawable.playstore_icon),
+            trailingIcon = ImageVector.vectorResource(id = R.drawable.ic_playstore),
             trailingText = "Rate us on PlayStore",
             onItemClick = navigateToExpenseSettingsScreen
         )
@@ -176,7 +176,7 @@ fun Profile(
         Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
 
         ProfileItem(
-            trailingIcon = ImageVector.vectorResource(id = R.drawable.feedback_icon),
+            trailingIcon = ImageVector.vectorResource(id = R.drawable.ic_feedback),
             trailingText = "Write feedback",
             onItemClick = navigateToExpenseSettingsScreen
         )
@@ -184,7 +184,7 @@ fun Profile(
         Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
 
         ProfileItem(
-            trailingIcon = ImageVector.vectorResource(id = R.drawable.privacy_policy_icon),
+            trailingIcon = ImageVector.vectorResource(id = R.drawable.ic_privacy_policy),
             trailingText = "Privacy policy",
             onItemClick = navigateToExpenseSettingsScreen
         )
@@ -192,7 +192,7 @@ fun Profile(
         Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
 
         ProfileItem(
-            trailingIcon = ImageVector.vectorResource(id = R.drawable.group_people_icon),
+            trailingIcon = ImageVector.vectorResource(id = R.drawable.ic_group_people),
             trailingText = "Invite friends",
             onItemClick = navigateToExpenseSettingsScreen
         )
@@ -200,7 +200,7 @@ fun Profile(
         Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
 
         ProfileItem(
-            trailingIcon = ImageVector.vectorResource(id = R.drawable.logout_icon),
+            trailingIcon = ImageVector.vectorResource(id = R.drawable.ic_logout),
             trailingIconTint = AppColors.primaryColor,
             trailingText = "Logout",
             onItemClick = onLogout

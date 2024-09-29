@@ -2,7 +2,6 @@ package com.sparshchadha.expensetracker.feature.expense.presentation.ui.screens
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment

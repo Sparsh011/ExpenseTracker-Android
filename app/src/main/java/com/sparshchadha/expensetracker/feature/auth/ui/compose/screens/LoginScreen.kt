@@ -38,10 +38,10 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.feature.auth.ui.compose.components.PhoneNumberTextField
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.feature.auth.ui.compose.components.PhoneNumberTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +78,7 @@ private fun ScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.expense_tracker_app_icon),
+            painter = painterResource(id = R.drawable.img_expense_tracker_app),
             contentDescription = null,
             modifier = Modifier
                 .width(screenWidth.dp)
@@ -170,7 +170,7 @@ private fun LoginWithGoogleButton(
             horizontalArrangement = Arrangement.Center
         ) {
             Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.google_icon),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_google),
                 contentDescription = null,
                 modifier = Modifier.size(Dimensions.mediumPadding())
             )

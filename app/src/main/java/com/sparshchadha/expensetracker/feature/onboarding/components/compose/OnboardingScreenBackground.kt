@@ -44,7 +44,7 @@ fun OnboardingScreenBackground(
 
             Pulsating {
                 Image(
-                    painter = painterResource(id = R.drawable.dollar_icon),
+                    painter = painterResource(id = R.drawable.img_dollar),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(
@@ -57,7 +57,7 @@ fun OnboardingScreenBackground(
 
             Box {
                 Image(
-                    painter = painterResource(id = R.drawable.onboarding_bg_image),
+                    painter = painterResource(id = R.drawable.img_onboarding_bg),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(
@@ -69,7 +69,7 @@ fun OnboardingScreenBackground(
 
                 Pulsating {
                     Image(
-                        painter = painterResource(id = R.drawable.white_graph),
+                        painter = painterResource(id = R.drawable.img_white_graph),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(

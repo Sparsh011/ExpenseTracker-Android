@@ -1,7 +1,7 @@
 package com.sparshchadha.expensetracker.feature.profile.domain.repository
 
-import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 import com.sparshchadha.expensetracker.core.domain.Resource
+import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 import com.sparshchadha.expensetracker.feature.profile.domain.model.ProfileFieldUpdateResult
 import com.sparshchadha.expensetracker.feature.profile.domain.model.UserField
 import kotlinx.coroutines.flow.Flow

@@ -37,6 +37,7 @@ fun HomeScreen(
     onExpenseItemClick: (Int) -> Unit,
     amountSpentInLast30Days: Double,
     top5TransactionsByAmountSpent: SnapshotStateList<ExpenseEntity>,
+    navigateToExpenseSettingsScreen: () -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val listState = rememberLazyListState()
@@ -62,9 +63,7 @@ fun HomeScreen(
                 cardHeight = 0.3 * screenHeight,
                 expenseBudget = expenseBudget,
                 amountSpentInLast30Days = amountSpentInLast30Days,
-                onClick = {
-
-                }
+                onClick = navigateToExpenseSettingsScreen
             )
         }
 

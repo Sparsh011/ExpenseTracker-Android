@@ -3,9 +3,7 @@ package com.sparshchadha.expensetracker.feature.expense.presentation.ui.screens
 import android.os.Bundle
 import android.view.View
 import androidx.compose.runtime.MutableDoubleState
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels

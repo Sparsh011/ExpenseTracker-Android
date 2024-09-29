@@ -13,17 +13,17 @@ import com.otpless.main.OtplessManager
 import com.otpless.main.OtplessView
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.common.ui.screens.xml.FullScreenLoaderFragment
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerificationResponse
-import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.VerifyOtpScreen
-import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
-import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
 import com.sparshchadha.expensetracker.common.utils.BundleKeys
 import com.sparshchadha.expensetracker.common.utils.Constants
-import com.sparshchadha.expensetracker.core.domain.Resource
 import com.sparshchadha.expensetracker.common.utils.Utility
 import com.sparshchadha.expensetracker.common.utils.showToast
 import com.sparshchadha.expensetracker.common.utils.vibrateDevice
+import com.sparshchadha.expensetracker.core.domain.Resource
+import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerificationResponse
 import com.sparshchadha.expensetracker.feature.auth.domain.exceptions.InvalidPhoneException
+import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.VerifyOtpScreen
+import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
+import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
 import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

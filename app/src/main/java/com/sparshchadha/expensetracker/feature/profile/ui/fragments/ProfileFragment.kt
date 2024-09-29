@@ -1,29 +1,24 @@
 package com.sparshchadha.expensetracker.feature.profile.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.common.utils.BundleKeys
 import com.sparshchadha.expensetracker.common.utils.Utility
+import com.sparshchadha.expensetracker.core.domain.Resource
+import com.sparshchadha.expensetracker.core.navigation.NavigationProvider
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
 import com.sparshchadha.expensetracker.feature.profile.ui.compose.ProfileScreen
 import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
-import com.sparshchadha.expensetracker.core.domain.Resource
-import com.sparshchadha.expensetracker.feature.expense.presentation.ui.screens.ExpenseSettingsFragment
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
@@ -36,6 +31,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private var name by mutableStateOf("")
     private var expenseBudget by mutableDoubleStateOf(-1.0)
+
+    @Inject
+    lateinit var navigationProvider: NavigationProvider
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,7 +52,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     requireActivity().supportFragmentManager.popBackStack()
                 },
                 onRetryProfileFetch = {
-
+                    profileViewModel.getUserProfile()
                 },
                 showLoader = showLoader,
                 showError = showError,
@@ -62,12 +60,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     profileViewModel.updateUserName(it)
                 },
                 navigateToExpenseSettingsScreen = {
-                    navigateToExpenseSettingsScreen(profileState.value?.expenseBudget?.toDouble() ?: -1.0)
+                    navigationProvider.navigateToExpenseSettingsFragment(
+                        profileState.value?.expenseBudget?.toDouble() ?: -1.0
+                    )
                 },
                 onLogout = {
 
                 },
                 navigateToNotificationsScreen = {
+                    navigationProvider.navigateToNotificationsFragment()
                 }
             )
         }
@@ -99,9 +100,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                         showError = true
                         showLoader = false
                     }
+
                     is Resource.Loading -> {
                         showLoader = true
                     }
+
                     is Resource.Success -> {
                         showError = false
                         showLoader = false
@@ -110,21 +113,5 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 }
             }
         }
-    }
-
-    private fun navigateToExpenseSettingsScreen(currentExpenseBudget: Double) {
-        val fragment = ExpenseSettingsFragment()
-        fragment.arguments = Bundle().apply {
-            putDouble(BundleKeys.EXPENSE_BUDGET_KEY, currentExpenseBudget)
-        }
-
-        requireActivity().supportFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in, R.anim.fade_out,
-                R.anim.fade_in, R.anim.slide_out
-            )
-            .add(R.id.app_container, fragment)
-            .addToBackStack("profile_fragment")
-            .commit()
     }
 }

@@ -54,7 +54,7 @@ fun NoTransactions(text: String) {
                 )
         )
         Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.empty_box_svg),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_empty_box),
             contentDescription = null,
             tint = AppColors.primaryColor,
             modifier = Modifier.size(Dimensions.largeIconSize())

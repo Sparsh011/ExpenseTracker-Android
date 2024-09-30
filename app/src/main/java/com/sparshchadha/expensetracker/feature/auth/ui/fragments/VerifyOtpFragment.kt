@@ -3,124 +3,143 @@ package com.sparshchadha.expensetracker.feature.auth.ui.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import com.otpless.dto.HeadlessRequest
+import com.otpless.dto.HeadlessResponse
+import com.otpless.main.OtplessManager
+import com.otpless.main.OtplessView
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.OtpVerificationResponse
+import com.sparshchadha.expensetracker.common.ui.screens.xml.FullScreenLoaderFragment
+import com.sparshchadha.expensetracker.common.utils.BundleKeys
+import com.sparshchadha.expensetracker.common.utils.Constants
+import com.sparshchadha.expensetracker.common.utils.Utility
+import com.sparshchadha.expensetracker.common.utils.showToast
+import com.sparshchadha.expensetracker.common.utils.vibrateDevice
+import com.sparshchadha.expensetracker.core.domain.Resource
+import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerificationResponse
+import com.sparshchadha.expensetracker.feature.auth.domain.exceptions.InvalidPhoneException
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.VerifyOtpScreen
 import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
 import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
-import com.sparshchadha.expensetracker.utils.BundleKeys
-import com.sparshchadha.expensetracker.utils.Resource
-import com.sparshchadha.expensetracker.utils.vibrateDevice
+import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
+class VerifyOtpFragment : Fragment(R.layout.fragment_verify_otp) {
     private val authViewModel by viewModels<AuthViewModel>()
+
+    private val profileViewModel by viewModels<ProfileViewModel>()
 
     private lateinit var verifyOtpComposeView: ComposeView
     private var phoneNumberWithCountryCode = ""
-    private var orderId = ""
-    private val showLoader = mutableStateOf(false)
+
+    private lateinit var otplessView: OtplessView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initializeViewsUsing(view = view)
 
-        setObservers()
+        observeIdentityVerification()
 
-        if (authViewModel.getOtpServiceOrderId().isBlank()
-            || authViewModel.getUserPhoneNumber().isBlank()
-        ) {
-            authViewModel.setOtpServiceOrderId(
-                arguments?.getString(BundleKeys.OTP_SERVICE_ORDER_ID, "") ?: ""
-            )
+        initializeOtpless()
+
+        if (authViewModel.getUserPhoneNumber().isBlank()) {
             authViewModel.setUserPhoneNumber(
                 arguments?.getString(BundleKeys.PHONE_NUMBER_KEY, "") ?: ""
             )
         }
 
         phoneNumberWithCountryCode = authViewModel.getUserPhoneNumber()
-        orderId = authViewModel.getOtpServiceOrderId()
 
         verifyOtpComposeView.setContent {
             VerifyOtpScreen(
                 providedPhoneNumber = phoneNumberWithCountryCode,
                 onVerify = { otp ->
-                    authViewModel.verifyOtp(
-                        phoneNumber = phoneNumberWithCountryCode, otp = otp, orderId = orderId
-                    )
+                    verifyOtp(otp)
                 },
                 onResend = {
-                    authViewModel.retryPhoneAuth(orderId = orderId)
+                    resendOtp(phoneNumberWithCountryCode)
                 },
                 onCancel = {
+                    dismissLoadingScreen()
                     requireActivity().supportFragmentManager.popBackStack()
-                },
-                showLoader = showLoader.value
+                }
             )
         }
     }
 
-    private fun setObservers() {
-        observePhoneAuthInitiation()
-        observeIdentityVerification()
+    private fun initializeOtpless() {
+        otplessView = OtplessManager.getInstance().getOtplessView(requireActivity())
+        otplessView.initHeadless(Constants.OTPLESS_APPID)
+        otplessView.setHeadlessCallback(this::onOtplessResult)
     }
 
-    private fun observePhoneAuthInitiation() {
-        authViewModel.continueWithPhoneResponse.asLiveData()
-            .observe(viewLifecycleOwner) { response ->
-                response?.let {
-                    when (it) {
-                        is Resource.Success -> {
-                            showLoader.value = false
-                            orderId = it.data?.orderId ?: ""
-                        }
-
-                        is Resource.Error -> {
-                            showLoader.value = false
-                            Toast.makeText(
-                                context,
-                                it.error?.message ?: "Unable to login, please try again!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            requireContext().vibrateDevice()
-                        }
-
-                        is Resource.Loading -> {
-                            showLoader.value = true
-                        }
-                    }
+    private fun onOtplessResult(response: HeadlessResponse) {
+        dismissLoadingScreen()
+        if (response.statusCode == 200) {
+            when (response.responseType) {
+                "INITIATE" -> {
+                    requireContext().showToast("OTP sent")
+                }
+                "ONETAP" -> {
+                    val token = response.response?.getString("token") ?: ""
+                    authViewModel.validateOtpToken(token)
                 }
             }
+        } else {
+            val error = response.response?.optString("errorMessage")
+            Utility.errorLog(error ?: "Unable to get error message")
+            requireContext().showToast("Unable To Login, Please Try Again!")
+        }
+    }
+
+    private fun verifyOtp(otp: String) {
+        try {
+            val pair = authViewModel.validateAndGetPhoneAndCC(phoneNumberWithCountryCode, '-')
+
+            if (pair.first.isBlank() || pair.second.isBlank()) {
+                requireContext().showToast("Enter a valid phone number")
+                return
+            }
+
+            if (!Utility.isOtpValid(otp)){
+                requireContext().showToast("Please enter a valid otp")
+                return
+            }
+
+            val headlessRequest = HeadlessRequest()
+            headlessRequest.setPhoneNumber(pair.first, pair.second)
+            headlessRequest.setOtp(otp)
+
+            otplessView.startHeadless(headlessRequest, this::onOtplessResult)
+            showLoadingScreen()
+        } catch (e: InvalidPhoneException) {
+            requireContext().showToast(e.message ?: "Incorrect phone number.")
+            dismissLoadingScreen()
+        }
     }
 
     private fun observeIdentityVerification() {
-        authViewModel.verifyIdentityResponse.asLiveData().observe(viewLifecycleOwner) { response ->
+        authViewModel.identityVerificationResponse.asLiveData().observe(viewLifecycleOwner) { response ->
             response?.let {
                 when (it) {
                     is Resource.Success -> {
-                        showLoader.value = false
-                        navigateToHomeScreen(withUser = it.data)
+                        dismissLoadingScreen()
+                        navigateToHomeScreen (withUser = it.data)
                     }
 
                     is Resource.Error -> {
-                        showLoader.value = false
-                        Toast.makeText(
-                            requireContext(),
-                            "Unable to login, please try again!",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        dismissLoadingScreen()
+                        requireContext().showToast("Unable to login, please try again!")
                         requireContext().vibrateDevice()
                     }
 
                     is Resource.Loading -> {
-                        showLoader.value = true
+                        showLoadingScreen()
                     }
                 }
             }
@@ -131,16 +150,18 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
         verifyOtpComposeView = view.findViewById(R.id.verify_otp_compose_view)
     }
 
-    private fun navigateToHomeScreen(withUser: OtpVerificationResponse?) {
+    private fun navigateToHomeScreen(withUser: UserVerificationResponse?) {
 
         withUser?.let { user ->
-            if (!user.isOTPVerified) {
+            if (user.isVerified != true) {
                 Toast.makeText(requireContext(), user.message, Toast.LENGTH_SHORT).show()
                 return
             }
 
-            authViewModel.saveAccessToken(user.access)
-            authViewModel.saveRefreshToken(user.refresh)
+            authViewModel.saveAccessToken(user.access ?: "")
+            authViewModel.saveRefreshToken(user.refresh ?: "")
+
+            profileViewModel.updateUserName(user.userProfile.name)
 
             requireActivity().supportFragmentManager
                 .beginTransaction()
@@ -153,7 +174,41 @@ class VerifyOtpFragment : Fragment(R.layout.verify_otp_fragment) {
                 )
                 .commit()
         } ?: run {
-            Toast.makeText(requireContext(), "Error aagaya", Toast.LENGTH_SHORT).show()
+            dismissLoadingScreen()
+            requireContext().showToast("Unable to fetch details, please try again!")
         }
     }
+
+    private fun resendOtp(phoneNumberWithCountryCode: String) {
+        try {
+            val pair = authViewModel.validateAndGetPhoneAndCC(phoneNumberWithCountryCode, '-')
+
+            if (pair.first.isBlank() || pair.second.isBlank()) {
+                requireContext().showToast("Enter a valid phone number")
+                return
+            }
+
+            val headlessRequest = HeadlessRequest()
+            headlessRequest.setPhoneNumber(pair.first, pair.second)
+
+            otplessView.startHeadless(headlessRequest, this::onOtplessResult)
+
+            showLoadingScreen()
+        } catch (e: InvalidPhoneException) {
+            requireContext().showToast("Please enter a correct phone number.")
+            dismissLoadingScreen()
+        }
+    }
+
+    private fun showLoadingScreen() {
+        val loaderFragment = FullScreenLoaderFragment()
+        loaderFragment.show(requireActivity().supportFragmentManager, "loader")
+    }
+
+    private fun dismissLoadingScreen() {
+        val loaderFragment = requireActivity().supportFragmentManager.findFragmentByTag("loader") as? FullScreenLoaderFragment
+        loaderFragment?.dismiss()
+    }
+
+
 }

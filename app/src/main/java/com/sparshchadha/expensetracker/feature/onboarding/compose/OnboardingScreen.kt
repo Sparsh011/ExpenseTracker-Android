@@ -15,11 +15,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.sparshchadha.expensetracker.common.utils.Dimensions
+import com.sparshchadha.expensetracker.common.utils.vibrateDevice
 import com.sparshchadha.expensetracker.feature.onboarding.components.compose.OnboardingNavigationSlider
 import com.sparshchadha.expensetracker.feature.onboarding.components.compose.OnboardingScreenBackground
 import com.sparshchadha.expensetracker.feature.onboarding.components.compose.ShortOnboardingMessage
-import com.sparshchadha.expensetracker.utils.Dimensions
-import com.sparshchadha.expensetracker.utils.vibrateDevice
 
 @Composable
 fun OnboardingScreen(

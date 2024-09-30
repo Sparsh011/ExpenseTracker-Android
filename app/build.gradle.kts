@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -7,14 +10,16 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.gms.google.services)
 }
-
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 android {
     namespace = "com.sparshchadha.expensetracker"
     compileSdk = 34
 
     defaultConfig {
         applicationId = "com.sparshchadha.expensetracker"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -22,17 +27,27 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        signingConfigs {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+            }
+        }
+    }
+
     buildTypes {
         debug {
             isMinifyEnabled = false
         }
         release {
-            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -62,13 +77,14 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.compose.material3.android)
     implementation(libs.androidx.ui.tooling.preview.android)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     // region sdp and ssp
-    implementation (libs.sdp.android)
-    implementation (libs.ssp.android)
+    implementation(libs.sdp.android)
+    implementation(libs.ssp.android)
     // endregion
 
     // region Chucker
@@ -86,10 +102,6 @@ dependencies {
 
     // region Preference Datastore
     implementation(libs.androidx.datastore.preferences)
-    // endregion
-
-    // region date and time picker
-    implementation (libs.datetime)
     // endregion
 
     // region coil
@@ -114,15 +126,29 @@ dependencies {
     // endregion
 
     // region google auth
-    implementation (libs.androidx.credentials)
-    implementation (libs.androidx.credentials.play.services.auth)
-    implementation (libs.googleid)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
     // endregion
 
     // region Room DB -
-    implementation (libs.androidx.room.runtime)
-    kapt (libs.androidx.room.compiler)
-    implementation (libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.google.firebase.auth)
+    // endregion
+
+    // region Otpless
+    implementation (libs.otpless.android.sdk)
+    // endregion
+
+    // region LeakCanary
+    debugImplementation (libs.leakcanary.android)
+    // endregion
+
+    // region CalendarView
+    implementation(libs.compose.calendar)
     // endregion
 
 }

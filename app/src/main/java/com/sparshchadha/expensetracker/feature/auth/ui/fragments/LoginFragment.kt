@@ -3,43 +3,63 @@ package com.sparshchadha.expensetracker.feature.auth.ui.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import com.otpless.dto.HeadlessRequest
+import com.otpless.dto.HeadlessResponse
+import com.otpless.main.OtplessManager
+import com.otpless.main.OtplessView
 import com.sparshchadha.expensetracker.R
+import com.sparshchadha.expensetracker.common.utils.Constants
+import com.sparshchadha.expensetracker.common.utils.Utility
+import com.sparshchadha.expensetracker.common.utils.showToast
+import com.sparshchadha.expensetracker.common.utils.vibrateDevice
+import com.sparshchadha.expensetracker.core.domain.Resource
+import com.sparshchadha.expensetracker.core.navigation.NavigationProvider
+import com.sparshchadha.expensetracker.feature.auth.data.remote.dto.UserVerificationResponse
+import com.sparshchadha.expensetracker.feature.auth.domain.exceptions.InvalidPhoneException
+import com.sparshchadha.expensetracker.feature.auth.ui.client.GoogleSignInUIClient
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.screens.LoginScreen
 import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
-import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
-import com.sparshchadha.expensetracker.feature.home.ui.fragment.HomeFragment
-import com.sparshchadha.expensetracker.utils.BundleKeys
-import com.sparshchadha.expensetracker.utils.Resource
+import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(R.layout.login_fragment) {
+class LoginFragment : Fragment(R.layout.fragment_login) {
     private val authViewModel by viewModels<AuthViewModel>()
+    private val profileViewModel by activityViewModels<ProfileViewModel>()
 
     private lateinit var loginComposeView: ComposeView
-    private val errorDuringLogin = mutableStateOf<Pair<Boolean, String>?>(null)
-    private val showLoader = mutableStateOf(false)
+
+    private lateinit var otplessView: OtplessView
+    private var isLoading: Boolean = false
+
+
+    @Inject
+    lateinit var navigationProvider: NavigationProvider
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initializeViewsUsing(view = view)
 
-        setObservers()
+        initializeOtpless()
+
+        observePhoneVerification()
 
         loginComposeView.setContent {
             LoginScreen(
                 continueWithPhoneAuth = { phoneNumber ->
                     continuePhoneAuthUsing(phoneNumber)
                 },
-                showLoader = showLoader.value,
                 startGoogleSignIn = {
-
+                    startGoogleSignIn()
                 },
                 onLoginSkip = {
                     navigateToHomeScreen()
@@ -48,104 +68,137 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
         }
     }
 
-    private fun continuePhoneAuthUsing(phoneNumber: String) {
-        if (!isPhoneNumberValid(phoneNumber)) {
-            showToast(message = "Enter a valid phone number!")
-            return
+    private fun initializeOtpless() {
+        otplessView = OtplessManager.getInstance().getOtplessView(requireActivity())
+        otplessView.initHeadless(Constants.OTPLESS_APPID)
+        otplessView.setHeadlessCallback(this::onOtplessResult)
+    }
+
+    private fun onOtplessResult(response: HeadlessResponse) {
+        dismissLoadingScreen()
+        if (response.statusCode == 200) {
+            when (response.responseType) {
+                "INITIATE" -> {
+                    navigateToVerifyOtpScreen()
+                }
+
+                "ONETAP" -> {
+                    val token = response.response?.getString("token") ?: ""
+                    authViewModel.validateOtpToken(token)
+                }
+            }
+        } else {
+            val error = response.response?.optString("errorMessage")
+            Utility.errorLog(error ?: "Unable to get error message")
+            requireContext().showToast("Unable To Login, Please Try Again!")
+        }
+    }
+
+    private fun showLoadingScreen() {
+        if (isLoading) return
+        isLoading = true
+        navigationProvider.showLoadingFragment()
+    }
+
+    private fun dismissLoadingScreen() {
+        if (!isLoading) return
+        isLoading = false
+        navigationProvider.dismissLoadingFragment()
+    }
+
+
+    private fun continuePhoneAuthUsing(phoneNumberWithCountryCode: String) {
+        try {
+            val pair = authViewModel.validateAndGetPhoneAndCC(phoneNumberWithCountryCode, '-')
+
+            if (pair.first.isBlank() || pair.second.isBlank()) {
+                requireContext().showToast("Enter a valid phone number")
+                return
+            }
+            authViewModel.setUserPhoneNumber(phoneNumberWithCountryCode)
+
+
+            val headlessRequest = HeadlessRequest()
+            headlessRequest.setPhoneNumber(pair.first, pair.second)
+
+            otplessView.startHeadless(headlessRequest, this::onOtplessResult)
+//            showLoadingScreen()
+        } catch (e: InvalidPhoneException) {
+            requireContext().showToast(e.message ?: "Incorrect phone number.")
+            dismissLoadingScreen()
         }
 
-        authViewModel.continueWithPhone(phoneNumber = phoneNumber)
-        authViewModel.setUserPhoneNumber(number = phoneNumber)
     }
 
     private fun initializeViewsUsing(view: View) {
         loginComposeView = view.findViewById(R.id.login_compose_view)
     }
 
-    private fun navigateToVerifyOtpScreen(orderId: String) {
-        if (orderId.isBlank()) {
-            showToast(message = "Internal server error, please try again!")
-            return
+    private fun navigateToVerifyOtpScreen() {
+        navigationProvider.navigateToVerifyOTPFragment(authViewModel.getUserPhoneNumber())
+    }
+
+    private fun navigateToHomeScreen(withUser: UserVerificationResponse? = null) {
+        withUser?.let { user ->
+            if (user.isVerified != true) {
+                Toast.makeText(requireContext(), user.message, Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            authViewModel.saveAccessToken(user.access ?: "")
+            authViewModel.saveRefreshToken(user.refresh ?: "")
+
+            profileViewModel.updateUserName(user.userProfile.name)
+
+            navigationProvider.navigateToMainBottomBarNavigationFragment()
+        } ?: run {
+            dismissLoadingScreen()
+            requireContext().showToast("Error during login, please try again!")
         }
-
-        authViewModel.setOtpServiceOrderId(orderId = orderId)
-
-        val fragment = VerifyOtpFragment()
-        val bundle = Bundle()
-        bundle.putString(BundleKeys.PHONE_NUMBER_KEY, authViewModel.getUserPhoneNumber())
-        bundle.putString(BundleKeys.OTP_SERVICE_ORDER_ID, authViewModel.getOtpServiceOrderId())
-        fragment.arguments = bundle
-
-        requireActivity().supportFragmentManager
-            .beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in, R.anim.fade_out,
-                R.anim.fade_in, R.anim.slide_out
-            )
-            .replace(
-                R.id.parent_fragment_container, fragment
-            )
-            .addToBackStack(null)
-            .commit()
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(
-            requireContext(),
-            message,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    private fun isPhoneNumberValid(phoneNumber: String): Boolean {
-        if (!phoneNumber.startsWith("+")) return false
-        if (phoneNumber.isBlank() || phoneNumber.length < 6 || phoneNumber.length > 15) return false
-        return true
-    }
-
-    private fun setObservers() {
-        observePhoneAuthInitiation()
-    }
-
-    private fun observePhoneAuthInitiation() {
-        authViewModel.continueWithPhoneResponse.asLiveData()
+    private fun observePhoneVerification() {
+        authViewModel.identityVerificationResponse.asLiveData()
             .observe(viewLifecycleOwner) { response ->
                 response?.let {
                     when (it) {
                         is Resource.Success -> {
-                            showLoader.value = false
-                            navigateToVerifyOtpScreen(
-                                orderId = it.data?.orderId ?: ""
-                            )
+                            dismissLoadingScreen()
+                            navigateToHomeScreen(withUser = it.data)
                         }
 
                         is Resource.Error -> {
-                            showLoader.value = false
-                            errorDuringLogin.value =
-                                Pair(
-                                    true,
-                                    it.error?.message ?: "Unable to login, please try again!"
-                                )
+                            dismissLoadingScreen()
+                            Utility.errorLog(it.error?.message ?: "Unable to fetch error message.")
+                            requireContext().showToast("Unable to login, please try again!")
+                            requireContext().vibrateDevice()
                         }
 
                         is Resource.Loading -> {
-                            showLoader.value = true
+                            showLoadingScreen()
                         }
                     }
                 }
             }
     }
 
-    private fun navigateToHomeScreen() {
-        requireActivity().supportFragmentManager
-            .beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in, R.anim.fade_out,
-                R.anim.fade_in, R.anim.slide_out
+
+    private fun startGoogleSignIn() {
+        val signInClient = GoogleSignInUIClient(requireContext())
+
+        lifecycleScope.launch {
+            signInClient.getCredential(
+                onSignInComplete = { googleSignInResult ->
+                    if (googleSignInResult.isSuccessful) {
+                        authViewModel.validateGoogleIdToken(googleSignInResult.idToken)
+                        showLoadingScreen()
+                    } else {
+                        dismissLoadingScreen()
+                        Utility.errorLog(googleSignInResult.errorMessage)
+                        requireContext().showToast("Unable to login, please try again.")
+                    }
+                }
             )
-            .replace(
-                R.id.parent_fragment_container, MainBottomNavigationBarFragment()
-            )
-            .commit()
+        }
     }
 }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,8 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,47 +38,26 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.R
+import com.sparshchadha.expensetracker.common.utils.AppColors
+import com.sparshchadha.expensetracker.common.utils.Dimensions
+import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.feature.auth.ui.compose.components.PhoneNumberTextField
-import com.sparshchadha.expensetracker.utils.AppColors
-import com.sparshchadha.expensetracker.utils.Dimensions
-import com.sparshchadha.expensetracker.utils.FontSizes
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     continueWithPhoneAuth: (String) -> Unit,
-    showLoader: Boolean,
     startGoogleSignIn: () -> Unit,
-    onLoginSkip: () -> Unit
+    onLoginSkip: () -> Unit,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        ScreenContent(
-            screenWidth = screenWidth,
-            continueWithPhoneAuth = continueWithPhoneAuth,
-            startGoogleSignIn = startGoogleSignIn,
-            isLoaderShowing = showLoader,
-            onLoginSkip = onLoginSkip
-        )
-
-        if (showLoader) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Color(248, 248, 248, 170)
-                    ),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.width(Dimensions.sliderContainerSize()),
-                    color = AppColors.primaryPurple,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                )
-            }
-        }
-    }
+    ScreenContent(
+        screenWidth = screenWidth,
+        continueWithPhoneAuth = continueWithPhoneAuth,
+        startGoogleSignIn = startGoogleSignIn,
+        onLoginSkip = onLoginSkip
+    )
 }
 
 @Composable
@@ -88,8 +65,7 @@ private fun ScreenContent(
     screenWidth: Int,
     continueWithPhoneAuth: (String) -> Unit,
     startGoogleSignIn: () -> Unit,
-    isLoaderShowing: Boolean,
-    onLoginSkip: () -> Unit
+    onLoginSkip: () -> Unit,
 ) {
     var phoneNumber by rememberSaveable {
         mutableStateOf("")
@@ -102,7 +78,7 @@ private fun ScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.expense_tracker_app_icon),
+            painter = painterResource(id = R.drawable.img_expense_tracker_app),
             contentDescription = null,
             modifier = Modifier
                 .width(screenWidth.dp)
@@ -123,15 +99,12 @@ private fun ScreenContent(
                 .padding(Dimensions.largePadding()),
             phoneNumber = phoneNumber,
             onPhoneNumberChange = {
-                if (isLoaderShowing) return@PhoneNumberTextField
                 phoneNumber = it
             },
-            isEnabled = !isLoaderShowing
         )
 
         SendOTPButton {
-            if (isLoaderShowing) return@SendOTPButton
-            continueWithPhoneAuth("+91$phoneNumber")
+            continueWithPhoneAuth("+91-$phoneNumber")
         }
 
         Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
@@ -140,7 +113,7 @@ private fun ScreenContent(
 
         Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
 
-        LoginWithGoogleButton(isLoaderShowing = isLoaderShowing) {
+        LoginWithGoogleButton {
             startGoogleSignIn()
         }
 
@@ -151,7 +124,6 @@ private fun ScreenContent(
             fontSize = FontSizes.mediumNonScaledFontSize(),
             color = Color.Black,
             modifier = Modifier.clickable {
-                if (isLoaderShowing) return@clickable
                 onLoginSkip()
             },
             fontStyle = FontStyle.Italic
@@ -182,12 +154,10 @@ private fun SendOTPButton(
 
 @Composable
 private fun LoginWithGoogleButton(
-    isLoaderShowing: Boolean,
-    startGoogleSignIn: () -> Unit
+    startGoogleSignIn: () -> Unit,
 ) {
     Button(
         onClick = {
-            if (isLoaderShowing) return@Button
             startGoogleSignIn()
         },
         colors = ButtonDefaults.buttonColors(
@@ -200,7 +170,7 @@ private fun LoginWithGoogleButton(
             horizontalArrangement = Arrangement.Center
         ) {
             Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.google_icon),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_google),
                 contentDescription = null,
                 modifier = Modifier.size(Dimensions.mediumPadding())
             )

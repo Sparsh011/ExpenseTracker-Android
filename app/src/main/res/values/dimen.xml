@@ -14,7 +14,7 @@
     <dimen name="large_icon_size">@dimen/_100sdp</dimen>
     <dimen name="otp_box_width">@dimen/_35sdp</dimen>
     <dimen name="top_bar_height">@dimen/_40sdp</dimen>
-    <dimen name="profile_pic_size">@dimen/_80sdp</dimen>
+    <dimen name="profile_pic_size">@dimen/_60sdp</dimen>
     <dimen name="corner_radius">@dimen/_20sdp</dimen>
     <dimen name="error_icon">@dimen/_150sdp</dimen>
         <!-- Endregion    -->

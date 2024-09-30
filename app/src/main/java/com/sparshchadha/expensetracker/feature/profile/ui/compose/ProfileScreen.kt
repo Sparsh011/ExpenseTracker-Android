@@ -10,22 +10,31 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.sparshchadha.expensetracker.common.ui.components.compose.ETTopBar
+import com.sparshchadha.expensetracker.common.utils.AppColors
+import com.sparshchadha.expensetracker.common.utils.Dimensions
+import com.sparshchadha.expensetracker.common.utils.showToast
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
-import com.sparshchadha.expensetracker.utils.AppColors
-import com.sparshchadha.expensetracker.utils.Dimensions
-import com.sparshchadha.expensetracker.utils.Resource
 
 @Composable
 fun ProfileScreen(
-    profileState: Resource<UserProfile>?,
+    profileState: UserProfile?,
+    userName: String,
+    expenseBudget: Double,
     onBackPress: () -> Unit,
     onRetryProfileFetch: () -> Unit,
+    showLoader: Boolean,
+    showError: Boolean,
+    onNameUpdate: (String) -> Unit,
+    navigateToExpenseSettingsScreen: () -> Unit,
+    onLogout: () -> Unit,
+    navigateToNotificationsScreen: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-
+            .background(AppColors.secondaryWhite)
     ) {
         ETTopBar(
             text = "Profile",
@@ -33,52 +42,37 @@ fun ProfileScreen(
             onBackPress = onBackPress,
             modifier = Modifier
                 .statusBarsPadding()
-                .background(AppColors.secondaryWhite)
                 .height(Dimensions.topBarHeight())
                 .fillMaxWidth()
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(AppColors.primaryWhite)
-                .verticalScroll(rememberScrollState())
+        if (showLoader) {
+            ProfileShimmer()
+        }
 
-        ) {
-            when (profileState) {
-                is Resource.Success -> {
-                    profileState.data?.let {
-                        Profile(it)
-                    } ?: run {
-                        ProfileError(
-                            error = "Couldn't Fetch Your Profile",
-                            errorMessage = profileState.error?.message
-                                ?: "Something Went Wrong, Please Try Again!",
-                            canRetry = true,
-                            onRetryProfileFetch = onRetryProfileFetch
-                        )
-                    }
-                }
+        if (showError) {
+            ProfileFetchError(onRetryClick = onRetryProfileFetch)
+        }
 
-                is Resource.Error -> {
-                    ProfileError(
-                        error = "Couldn't Fetch Your Profile",
-                        errorMessage = profileState.error?.message
-                            ?: "Something Went Wrong, Please Try Again!",
-                        canRetry = true,
-                        onRetryProfileFetch = onRetryProfileFetch
-                    )
-                }
+        profileState?.let {
+            Column(
+                modifier = Modifier
+                    .background(AppColors.secondaryWhite)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
 
-                is Resource.Loading -> {
-                    ProfileShimmer()
-                }
-
-                null -> {
-                    // Do nothing, UserProfile was initially null just to give an initial value which may or
-                    // may not be utilized later.
-                }
+                ) {
+                Profile(
+                    profile = it,
+                    userName = userName,
+                    expenseBudget = expenseBudget,
+                    onNameUpdate = onNameUpdate,
+                    navigateToExpenseSettingsScreen = navigateToExpenseSettingsScreen,
+                    onLogout = onLogout,
+                    navigateToNotificationsScreen = navigateToNotificationsScreen
+                )
             }
         }
     }
 }
+

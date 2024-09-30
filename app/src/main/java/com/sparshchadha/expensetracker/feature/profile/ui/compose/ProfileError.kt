@@ -27,14 +27,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.common.ui.components.compose.Pulsating
-import com.sparshchadha.expensetracker.utils.AppColors
-import com.sparshchadha.expensetracker.utils.Dimensions
-import com.sparshchadha.expensetracker.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.AppColors
+import com.sparshchadha.expensetracker.common.utils.Dimensions
+import com.sparshchadha.expensetracker.common.utils.FontSizes
 
 @Composable
 fun ProfileError(
@@ -105,7 +104,7 @@ fun ProfileError(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.retry),
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_retry),
                         contentDescription = null
                     )
                     Spacer(modifier = Modifier.width(Dimensions.smallPadding()))

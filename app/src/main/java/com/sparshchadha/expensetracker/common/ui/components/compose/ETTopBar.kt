@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.sparshchadha.expensetracker.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.FontSizes
 
 @Composable
 fun ETTopBar(

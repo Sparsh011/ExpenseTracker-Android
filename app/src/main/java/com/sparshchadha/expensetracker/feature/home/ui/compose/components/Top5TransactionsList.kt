@@ -29,9 +29,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.R
-import com.sparshchadha.expensetracker.utils.AppColors
-import com.sparshchadha.expensetracker.utils.Dimensions
-import com.sparshchadha.expensetracker.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.AppColors
+import com.sparshchadha.expensetracker.common.utils.Dimensions
+import com.sparshchadha.expensetracker.common.utils.FontSizes
 
 @Composable
 fun Top5TransactionsList() {
@@ -43,9 +43,9 @@ fun Top5TransactionsList() {
         )
     )
 
-    for (i in 0 until 5) {
-        ExpenseCard()
-    }
+//    for (i in 0 until 5) {
+//        ExpenseCard()
+//    }
 }
 
 
@@ -76,7 +76,7 @@ private fun HeaderAndFilterIcon() {
             modifier = Modifier.weight(1f)
         ) {
             Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.baseline_filter_list_24),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_filter),
                 contentDescription = null,
                 tint = Color.Black,
                 modifier = Modifier.clickable {

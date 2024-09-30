@@ -8,7 +8,7 @@ object AppColors {
     val primaryColor: Color = Color(253, 94, 102, 255)
 
     @Stable
-    val primaryGreen: Color = Color(0xFF00C980)
+    val primaryGreen: Color = Color(0xFF00FFA2)
 
     @Stable
     val primaryPurple: Color = Color(0xFF8C52FF)

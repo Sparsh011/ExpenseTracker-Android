@@ -219,17 +219,3 @@ fun ExpenseScreen(
         }
     }
 }
-
-fun parseDateToMillis(): Long {
-    val formatter = DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN)
-
-    val localDate = LocalDate.parse(
-        LocalDateTime.now()
-            .format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN)),
-        formatter
-    )
-
-    val zonedDateTime = localDate.atStartOfDay(ZoneId.systemDefault())
-
-    return Date.from(zonedDateTime.toInstant()).time
-}

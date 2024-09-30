@@ -49,6 +49,7 @@ import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.toMonthString
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -100,7 +101,7 @@ fun DateAndTimeSelector(
 
             Text(
                 text = createdOnDate.ifBlank {
-                    (selectedDate.dayOfMonth.toString() + "-" + selectedDate.monthValue + "-" + selectedDate.year.toString()
+                    (selectedDate.dayOfMonth.toString() + "-" + selectedDate.monthValue.toMonthString() + "-" + selectedDate.year.toString()
                         .replace(' ', '-'))
                 }.replace(' ', '-'),
                 color = Color.Black,
@@ -115,9 +116,9 @@ fun DateAndTimeSelector(
                     String.format(
                         "%02d:%02d",
                         if (timePickerState.hour % 12 == 0) 12 else timePickerState.hour % 12,
-                        timePickerState.minute,
+                        timePickerState.minute
                     )
-                } + " " + if (timePickerState.hour >= 12) "PM" else "AM",
+                },
                 color = Color.Black,
                 fontSize = FontSizes.mediumNonScaledFontSize(),
                 modifier = Modifier

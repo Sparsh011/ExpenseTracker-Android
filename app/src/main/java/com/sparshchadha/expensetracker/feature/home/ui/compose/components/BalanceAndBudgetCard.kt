@@ -12,11 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,14 +21,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.common.utils.formatAmount
-import okhttp3.internal.format
+import kotlin.math.abs
+import kotlin.math.exp
 
 @Composable
 fun BalanceAndBudgetCard(
@@ -66,14 +67,17 @@ fun BalanceAndBudgetCard(
             Budget(expenseBudget)
         }
 
-        BudgetAndBalanceProgress(amountSpent = amountSpentInLast30Days, expenseBudget = expenseBudget)
+        BudgetAndBalanceProgress(
+            amountSpent = amountSpentInLast30Days,
+            expenseBudget = expenseBudget
+        )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = (expenseBudget - amountSpentInLast30Days).formatAmount() + " balance remaining.",
+                text = (expenseBudget - amountSpentInLast30Days).formatAmount() + " remaining",
                 color = Color.White,
                 fontSize = FontSizes.mediumNonScaledFontSize(),
                 modifier = Modifier.padding(
@@ -81,12 +85,20 @@ fun BalanceAndBudgetCard(
                 )
             )
 
-            Icon(
-                imageVector = Icons.Default.Share,
-                contentDescription = null,
-                tint = Color.LightGray,
-                modifier = Modifier.padding(horizontal = Dimensions.largePadding())
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = if (amountSpentInLast30Days < expenseBudget) AppColors.primaryGreen else AppColors.errorRed, fontWeight = FontWeight.Bold),) {
+                        append(((amountSpentInLast30Days / expenseBudget) * 100).toInt().toString() + "%")
+                    }
+                    append(" utilized")
+                },
+                fontSize = FontSizes.mediumNonScaledFontSize(),
+                modifier = Modifier.padding(
+                    horizontal = Dimensions.mediumPadding(),
+                ),
+                color = Color.White
             )
+
         }
     }
 }
@@ -121,7 +133,7 @@ private fun RemainingBalance(balance: Double) {
 
 @Composable
 private fun Budget(
-    budget: Double
+    budget: Double,
 ) {
     val formattedBudget = if (budget != -1.0) budget.formatAmount() else "Add budget"
 
@@ -155,7 +167,7 @@ private fun Budget(
 @Composable
 private fun BudgetAndBalanceProgress(
     amountSpent: Double,
-    expenseBudget: Double
+    expenseBudget: Double,
 ) {
     val targetProgress = if (expenseBudget > 0) (amountSpent / expenseBudget).toFloat() else 0f
 

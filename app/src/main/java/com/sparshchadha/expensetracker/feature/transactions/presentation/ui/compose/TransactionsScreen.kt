@@ -26,7 +26,7 @@ import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
-import com.sparshchadha.expensetracker.feature.expense.presentation.ui.components.ExpenseCard
+import com.sparshchadha.expensetracker.feature.expense.presentation.ui.compose.components.ExpenseCard
 
 @Composable
 fun TransactionsScreen(

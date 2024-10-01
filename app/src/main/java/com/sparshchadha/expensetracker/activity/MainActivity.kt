@@ -17,11 +17,11 @@ import com.otpless.main.OtplessView
 import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.common.utils.Constants
 import com.sparshchadha.expensetracker.core.navigation.ExpenseTrackerNavGraph
-import com.sparshchadha.expensetracker.feature.auth.ui.fragments.LoginFragment
-import com.sparshchadha.expensetracker.feature.auth.viewmodel.AuthViewModel
+import com.sparshchadha.expensetracker.feature.auth.presentation.ui.fragments.LoginFragment
+import com.sparshchadha.expensetracker.feature.auth.presentation.viewmodel.AuthViewModel
 import com.sparshchadha.expensetracker.feature.bottom_navigation.MainBottomNavigationBarFragment
 import com.sparshchadha.expensetracker.feature.notifications.NotificationsFragment
-import com.sparshchadha.expensetracker.feature.onboarding.fragments.OnboardingFragment
+import com.sparshchadha.expensetracker.feature.onboarding.presentation.fragments.OnboardingFragment
 import com.sparshchadha.expensetracker.feature.profile.ui.fragments.ProfileFragment
 import dagger.hilt.android.AndroidEntryPoint
 

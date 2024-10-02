@@ -115,6 +115,18 @@ class ExpenseViewModel @Inject constructor(
         }
     }
 
+    fun searchTransactionsByDate(searchQuery: String) {
+
+    }
+
+    fun searchTransactionsByTitle(searchQuery: String) {
+
+    }
+
+    fun searchTransactionsByDescription(searchQuery: String) {
+
+    }
+
     init {
         fetchAllExpenses()
         fetchCurrentDayExpenses()

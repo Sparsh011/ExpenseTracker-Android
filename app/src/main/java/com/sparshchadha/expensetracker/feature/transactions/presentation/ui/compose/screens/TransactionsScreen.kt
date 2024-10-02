@@ -1,4 +1,4 @@
-package com.sparshchadha.expensetracker.feature.transactions.presentation.ui.compose
+package com.sparshchadha.expensetracker.feature.transactions.presentation.ui.compose.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,10 +15,16 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.sparshchadha.expensetracker.common.ui.components.compose.ETTopBar
@@ -27,12 +33,19 @@ import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.compose.components.ExpenseCard
+import com.sparshchadha.expensetracker.feature.transactions.presentation.ui.compose.components.TransactionSearchBar
 
 @Composable
 fun TransactionsScreen(
     allExpenses: List<ExpenseEntity>,
     onExpenseClick: (Int) -> Unit
 ) {
+    var searchQuery by remember {
+        mutableStateOf("")
+    }
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+
     Column (
         modifier = Modifier.background(AppColors.primaryWhite)
             .fillMaxSize(),
@@ -41,7 +54,20 @@ fun TransactionsScreen(
 
         Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
 
-        // Add search bar here to search by date, name description or amount all
+        TransactionSearchBar(
+            searchQuery = searchQuery,
+            onSearch = {
+
+            },
+            onSearchQueryChange = { newSearchQuery ->
+                searchQuery = newSearchQuery
+            },
+            focusManager = focusManager,
+            focusRequester = focusRequester,
+            onCloseClicked = {
+                focusManager.clearFocus()
+            }
+        )
 
         LazyColumn (
             modifier = Modifier.fillMaxSize()

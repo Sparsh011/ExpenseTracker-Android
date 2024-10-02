@@ -2,11 +2,8 @@ package com.sparshchadha.expensetracker.feature.transactions.presentation.ui.fra
 
 import android.os.Bundle
 import android.view.View
-import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -14,7 +11,7 @@ import com.sparshchadha.expensetracker.R
 import com.sparshchadha.expensetracker.core.navigation.NavigationProvider
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.presentation.viewmodel.ExpenseViewModel
-import com.sparshchadha.expensetracker.feature.transactions.presentation.ui.compose.TransactionsScreen
+import com.sparshchadha.expensetracker.feature.transactions.presentation.ui.compose.screens.TransactionsScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

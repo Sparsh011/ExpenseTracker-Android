@@ -8,13 +8,10 @@ import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEnti
 import com.sparshchadha.expensetracker.feature.expense.domain.repository.ExpenseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -43,7 +40,7 @@ class ExpenseViewModel @Inject constructor(
 
     private var searchQuery = ""
 
-    private var job: Job? = null
+    private var expenseSearchDebouncingJob: Job? = null
 
     private fun fetchAllExpenses() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -124,10 +121,14 @@ class ExpenseViewModel @Inject constructor(
         }
     }
 
-    fun searchExpenses() {
-        job?.cancel()
-        job = viewModelScope.launch(Dispatchers.IO) {
-            delay(300L)
+    /**
+     * Performs debouncing at an interval of 300MS.
+     * @param debounceInterval Time interval at which debouncing should occur.
+     * */
+    fun searchExpenses(debounceInterval: Long = 300L) {
+        expenseSearchDebouncingJob?.cancel()
+        expenseSearchDebouncingJob = viewModelScope.launch(Dispatchers.IO) {
+            delay(debounceInterval)
             expenseRepository.getExpensesBySearchQuery(searchQuery)
         }
     }

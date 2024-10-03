@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
@@ -74,9 +73,17 @@ fun TransactionsScreen(
         LazyColumn (
             modifier = Modifier.fillMaxSize()
         ) {
-            items(allExpenses) {
+            items(allExpenses.size) { index ->
+                if (index == 0) {
+                    Header(allExpenses[index].createdOnDate) { }
+                } else if (index > 0 && index < allExpenses.lastIndex) {
+                    if (allExpenses[index].createdOnDate != allExpenses[index - 1].createdOnDate) {
+                        Header(allExpenses[index].createdOnDate) { }
+                    }
+                }
+                Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
                 ExpenseCard(
-                    expense = it,
+                    expense = allExpenses[index],
                     onExpenseItemClick = onExpenseClick
                 )
             }

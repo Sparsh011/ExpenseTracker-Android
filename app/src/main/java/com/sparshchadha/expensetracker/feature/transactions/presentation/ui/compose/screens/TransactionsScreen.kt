@@ -38,7 +38,8 @@ import com.sparshchadha.expensetracker.feature.transactions.presentation.ui.comp
 @Composable
 fun TransactionsScreen(
     allExpenses: List<ExpenseEntity>,
-    onExpenseClick: (Int) -> Unit
+    onExpenseClick: (Int) -> Unit,
+    onSearch: (String) -> Unit
 ) {
     var searchQuery by remember {
         mutableStateOf("")
@@ -57,10 +58,11 @@ fun TransactionsScreen(
         TransactionSearchBar(
             searchQuery = searchQuery,
             onSearch = {
-
+                onSearch(searchQuery)
             },
             onSearchQueryChange = { newSearchQuery ->
                 searchQuery = newSearchQuery
+                onSearch(searchQuery)
             },
             focusManager = focusManager,
             focusRequester = focusRequester,

@@ -8,8 +8,13 @@ import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEnti
 import com.sparshchadha.expensetracker.feature.expense.domain.repository.ExpenseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -35,6 +40,10 @@ class ExpenseViewModel @Inject constructor(
     val top5TransactionsByAmount = _top5TransactionsByAmount.asStateFlow()
 
     private var selectedExpenseId = -1
+
+    private var searchQuery = ""
+
+    private var job: Job? = null
 
     private fun fetchAllExpenses() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -115,16 +124,16 @@ class ExpenseViewModel @Inject constructor(
         }
     }
 
-    fun searchTransactionsByDate(searchQuery: String) {
-
+    fun searchExpenses() {
+        job?.cancel()
+        job = viewModelScope.launch(Dispatchers.IO) {
+            delay(300L)
+            expenseRepository.getExpensesBySearchQuery(searchQuery)
+        }
     }
 
-    fun searchTransactionsByTitle(searchQuery: String) {
-
-    }
-
-    fun searchTransactionsByDescription(searchQuery: String) {
-
+    fun setSearchQuery(searchQuery: String) {
+        this.searchQuery = searchQuery
     }
 
     init {

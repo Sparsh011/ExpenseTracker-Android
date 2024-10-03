@@ -58,6 +58,10 @@ class ExpenseRepositoryImpl(
         initialDate: String,
         finalDate: String,
     ): Flow<List<ExpenseEntity>> {
-        return expenseDao.getTop5TransactionsByAmountInDateRange(initialDate = initialDate, finalDate = finalDate)
+        return expenseDao.getTop5ExpensesByAmountInDateRange(initialDate = initialDate, finalDate = finalDate)
+    }
+
+    override fun getExpensesBySearchQuery(searchQuery: String): Flow<List<ExpenseEntity>> {
+        return expenseDao.getExpensesBySearchQuery(searchQuery = searchQuery)
     }
 }

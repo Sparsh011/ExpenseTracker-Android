@@ -38,6 +38,10 @@ class TransactionsFragment : Fragment(R.layout.fragment_transactions) {
                 allExpenses = allExpenses.toList(),
                 onExpenseClick = { expenseId ->
                     navigationProvider.navigateToExpenseFragment(expenseId)
+                },
+                onSearch = {
+                    expenseViewModel.setSearchQuery(it)
+                    expenseViewModel.searchExpenses()
                 }
             )
         }

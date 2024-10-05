@@ -122,7 +122,7 @@ class ExpenseViewModel @Inject constructor(
     }
 
     /**
-     * Performs debouncing at an interval of 300MS.
+     * Performs debouncing at the provided interval before performing search.
      * @param debounceInterval Time interval at which debouncing should occur.
      * */
     fun searchExpenses(debounceInterval: Long = 300L) {

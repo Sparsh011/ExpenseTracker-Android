@@ -49,7 +49,9 @@ import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.convert24HourTimeTo12HourTime
 import com.sparshchadha.expensetracker.common.utils.convertISODateToUIDate
+import com.sparshchadha.expensetracker.common.utils.convertToISOFormat
 import com.sparshchadha.expensetracker.common.utils.toMonthString
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -113,13 +115,7 @@ fun DateAndTimeSelector(
             )
 
             Text(
-                text = createdAtTime.ifBlank {
-                    String.format(
-                        "%02d:%02d",
-                        if (timePickerState.hour % 12 == 0) 12 else timePickerState.hour % 12,
-                        timePickerState.minute
-                    )
-                },
+                text = createdAtTime.convert24HourTimeTo12HourTime(),
                 color = Color.Black,
                 fontSize = FontSizes.mediumNonScaledFontSize(),
                 modifier = Modifier

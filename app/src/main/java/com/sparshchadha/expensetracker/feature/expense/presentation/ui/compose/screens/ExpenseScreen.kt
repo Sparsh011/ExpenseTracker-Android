@@ -3,7 +3,6 @@ package com.sparshchadha.expensetracker.feature.expense.presentation.ui.compose.
 import android.annotation.SuppressLint
 import android.icu.util.Calendar
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,6 +33,7 @@ import com.sparshchadha.expensetracker.common.ui.components.compose.ETTopBar
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.convert24HourTimeTo12HourTime
 import com.sparshchadha.expensetracker.common.utils.convertToISOFormat
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.compose.components.DateAndTimeSelector
@@ -69,15 +69,15 @@ fun ExpenseScreen(
 
     var createdOnDate by remember {
         mutableStateOf(expenseEntity?.createdOnDate?.takeIf { it.isNotBlank() }
-            ?: "${LocalDate.now().dayOfMonth} ${LocalDate.now().monthValue} ${LocalDate.now().year}")
+            ?: "${LocalDate.now().year}-${LocalDate.now().monthValue}-${LocalDate.now().dayOfMonth}")
     }
 
     var createdAtTime by remember {
-        mutableStateOf(expenseEntity?.createdAtTime?.takeIf { it.isNotBlank() } ?: String.format(
+        mutableStateOf(expenseEntity?.createdAtTime?.convert24HourTimeTo12HourTime()?.takeIf { it.isNotBlank() } ?: String.format(
             "%02d:%02d",
             timePickerState.hour,
             timePickerState.minute
-        ).lowercase())
+        ))
     }
 
     val updatedOnDate by remember {

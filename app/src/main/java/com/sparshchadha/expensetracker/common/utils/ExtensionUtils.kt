@@ -79,6 +79,29 @@ fun String.convertISODateToUIDate(): String {
     return outputFormat.format(date)
 }
 
+/**
+ * Converts 24-hour format time to 12-hour format time with AM/PM
+ */
+fun String.convert24HourTimeTo12HourTime(): String {
+    return try {
+        val inputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+
+        val date = inputFormat.parse(this)
+
+        if (date != null) {
+            outputFormat.format(date)
+        } else {
+            Utility.errorLog("Could not get Date")
+            this
+        }
+    } catch (e: Exception) {
+        Utility.errorLog(e.message.toString())
+        this
+    }
+}
+
+
 
 /**
  * Returns the corresponding month string to month index (1 based indexing)

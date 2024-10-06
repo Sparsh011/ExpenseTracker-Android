@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.convert24HourTimeTo12HourTime
 import com.sparshchadha.expensetracker.common.utils.convertISODateToUIDate
 import com.sparshchadha.expensetracker.common.utils.convertToHumanReadableDate
 import com.sparshchadha.expensetracker.common.utils.formatAmount
@@ -103,7 +104,7 @@ fun ExpenseCard(expense: ExpenseEntity, onExpenseItemClick: (Int) -> Unit) {
                     )
 
                     Text(
-                        text = expense.createdAtTime.convertToHumanReadableDate() + " " +if (expense.createdAtTime.substring(0, expense.createdAtTime.indexOf(':')) >= "12") "PM" else "AM",
+                        text = expense.createdAtTime.convert24HourTimeTo12HourTime(),
                         color = Color.Gray,
                         modifier = Modifier
                             .padding(

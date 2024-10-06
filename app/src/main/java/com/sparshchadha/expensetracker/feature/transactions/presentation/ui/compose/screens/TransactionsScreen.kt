@@ -35,6 +35,7 @@ import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.common.utils.convertISODateToUIDate
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.compose.components.ExpenseCard
+import com.sparshchadha.expensetracker.feature.home.ui.compose.components.NoTransactions
 import com.sparshchadha.expensetracker.feature.transactions.presentation.ui.compose.components.TransactionSearchBar
 
 @Composable
@@ -72,23 +73,27 @@ fun TransactionsScreen(
             }
         )
 
-        LazyColumn (
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(allExpenses.size) { index ->
-                if (index == 0) {
-                    Header(allExpenses[index].createdOnDate) { }
-                } else if (index > 0) {
-                    if (allExpenses[index].createdOnDate != allExpenses[index - 1].createdOnDate) {
+        if (allExpenses.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(allExpenses.size) { index ->
+                    if (index == 0) {
                         Header(allExpenses[index].createdOnDate) { }
+                    } else if (index > 0) {
+                        if (allExpenses[index].createdOnDate != allExpenses[index - 1].createdOnDate) {
+                            Header(allExpenses[index].createdOnDate) { }
+                        }
                     }
+                    Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
+                    ExpenseCard(
+                        expense = allExpenses[index],
+                        onExpenseItemClick = onExpenseClick
+                    )
                 }
-                Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
-                ExpenseCard(
-                    expense = allExpenses[index],
-                    onExpenseItemClick = onExpenseClick
-                )
             }
+        } else {
+            NoTransactions(text = "Could not find any transactions")
         }
     }
 }

@@ -3,7 +3,6 @@ package com.sparshchadha.expensetracker.feature.expense.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sparshchadha.expensetracker.common.utils.Constants
-import com.sparshchadha.expensetracker.common.utils.convertToISOFormat
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.domain.repository.ExpenseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -97,7 +96,6 @@ class ExpenseViewModel @Inject constructor(
 
         val date = LocalDateTime.now().minusDays(30)
             .format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN))
-//        val compatibleDate = date.convertToISOFormat()
         viewModelScope.launch(Dispatchers.IO) {
             expenseRepository.getAmountSpentInLastNDays(date).collect {
                 _last30DaysAmountSpent.value = it?.toDouble() ?: 0.0
@@ -106,11 +104,8 @@ class ExpenseViewModel @Inject constructor(
     }
 
     fun fetchTop5TransactionsByAmountInDateRange(initialDate: String, finalDate: String) {
-//        val date = LocalDateTime.now().minusDays(30).format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMATTER_PATTERN))
         if (_top5TransactionsByAmount.value.isNotEmpty()) return
 
-//        val compatibleInitialDate = initialDate.convertToISOFormat()
-//        val compatibleFinalDate = finalDate.convertToISOFormat()
         viewModelScope.launch(Dispatchers.IO) {
             expenseRepository.getTop5TransactionsByAmountInDateRange(
                 initialDate = initialDate,
@@ -125,16 +120,44 @@ class ExpenseViewModel @Inject constructor(
      * Performs debouncing at the provided interval before performing search.
      * @param debounceInterval Time interval at which debouncing should occur.
      * */
-    fun searchExpenses(debounceInterval: Long = 300L) {
+    fun searchExpenses(debounceInterval: Long = 400L) {
         expenseSearchDebouncingJob?.cancel()
         expenseSearchDebouncingJob = viewModelScope.launch(Dispatchers.IO) {
             delay(debounceInterval)
-            expenseRepository.getExpensesBySearchQuery(searchQuery)
+            if (searchQuery.isBlank()) {
+                fetchAllExpenses()
+                return@launch
+            }
+            expenseRepository.getExpensesBySearchQuery(searchQuery).collect {
+                _allExpenses.value = it
+            }
         }
     }
 
     fun setSearchQuery(searchQuery: String) {
-        this.searchQuery = searchQuery
+        if (mightBeMonthString(searchQuery)) {
+            this.searchQuery = mapMonthStrToInt(searchQuery)
+        } else {
+            this.searchQuery = searchQuery
+        }
+    }
+
+    private fun mightBeMonthString(searchQuery: String): Boolean {
+        val months = listOf(
+            "jan", "feb", "mar", "apr", "may", "jun",
+            "jul", "aug", "sep", "oct", "nov", "dec"
+        )
+        return months.contains(searchQuery.trim().lowercase().take(3))
+    }
+
+    private fun mapMonthStrToInt(searchQuery: String): String {
+        val monthMap = mapOf(
+            "jan" to "01", "feb" to "02", "mar" to "03",
+            "apr" to "04", "may" to "05", "jun" to "06",
+            "jul" to "07", "aug" to "08", "sep" to "09",
+            "oct" to "10", "nov" to "11", "dec" to "12"
+        )
+        return monthMap[searchQuery.trim().lowercase().take(3)] ?: searchQuery
     }
 
     init {

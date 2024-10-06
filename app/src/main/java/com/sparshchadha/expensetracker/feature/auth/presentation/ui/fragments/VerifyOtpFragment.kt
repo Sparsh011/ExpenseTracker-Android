@@ -3,6 +3,9 @@ package com.sparshchadha.expensetracker.feature.auth.presentation.ui.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -38,6 +41,8 @@ class VerifyOtpFragment : Fragment(R.layout.fragment_verify_otp) {
 
     private lateinit var otplessView: OtplessView
 
+    private var shouldClearOtpTextField by mutableStateOf(false)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -67,7 +72,8 @@ class VerifyOtpFragment : Fragment(R.layout.fragment_verify_otp) {
                 onCancel = {
                     dismissLoadingScreen()
                     requireActivity().supportFragmentManager.popBackStack()
-                }
+                },
+                clearOtpTextField = shouldClearOtpTextField
             )
         }
     }
@@ -136,6 +142,7 @@ class VerifyOtpFragment : Fragment(R.layout.fragment_verify_otp) {
                         dismissLoadingScreen()
                         requireContext().showToast("Unable to login, please try again!")
                         requireContext().vibrateDevice()
+                        shouldClearOtpTextField = true
                     }
 
                     is Resource.Loading -> {

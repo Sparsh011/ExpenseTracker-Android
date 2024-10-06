@@ -1,5 +1,6 @@
 package com.sparshchadha.expensetracker.feature.expense.presentation.ui.compose.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -62,6 +63,7 @@ fun ExpenseSettingsScreen(
             onBackPress = onBackPress,
             isBackEnabled = true,
             modifier = Modifier
+                .background(AppColors.secondaryWhite)
                 .statusBarsPadding()
                 .height(Dimensions.topBarHeight())
                 .fillMaxWidth()

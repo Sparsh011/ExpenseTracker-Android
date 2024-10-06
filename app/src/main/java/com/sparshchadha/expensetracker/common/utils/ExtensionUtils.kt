@@ -67,6 +67,18 @@ fun String.convertToISOFormat(): String {
     return outputFormat.format(date)
 }
 
+/**
+ * Formats the given ISO date to the date that will be displayed in UI
+ * */
+fun String.convertISODateToUIDate(): String {
+    val outputFormat = java.text.SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+    val inputFormat = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    val date = inputFormat.parse(this)
+
+    return outputFormat.format(date)
+}
+
 
 /**
  * Returns the corresponding month string to month index (1 based indexing)

@@ -42,6 +42,7 @@ fun ProfileScreen(
             isBackEnabled = true,
             onBackPress = onBackPress,
             modifier = Modifier
+                .background(AppColors.primaryWhite)
                 .statusBarsPadding()
                 .height(Dimensions.topBarHeight())
                 .fillMaxWidth()

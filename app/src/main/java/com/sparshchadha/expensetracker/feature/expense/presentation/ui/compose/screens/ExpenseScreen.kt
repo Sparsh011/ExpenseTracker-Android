@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sparshchadha.expensetracker.common.ui.components.compose.ETTopBar
 import com.sparshchadha.expensetracker.common.utils.AppColors
-import com.sparshchadha.expensetracker.common.utils.Constants
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
 import com.sparshchadha.expensetracker.common.utils.convertToISOFormat
@@ -42,10 +41,6 @@ import com.sparshchadha.expensetracker.feature.expense.presentation.ui.compose.c
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.compose.components.ExpenseFieldInputFields
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.compose.components.RecurringExpenseSelector
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Date
 
 
 @SuppressLint("DefaultLocale")
@@ -73,11 +68,16 @@ fun ExpenseScreen(
     )
 
     var createdOnDate by remember {
-        mutableStateOf(expenseEntity?.createdOnDate?.takeIf { it.isNotBlank() } ?: "")
+        mutableStateOf(expenseEntity?.createdOnDate?.takeIf { it.isNotBlank() }
+            ?: "${LocalDate.now().dayOfMonth} ${LocalDate.now().monthValue} ${LocalDate.now().year}")
     }
 
     var createdAtTime by remember {
-        mutableStateOf(expenseEntity?.createdAtTime?.takeIf { it.isNotBlank() } ?: "")
+        mutableStateOf(expenseEntity?.createdAtTime?.takeIf { it.isNotBlank() } ?: String.format(
+            "%02d:%02d",
+            timePickerState.hour,
+            timePickerState.minute
+        ).lowercase())
     }
 
     val updatedOnDate by remember {
@@ -115,13 +115,13 @@ fun ExpenseScreen(
         modifier = Modifier
             .background(AppColors.secondaryWhite)
             .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         ETTopBar(
             text = if (expenseEntity != null) "Update Expense" else "Create Expense",
             onBackPress = onCancel,
             isBackEnabled = true,
             modifier = Modifier
+                .background(AppColors.secondaryWhite)
                 .statusBarsPadding()
                 .height(Dimensions.topBarHeight())
                 .fillMaxWidth()

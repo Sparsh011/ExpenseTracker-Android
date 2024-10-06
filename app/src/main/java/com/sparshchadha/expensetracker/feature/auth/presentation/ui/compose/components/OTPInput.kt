@@ -35,6 +35,7 @@ import com.sparshchadha.expensetracker.common.utils.FontSizes
 fun OTPInput(
     otpLength: Int = 6,
     onOTPComplete: (String) -> Unit,
+    clearOtpTextField: Boolean,
 ) {
     var otp by rememberSaveable {
         mutableStateOf("")
@@ -43,6 +44,10 @@ fun OTPInput(
 
     LaunchedEffect(key1 = Unit) {
         focusRequester.requestFocus()
+    }
+
+    if (clearOtpTextField) {
+        otp = ""
     }
 
     BasicTextField(

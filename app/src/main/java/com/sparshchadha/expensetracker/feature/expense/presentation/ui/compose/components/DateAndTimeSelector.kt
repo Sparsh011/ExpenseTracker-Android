@@ -49,6 +49,7 @@ import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.convertISODateToUIDate
 import com.sparshchadha.expensetracker.common.utils.toMonthString
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -102,8 +103,8 @@ fun DateAndTimeSelector(
             Text(
                 text = createdOnDate.ifBlank {
                     (selectedDate.dayOfMonth.toString() + "-" + selectedDate.monthValue.toMonthString() + "-" + selectedDate.year.toString()
-                        .replace(' ', '-'))
-                }.replace(' ', '-'),
+                        .replace(' ', '-')).convertISODateToUIDate()
+                }.replace(' ', '-').convertISODateToUIDate(),
                 color = Color.Black,
                 fontSize = FontSizes.mediumNonScaledFontSize(),
                 modifier = Modifier

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -30,6 +32,7 @@ import com.sparshchadha.expensetracker.common.ui.components.compose.ETTopBar
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.convertISODateToUIDate
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
 import com.sparshchadha.expensetracker.feature.expense.presentation.ui.compose.components.ExpenseCard
 import com.sparshchadha.expensetracker.feature.transactions.presentation.ui.compose.components.TransactionSearchBar
@@ -47,11 +50,10 @@ fun TransactionsScreen(
     val focusRequester = remember { FocusRequester() }
 
     Column (
-        modifier = Modifier.background(AppColors.primaryWhite)
+        modifier = Modifier
+            .background(AppColors.secondaryWhite)
             .fillMaxSize(),
     ) {
-        ETTopBar(text = "Transactions History")
-
         Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
 
         TransactionSearchBar(
@@ -76,7 +78,7 @@ fun TransactionsScreen(
             items(allExpenses.size) { index ->
                 if (index == 0) {
                     Header(allExpenses[index].createdOnDate) { }
-                } else if (index > 0 && index < allExpenses.lastIndex) {
+                } else if (index > 0) {
                     if (allExpenses[index].createdOnDate != allExpenses[index - 1].createdOnDate) {
                         Header(allExpenses[index].createdOnDate) { }
                     }
@@ -101,11 +103,12 @@ private fun Header(
         modifier = Modifier
             .fillMaxWidth()
             .background(AppColors.secondaryWhite)
+            .padding(Dimensions.smallPadding())
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = text,
+            text = text.convertISODateToUIDate(),
             color = Color.Black,
             fontSize = FontSizes.largeNonScaledFontSize(),
             modifier = Modifier.weight(
@@ -116,11 +119,11 @@ private fun Header(
             overflow = TextOverflow.Ellipsis
         )
 
-        Icon(
-            imageVector = icon,
-            tint = Color.Black,
-            modifier = Modifier.weight(0.2f),
-            contentDescription = null
-        )
+//        Icon(
+//            imageVector = icon,
+//            tint = Color.Black,
+//            modifier = Modifier.weight(0.2f),
+//            contentDescription = null
+//        )
     }
 }

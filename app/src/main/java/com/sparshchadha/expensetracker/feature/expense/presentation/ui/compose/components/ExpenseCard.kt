@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.sparshchadha.expensetracker.common.utils.AppColors
 import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.FontSizes
+import com.sparshchadha.expensetracker.common.utils.convertISODateToUIDate
 import com.sparshchadha.expensetracker.common.utils.convertToHumanReadableDate
 import com.sparshchadha.expensetracker.common.utils.formatAmount
 import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEntity
@@ -89,7 +90,7 @@ fun ExpenseCard(expense: ExpenseEntity, onExpenseItemClick: (Int) -> Unit) {
 
                 Row {
                     Text(
-                        text = expense.createdOnDate.convertToHumanReadableDate().replace(' ', '-') + ",",
+                        text = expense.createdOnDate.convertISODateToUIDate(),
                         color = Color.Gray,
                         modifier = Modifier
                             .padding(

@@ -41,6 +41,7 @@ fun VerifyOtpScreen(
     onVerify: (String) -> Unit,
     onResend: () -> Unit,
     onCancel: () -> Unit,
+    clearOtpTextField: Boolean,
 ) {
     var timer by rememberSaveable {
         mutableIntStateOf(60)
@@ -58,6 +59,7 @@ fun VerifyOtpScreen(
     }
 
     ScreenContent(
+        clearOtpTextField = clearOtpTextField,
         onCancel = onCancel,
         providedPhoneNumber = providedPhoneNumber,
         onResend = onResend,
@@ -80,6 +82,7 @@ private fun ScreenContent(
     onVerify: (String) -> Unit,
     resendCount: Int,
     onUpdateResendCount: (Int) -> Unit,
+    clearOtpTextField: Boolean,
 ) {
     var otp by rememberSaveable {
         mutableStateOf("")
@@ -134,6 +137,7 @@ private fun ScreenContent(
                 otp = it
                 onVerify(otp)
             },
+            clearOtpTextField = clearOtpTextField
         )
 
         Spacer(modifier = Modifier.height(Dimensions.mediumPadding()))
@@ -177,7 +181,7 @@ private fun VerifyOTPButton(
             .fillMaxWidth()
             .padding(horizontal = Dimensions.extraLargePadding()),
         colors = ButtonDefaults.buttonColors(
-            containerColor = AppColors.primaryPurple
+            containerColor = AppColors.primaryColor
         )
     ) {
         Text(text = "Verify OTP", color = Color.White)
@@ -193,7 +197,7 @@ private fun ResendOTPButton(
 ) {
     Text(
         text = "Resend OTP",
-        color = if (timer == 0) AppColors.primaryPurple else Color.LightGray,
+        color = if (timer == 0) AppColors.primaryColor else Color.LightGray,
         fontSize = FontSizes.mediumNonScaledFontSize(),
         fontWeight = FontWeight.Bold,
         modifier = Modifier.clickable {

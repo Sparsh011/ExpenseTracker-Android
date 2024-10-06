@@ -70,7 +70,7 @@ class ExpenseViewModel @Inject constructor(
 
     private fun fetchCurrentDayExpenses() {
         val currentDate = LocalDateTime.now()
-            .format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN))
+            .format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN)).replace(' ', '-')
         viewModelScope.launch(Dispatchers.IO) {
             expenseRepository.getCurrentDayExpenses(currentDate).collect {
                 _currentDayExpenses.value = it
@@ -97,9 +97,9 @@ class ExpenseViewModel @Inject constructor(
 
         val date = LocalDateTime.now().minusDays(30)
             .format(DateTimeFormatter.ofPattern(Constants.DATE_FORMATTER_PATTERN))
-        val compatibleDate = date.convertToISOFormat()
+//        val compatibleDate = date.convertToISOFormat()
         viewModelScope.launch(Dispatchers.IO) {
-            expenseRepository.getAmountSpentInLastNDays(compatibleDate).collect {
+            expenseRepository.getAmountSpentInLastNDays(date).collect {
                 _last30DaysAmountSpent.value = it?.toDouble() ?: 0.0
             }
         }
@@ -109,12 +109,12 @@ class ExpenseViewModel @Inject constructor(
 //        val date = LocalDateTime.now().minusDays(30).format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMATTER_PATTERN))
         if (_top5TransactionsByAmount.value.isNotEmpty()) return
 
-        val compatibleInitialDate = initialDate.convertToISOFormat()
-        val compatibleFinalDate = finalDate.convertToISOFormat()
+//        val compatibleInitialDate = initialDate.convertToISOFormat()
+//        val compatibleFinalDate = finalDate.convertToISOFormat()
         viewModelScope.launch(Dispatchers.IO) {
             expenseRepository.getTop5TransactionsByAmountInDateRange(
-                initialDate = compatibleInitialDate,
-                finalDate = compatibleFinalDate
+                initialDate = initialDate,
+                finalDate = finalDate
             ).collect {
                 _top5TransactionsByAmount.value = it
             }

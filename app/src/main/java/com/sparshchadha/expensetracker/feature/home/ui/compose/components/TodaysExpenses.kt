@@ -28,9 +28,16 @@ import com.sparshchadha.expensetracker.feature.expense.presentation.ui.compose.c
 fun ExpenseListHandler(
     expenses: List<ExpenseEntity>,
     onExpenseItemClick: (Int) -> Unit,
+    onDelete: (ExpenseEntity) -> Unit
 ) {
     for (expense in expenses) {
-        ExpenseCard(expense, onExpenseItemClick)
+        ExpenseCard(
+            expense,
+            onExpenseItemClick,
+            onDelete = {
+                onDelete(expense)
+            }
+        )
     }
 }
 

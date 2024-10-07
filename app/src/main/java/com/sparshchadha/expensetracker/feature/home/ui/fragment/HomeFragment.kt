@@ -69,6 +69,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 top5TransactionsByAmountSpent = top5TransactionsByAmountSpent,
                 navigateToExpenseSettingsScreen = {
                     navigationProvider.navigateToExpenseSettingsFragment(expenseBudget)
+                },
+                onDelete = {
+                    expenseViewModel.deleteExpense(it)
                 }
             )
         }

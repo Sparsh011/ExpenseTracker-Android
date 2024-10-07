@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -38,7 +40,7 @@ import com.sparshchadha.expensetracker.feature.expense.domain.entity.ExpenseEnti
 import com.sparshchadha.expensetracker.feature.expense.presentation.ExpenseCategoryMapper
 
 @Composable
-fun ExpenseCard(expense: ExpenseEntity, onExpenseItemClick: (Int) -> Unit) {
+fun ExpenseCard(expense: ExpenseEntity, onExpenseItemClick: (Int) -> Unit, onDelete: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -46,8 +48,7 @@ fun ExpenseCard(expense: ExpenseEntity, onExpenseItemClick: (Int) -> Unit) {
             .padding(
                 horizontal = Dimensions.mediumPadding(),
                 vertical = Dimensions.extraSmallPadding()
-            )
-            .clickable { onExpenseItemClick(expense.expenseId ?: -1) },
+            ),
         colors = CardDefaults.cardColors(
             containerColor = AppColors.primaryWhite
         )
@@ -74,6 +75,7 @@ fun ExpenseCard(expense: ExpenseEntity, onExpenseItemClick: (Int) -> Unit) {
 
             Column(
                 modifier = Modifier.weight(0.60f)
+                    .clickable { onExpenseItemClick(expense.expenseId ?: -1) }
             ) {
                 Text(
                     text = expense.title,
@@ -129,6 +131,15 @@ fun ExpenseCard(expense: ExpenseEntity, onExpenseItemClick: (Int) -> Unit) {
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(0.2f),
                 textAlign = TextAlign.End
+            )
+
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = null,
+                tint = AppColors.errorRed,
+                modifier = Modifier.clickable {
+                    onDelete()
+                }
             )
 
         }

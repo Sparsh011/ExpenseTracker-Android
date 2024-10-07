@@ -42,6 +42,9 @@ class TransactionsFragment : Fragment(R.layout.fragment_transactions) {
                 onSearch = {
                     expenseViewModel.setSearchQuery(it)
                     expenseViewModel.searchExpenses()
+                },
+                onDelete = {
+                    expenseViewModel.deleteExpense(it)
                 }
             )
         }

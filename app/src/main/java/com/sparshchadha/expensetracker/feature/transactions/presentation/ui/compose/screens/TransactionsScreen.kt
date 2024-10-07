@@ -42,7 +42,8 @@ import com.sparshchadha.expensetracker.feature.transactions.presentation.ui.comp
 fun TransactionsScreen(
     allExpenses: List<ExpenseEntity>,
     onExpenseClick: (Int) -> Unit,
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
+    onDelete: (ExpenseEntity) -> Unit
 ) {
     var searchQuery by remember {
         mutableStateOf("")
@@ -88,7 +89,10 @@ fun TransactionsScreen(
                     Spacer(modifier = Modifier.height(Dimensions.smallPadding()))
                     ExpenseCard(
                         expense = allExpenses[index],
-                        onExpenseItemClick = onExpenseClick
+                        onExpenseItemClick = onExpenseClick,
+                        onDelete = {
+                            onDelete(allExpenses[index])
+                        }
                     )
                 }
             }

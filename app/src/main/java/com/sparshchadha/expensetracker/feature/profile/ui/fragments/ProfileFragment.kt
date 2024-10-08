@@ -15,7 +15,7 @@ import com.sparshchadha.expensetracker.common.utils.Utility
 import com.sparshchadha.expensetracker.core.domain.Resource
 import com.sparshchadha.expensetracker.core.navigation.NavigationProvider
 import com.sparshchadha.expensetracker.feature.profile.data.remote.dto.UserProfile
-import com.sparshchadha.expensetracker.feature.profile.ui.compose.ProfileScreen
+import com.sparshchadha.expensetracker.feature.profile.ui.compose.screens.ProfileScreen
 import com.sparshchadha.expensetracker.feature.profile.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

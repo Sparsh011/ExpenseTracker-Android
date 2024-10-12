@@ -87,7 +87,7 @@ fun BalanceAndBudgetCard(
 
             Text(
                 text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = if (amountSpentInLast30Days < expenseBudget) AppColors.primaryGreen else AppColors.errorRed, fontWeight = FontWeight.Bold),) {
+                    withStyle(style = SpanStyle(color = if (amountSpentInLast30Days < expenseBudget) AppColors.primaryWhite else AppColors.errorRed, fontWeight = FontWeight.Bold),) {
                         append(((amountSpentInLast30Days / expenseBudget) * 100).toInt().toString() + "%")
                     }
                     append(" utilized")

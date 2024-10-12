@@ -43,5 +43,12 @@ interface ExpenseDao {
     fun getAmountSpentInLastNDays(dateNDaysAgo: String): Flow<Long>
 
     @Query("SELECT * FROM ExpenseEntity WHERE createdOnDate <= :finalDate AND createdOnDate >= :initialDate ORDER BY amount DESC LIMIT 5")
-    fun getTop5TransactionsByAmountInDateRange(initialDate: String, finalDate: String): Flow<List<ExpenseEntity>>
+    fun getTop5ExpensesByAmountInDateRange(initialDate: String, finalDate: String): Flow<List<ExpenseEntity>>
+
+    @Query("SELECT * FROM ExpenseEntity WHERE createdAtTime LIKE '%' || :searchQuery || '%'" +
+            " OR createdOnDate LIKE '%' || :searchQuery || '%' " +
+            "OR title LIKE '%' || :searchQuery || '%'" +
+            "OR description LIKE '%' || :searchQuery || '%'"
+    )
+    fun getExpensesBySearchQuery(searchQuery: String): Flow<List<ExpenseEntity>>
 }

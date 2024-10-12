@@ -7,6 +7,7 @@ interface ExpenseRepository {
     suspend fun getAllExpenses(): Flow<List<ExpenseEntity>>
     fun getCurrentDayExpenses(currentDate: String): Flow<List<ExpenseEntity>>
     fun getExpenseById(id: Int): Flow<ExpenseEntity>
+    fun getExpensesBySearchQuery(searchQuery: String): Flow<List<ExpenseEntity>>
 
     fun getLifetimeExpenditure(): Flow<Double>
     fun getExpenditureBetweenDates(initialDate: String, finalDate: String): Flow<Long>

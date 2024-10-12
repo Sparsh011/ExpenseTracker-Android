@@ -21,8 +21,8 @@ import com.sparshchadha.expensetracker.common.utils.Dimensions
 import com.sparshchadha.expensetracker.common.utils.Utility.noRippleClickable
 import com.sparshchadha.expensetracker.core.navigation.ExpenseTrackerNavGraph.BottomBarScreenRoutes
 import com.sparshchadha.expensetracker.feature.home.ui.fragment.HomeFragment
-import com.sparshchadha.expensetracker.feature.statistics.StatisticsFragment
-import com.sparshchadha.expensetracker.feature.transactions.TransactionsFragment
+import com.sparshchadha.expensetracker.feature.statistics.presentation.fragment.StatisticsFragment
+import com.sparshchadha.expensetracker.feature.transactions.presentation.ui.fragment.TransactionsFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
